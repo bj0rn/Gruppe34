@@ -55,14 +55,108 @@
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
+				<integer>128</integer>
+			</dict>
+			<key>ID</key>
+			<integer>134</integer>
+			<key>Points</key>
+			<array>
+				<string>{236.59619, 288.04105}</string>
+				<string>{346.5, 228.7043}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>Cap</key>
+					<integer>0</integer>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Join</key>
+					<integer>0</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>132</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>132</integer>
+			</dict>
+			<key>ID</key>
+			<integer>133</integer>
+			<key>Points</key>
+			<array>
+				<string>{86.500053, 327.86597}</string>
+				<string>{167.25999, 311.77606}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>Cap</key>
+					<integer>0</integer>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Join</key>
+					<integer>0</integer>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>107</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{164.5, 283}, {86, 41.5}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>ID</key>
+			<integer>132</integer>
+			<key>Shape</key>
+			<string>Circle</string>
+			<key>Style</key>
+			<dict/>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
+
+\f0\fs24 \cf0 Search}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
 				<integer>129</integer>
 			</dict>
 			<key>ID</key>
 			<integer>131</integer>
 			<key>Points</key>
 			<array>
-				<string>{346.5, 225.74576}</string>
-				<string>{231.66811, 271.37833}</string>
+				<string>{346.5, 219.88295}</string>
+				<string>{237.82231, 232.36363}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -96,8 +190,8 @@
 			<integer>130</integer>
 			<key>Points</key>
 			<array>
-				<string>{86.500046, 324.58875}</string>
-				<string>{162.9761, 297.27393}</string>
+				<string>{86.500038, 316.84109}</string>
+				<string>{171.35526, 254.85013}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -121,7 +215,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{155, 264}, {86, 41.5}}</string>
+			<string>{{152.5, 216.5}, {86, 41.5}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -1104,7 +1198,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2012-02-14 16:40:32 +0000</string>
+	<string>2012-02-14 16:43:46 +0000</string>
 	<key>Modifier</key>
 	<string>Bjørn Tungesvik</string>
 	<key>NotesVisible</key>
