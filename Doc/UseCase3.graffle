@@ -61,8 +61,8 @@
 			<integer>131</integer>
 			<key>Points</key>
 			<array>
-				<string>{323.77191, 336.07828}</string>
-				<string>{256.46979, 335.03845}</string>
+				<string>{346.5, 225.74576}</string>
+				<string>{231.66811, 271.37833}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -81,7 +81,7 @@
 			<key>Tail</key>
 			<dict>
 				<key>ID</key>
-				<integer>87</integer>
+				<integer>128</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -96,8 +96,8 @@
 			<integer>130</integer>
 			<key>Points</key>
 			<array>
-				<string>{86.500046, 332.315}</string>
-				<string>{169.52211, 333.57535}</string>
+				<string>{86.500046, 324.58875}</string>
+				<string>{162.9761, 297.27393}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -121,7 +121,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{170, 313.5}, {86, 41.5}}</string>
+			<string>{{155, 264}, {86, 41.5}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -1104,7 +1104,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2012-02-14 16:37:00 +0000</string>
+	<string>2012-02-14 16:38:01 +0000</string>
 	<key>Modifier</key>
 	<string>Bjørn Tungesvik</string>
 	<key>NotesVisible</key>
