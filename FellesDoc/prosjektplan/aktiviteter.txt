@@ -1,0 +1,90 @@
+Kontinuerli alle
+beskrivelse: demonstrere KTN systemet for studass
+
+Prosjekt
+	ansvar: alle
+	beskrivelse: logge timebruk
+		     lage arbeidsplan (hva skal jeg gjøre i dag)
+	             konkludere (hva ble gjort, hva gjenstår)
+	
+
+Kronologisk
+	
+Prosjektplan
+	ansvar: Håvard, Odd
+	beskrivelse: lager prosjektplan ihht kapittel 4.1 i kompendiet.
+
+Risikoanalyse
+	ansvar: Andy
+	beskrivelse: lage risikoanalyse for prosjektet
+
+Systemtestplan
+	ansvar: Eivind, Bjørn
+	beskrivelse: testplan for svartboks test av systemet.
+
+
+KTN1 fase 1 design
+	ansvar:
+	beskrivelse: tekstlig beskrivelse av design, med sekvens- og tilstanddiagrammer.
+	
+
+KTN1 fase 1 testplan
+	ansvar:
+	beskrivelse: testplan for svartboks test av KTN delen
+
+Papirprototype
+	ansvar:
+	beskrivelse: lage en papirprototype for brukergrensesnitt
+
+Konseptuell databasemodell
+	ansvar:
+	beskrivelse: lage UML/EER-diagrammer for databasen, med forklaring/rapport
+
+Overordnet system design
+	ansvar:
+	beskrivelse: use case, sekvensdiagram
+
+Pilottesting
+	ansvar:
+	beskrivelse: pilotteste papirprototype med stuass
+
+Gruppetest
+	ansvar:
+	beskrivelse: brukbarhetstest med gruppe 32.
+
+Brukergrensesnittrapport
+	ansvar:
+	beskrivelse: skrive rapport basert på pilot og gruppetest
+
+Logisk databaseskjema (SQL)
+	ansvar:
+	beskrivelse: skrive SQL for oppretting av databaseskjemaet i MySQL
+
+Konseptuell modell
+	ansvar:
+	beskrivelse: lage konseptuell modell med UML klasse og sekvensdiagram
+
+Skjermdesign
+	ansvar:
+	beskrivelse: lage skjermdesign
+
+Konstruksjonsbeskrivelse
+	ansvar: 
+	beskrivelse: beskrive hvordan brukergrensesnittet er bygd opp (grunnlag for JUnit)
+
+Sluttrapport
+	ansvar:
+	beskrivelse: oppsummering, evaluering og tidsbruk
+
+Systemtestrapport
+	ansvar:
+	beskrivelse: rapport etter testing ihht. systemtest plan.
+
+Implementasjon av KTN
+	ansvar:
+	beskrivelse:
+
+Demonstrasjon for studass (KTN)
+	ansvar: alle
+	beskrivelse: demonstrere KTN systemet for studass.
+	
