@@ -1,7 +1,8 @@
 Frister, DB:
+
 DB1 (Konseptuell databasemodell)
 	2012-03-16 23:55
-	Sette opp diagram ut i fra allerede eksisterende kravspesifikasjoner.
+	Sette opp diagram ut i fra allerede eksisterende kravspesifikasjoner i kompendiumet.
 	Forklarende dokument/rapport.
 	
 DB2 (Logisk databaseskjema)
@@ -15,38 +16,73 @@ D2a (Pilottesting)
 	lage utkast av interface/design
 	få det godkjent av studass
 	opprette rapport (beskrivelse av designet)
+
 D2b (Rapportinnlevering)
 	2012-03-25 23:55
 	pilotteste med annen gruppe
 	skrive rapport
+
 D3 (Skjermdesign og konstruksjon av brukergrensesnittet)
 	2012-03-30 23:55
+
 1.	"Konseptuell modell"
 	lage konseptuell modell (UML)
+
 2.	"Skjermdesign"
 	utdypende beskrivelse/forklaring av designet/interfacen, beskrive forholdet mellom design og konseptuell modell ("Målet er å spesifisere brukeropplevelsen")
-3.	"Konstruksjonsbeskrivelse
+
+3.	"Konstruksjonsbeskrivelse"
+	beksrivelse for hvordan brukergrensesnittet er bygd opp (vinduer og dialogelemeter)
+	skal kunne gi grunnlag for å skrive en JUnit test.
 
 KTN:
 KTN1 (fase 1)
 	2012-03-12 23:59
+	sekvensdiagram mellom App, A1 og A2 (vise løsning av krav 6.2 i kompendiet)
+	tilstanddiagrammer for A1
+	overordnet beskrivelse av design og realisering
+	tekstlig beskrivelse feilhåntering
+	testplan for A1 implementasjon
+
+
 KTN1 (fase 2)
 	2012-03-18 23:59
+	revidert utgave av fase 1
+
 KTN2:
 	2012-04-20 23:59
-
+	oppdatert versjon av KTN1 med forklaringer av endringer.
+	implementasjon av A1
+	testlog for A1
+	demonstrasjon for studass med alle gruppemedlemmer
+	
 
 SU: 
 Fase 1
 Systemtestplan
 	2012-03-09
+	svartboks test av systemet
+
 Prosjektplan:
 	2012-03-09
+	definering av aktiviteter, frister og ansvarsområder.
+	ressurser, tid og kosnadsestimater.
+	risikoanalyse
+
 Overordnet design
 	2012-03-16
+	Use Case diagrammer
+	tekstlig usecase
+	sekvensdiagrammer
+	beskrivelse av systemets struktur, klasser, attributter og metoder.
+
+
 Fase 2
 Realisering av systemet
 	ingen spesifikk frist
+	implementasjon av hovedapplikasjon
+	gui, model, kommunikasjonslag og presistenslag.
+
 Fase 3
 Sluttrapport
 	2012-03-30
