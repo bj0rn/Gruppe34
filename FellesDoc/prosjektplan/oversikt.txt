@@ -56,7 +56,6 @@ KTN2:
 	testlog for A1
 	demonstrasjon for studass med alle gruppemedlemmer
 	
-
 SU: 
 Fase 1
 Systemtestplan

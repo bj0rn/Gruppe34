@@ -5,92 +5,175 @@ Prosjekt
 	beskrivelse: logge timebruk
 		     lage arbeidsplan (hva skal jeg gjÃ¸re i dag)
 	             konkludere (hva ble gjort, hva gjenstÃ¥r)
-implementere/lage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
-	
+Implementasjon av systemet
+	ansvar: alle
+	beskrivelse: implementere/lage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
+
+Git
+	ansvar: alle
+	beskrivelse: sette seg inn i git.	
+
 
 Kronologisk
 	
 Prosjektplan (SU Fase 1)
+	start: 2012-03-05
+	slutt: 2012-03-09
+	avhengigheter:
 	ansvar: HÃ¥vard, Odd
 	beskrivelse: lager prosjektplan ihht kapittel 4.1 i kompendiet.
 
 Risikoanalyse (SU Fase 1)
+	start: 2012-03-05
+	slutt: 2012-03-09
+	avhengigheter:
 	ansvar: Andy
 	beskrivelse: lage risikoanalyse for prosjektet
 
 Systemtestplan (SU Fase 1)
+	start: 2012-03-05
+	slutt: 2012-03-09
+	avhengigheter:
 	ansvar: Eivind, BjÃ¸rn
 	beskrivelse: testplan for svartboks test av systemet.
 
 KTN1 fase 1 design (KTN1)
+	start: 2012-03-07 ??
+	slutt: 2012-03-12 23:59
+	avhengigheter:
 	ansvar:
 	beskrivelse: tekstlig beskrivelse av design, med sekvens- og tilstanddiagrammer.
 	
 
 KTN1 fase 1 testplan (KTN1)
+	start: 2012-03-0
+	slutt: 2012-03-12 23:59
+	avhengigheter: KTN1 fase 1 design
 	ansvar:
 	beskrivelse: lage testplan for svartboks-test av KTN delen
 
 Papirprototype (MMI D2a)
+	start: 
+	slutt: 2012-03-15 23:55
+	avhengigheter:
 	ansvar:
 	beskrivelse: lage en papirprototype for brukergrensesnitt
 
 Konseptuell databasemodell (DB1)
+	start: 
+	slutt: 2012-03-16 23:55
+	avhengigheter:
+	relasjon: Overordnet system design
 	ansvar:
 	beskrivelse: lage UML/EER-diagrammer for databasen, med forklaring/rapport
 
 KTN1 fase 2 (KTN1)
+	start:
+	slutt: 2012-03-18 23:59
+	avhengigheter: KTN1 fase 1 design, KTN1 fase 1 testplan
 	ansvar:
 	beskrivelse: revidere design og testplan fra fase 1 med utgangspunkt i tilbakemeldingene
 
 Overordnet system design (SU2)
+	start: 
+	slutt: 2012-03-16
+	avhengigheter: Systemtestplan
+	relasjon: Konseptuell databasemodell
 	ansvar:
 	beskrivelse: use case, sekvensdiagram
 
 Pilottesting (MMI D2a)
+	start: 
+	slutt: 2012-03-15 23:55
+	avhengigheter: Papirprototype
 	ansvar:
 	beskrivelse: pilotteste papirprototype med studass
 
 Gruppetest (MMI D2b)
+	start: 
+	slutt: 2012-03-25 23:55
+	avhengigheter: Pilottesting
 	ansvar:
 	beskrivelse: brukbarhetstest med gruppe 32.
 
 Brukergrensesnittrapport (MMI D2 a&b)
+	start: 
+	slutt: 2012-03-25 23:55
+	avhengigheter: Pilottesting, Gruppetest
 	ansvar:
 	beskrivelse: skrive rapport basert pÃ¥ pilot og gruppetest
 
 Logisk databaseskjema (DB2)
+	start: 
+	slutt: 2012-03-30 23:55
+	avhengigheter: Konseptuell databasemodell
 	ansvar:
 	beskrivelse: skrive SQL for oppretting av databaseskjemaet i MySQL
 
 Konseptuell modell (MMI D3)
+	start: 
+	slutt: 2012-03-30 23:55
+	avhengigheter: Brukergrensesnittrapport
+	relasjon: Skjermdesign, Konstruksjonsbeskrivelse
 	ansvar:
 	beskrivelse: lage konseptuell modell av brukergrensesnittet med UML klasse og sekvensdiagram
 
 Skjermdesign (MMI D3)
+	start:
+	slutt: 2012-03-30 23:55
+	avhengigheter: Brukergrensesnittrapport
+	relasjon: Konseptuell modell, Konstruksjonsbeskrivelse
 	ansvar:
 	beskrivelse: lage skjermdesign
 
 Konstruksjonsbeskrivelse (MMI D3)
+	start:
+	slutt: 2012-03-30 23:55
+	avhengigheter:
+	relasjon: Konseptuell modell, Skjermdesign
 	ansvar: 
 	beskrivelse: beskrive hvordan brukergrensesnittet er bygd opp (grunnlag for JUnit)
 
-Sluttrapport (SU Fase 3)
-	ansvar:
-	beskrivelse: oppsummering, evaluering og tidsbruk
-
 Systemtestrapport (SU Fase 3)
+	start: 
+	slutt: 2012-03-30
+	avhengigheter: Systemtest Plan, Imlementasjon av systemet
 	ansvar:
 	beskrivelse: rapport etter testing ihht. systemtest plan.
 
+Sluttrapport (SU Fase 3)
+	start: 
+	slutt: 2012-03-30
+	avhengigheter: Implementasjon av systemet, Systemtestrapport
+	ansvar:
+	beskrivelse: oppsummering, evaluering og tidsbruk
+
 Implementasjon av KTN (KTN2)
+	start: 
+	slutt: 2012-04-20 23:59
+	avhengigheter: KTN1 fase 2
+	relasjon: Implementasjon av KTN
 	ansvar:
 	beskrivelse: skrive ktn-koden
 
-Testing av KTN (KTN2)
+Spesifisering av KTN tester (KTN2)
+	start: 
+	slutt: 2012-04-20 23:59
+	avhengigheter: KTN1 fase 2
+	relasjon: Implementasjon av KTN
 	ansvar:
-	beskrivelse: opprette og utføre tester for ktn-koden
+	beskrivelse: utføre tester for ktn-koden
+
+Testing av KTN (KTN2)
+	start: 
+	slutt: 2012-04-20 23:59
+	avhengigheter: Spesifisering av KTN tester, Implementasjon av KTN
+	ansvar:
+	beskrivelse: utføre tester for ktn-koden
 
 Demonstrasjon for studass (KTN2)
+	start: 
+	slutt: 2012-04-20 23:59
+	avhengigheter: Testing av KTN, Implementasjon av KTN
 	ansvar: alle
 	beskrivelse: demonstrere KTN systemet for studass.
