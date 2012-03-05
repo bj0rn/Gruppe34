@@ -1,90 +1,96 @@
-Kontinuerli alle
-beskrivelse: demonstrere KTN systemet for studass
+Kontinuerlig
 
 Prosjekt
 	ansvar: alle
 	beskrivelse: logge timebruk
 		     lage arbeidsplan (hva skal jeg gjøre i dag)
 	             konkludere (hva ble gjort, hva gjenstår)
+implementere/lage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
 	
 
 Kronologisk
 	
-Prosjektplan
+Prosjektplan (SU Fase 1)
 	ansvar: Håvard, Odd
 	beskrivelse: lager prosjektplan ihht kapittel 4.1 i kompendiet.
 
-Risikoanalyse
+Risikoanalyse (SU Fase 1)
 	ansvar: Andy
 	beskrivelse: lage risikoanalyse for prosjektet
 
-Systemtestplan
+Systemtestplan (SU Fase 1)
 	ansvar: Eivind, Bjørn
 	beskrivelse: testplan for svartboks test av systemet.
 
-
-KTN1 fase 1 design
+KTN1 fase 1 design (KTN1)
 	ansvar:
 	beskrivelse: tekstlig beskrivelse av design, med sekvens- og tilstanddiagrammer.
 	
 
-KTN1 fase 1 testplan
+KTN1 fase 1 testplan (KTN1)
 	ansvar:
-	beskrivelse: testplan for svartboks test av KTN delen
+	beskrivelse: lage testplan for svartboks-test av KTN delen
 
-Papirprototype
+Papirprototype (MMI D2a)
 	ansvar:
 	beskrivelse: lage en papirprototype for brukergrensesnitt
 
-Konseptuell databasemodell
+Konseptuell databasemodell (DB1)
 	ansvar:
 	beskrivelse: lage UML/EER-diagrammer for databasen, med forklaring/rapport
 
-Overordnet system design
+KTN1 fase 2 (KTN1)
+	ansvar:
+	beskrivelse: revidere design og testplan fra fase 1 med utgangspunkt i tilbakemeldingene
+
+Overordnet system design (SU2)
 	ansvar:
 	beskrivelse: use case, sekvensdiagram
 
-Pilottesting
+Pilottesting (MMI D2a)
 	ansvar:
-	beskrivelse: pilotteste papirprototype med stuass
+	beskrivelse: pilotteste papirprototype med studass
 
-Gruppetest
+Gruppetest (MMI D2b)
 	ansvar:
 	beskrivelse: brukbarhetstest med gruppe 32.
 
-Brukergrensesnittrapport
+Brukergrensesnittrapport (MMI D2 a&b)
 	ansvar:
 	beskrivelse: skrive rapport basert på pilot og gruppetest
 
-Logisk databaseskjema (SQL)
+Logisk databaseskjema (DB2)
 	ansvar:
 	beskrivelse: skrive SQL for oppretting av databaseskjemaet i MySQL
 
-Konseptuell modell
+Konseptuell modell (MMI D3)
 	ansvar:
-	beskrivelse: lage konseptuell modell med UML klasse og sekvensdiagram
+	beskrivelse: lage konseptuell modell av brukergrensesnittet med UML klasse og sekvensdiagram
 
-Skjermdesign
+Skjermdesign (MMI D3)
 	ansvar:
 	beskrivelse: lage skjermdesign
 
-Konstruksjonsbeskrivelse
+Konstruksjonsbeskrivelse (MMI D3)
 	ansvar: 
 	beskrivelse: beskrive hvordan brukergrensesnittet er bygd opp (grunnlag for JUnit)
 
-Sluttrapport
+Sluttrapport (SU Fase 3)
 	ansvar:
 	beskrivelse: oppsummering, evaluering og tidsbruk
 
-Systemtestrapport
+Systemtestrapport (SU Fase 3)
 	ansvar:
 	beskrivelse: rapport etter testing ihht. systemtest plan.
 
-Implementasjon av KTN
+Implementasjon av KTN (KTN2)
 	ansvar:
-	beskrivelse:
+	beskrivelse: skrive ktn-koden
 
-Demonstrasjon for studass (KTN)
+Testing av KTN (KTN2)
+	ansvar:
+	beskrivelse: opprette og utf�re tester for ktn-koden
+
+Demonstrasjon for studass (KTN2)
 	ansvar: alle
 	beskrivelse: demonstrere KTN systemet for studass.
-	
