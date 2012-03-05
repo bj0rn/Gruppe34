@@ -177,20 +177,20 @@ public class ProjectPanel extends JPanel implements ListSelectionListener, ListD
         fileMenu.add(newAction);
         fileMenu.add(openAction);
         fileMenu.add(saveAction);
-	fileMenu.add(saveAsAction);
-	menuBar.add(fileMenu);
-	editMenu.add(addPersonAction);
-	editMenu.add(removePersonAction);
-	menuBar.add(editMenu);
-	netMenu.add(connectAction);
-	netMenu.add(disconnectAction);
-	menuBar.add(netMenu);
+		fileMenu.add(saveAsAction);
+		menuBar.add(fileMenu);
+		editMenu.add(addPersonAction);
+		editMenu.add(removePersonAction);
+		menuBar.add(editMenu);
+		netMenu.add(connectAction);
+		netMenu.add(disconnectAction);
+		menuBar.add(netMenu);
 	
-	frame.setJMenuBar(menuBar);
-	Container parent = frame.getContentPane();
-	parent.setLayout(new BorderLayout());
-	parent.add(projectPanel, BorderLayout.CENTER);
-	
+		frame.setJMenuBar(menuBar);
+		Container parent = frame.getContentPane();
+		parent.setLayout(new BorderLayout());
+		parent.add(projectPanel, BorderLayout.CENTER);
+		
         frame.pack();
         frame.setSize (800,300);
         frame.setVisible(true);
