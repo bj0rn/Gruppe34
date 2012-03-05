@@ -86,3 +86,8 @@ Realisering av systemet
 Fase 3
 Sluttrapport
 	2012-03-30
+	oppsummere erfaringer
+	evaluere prosjektet
+	tidsbruk (estimert mot virkelig)
+	systemtestrapport
+
