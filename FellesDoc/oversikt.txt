@@ -1,0 +1,52 @@
+Frister, DB:
+DB1 (Konseptuell databasemodell)
+	2012-03-16 23:55
+	Sette opp diagram ut i fra allerede eksisterende kravspesifikasjoner.
+	Forklarende dokument/rapport.
+	
+DB2 (Logisk databaseskjema)
+	2012-03-30 23:55
+	SQL-kode for oppretting av databasen
+	revidert oppgave 1
+
+MMI:
+D2a (Pilottesting)
+	2012-03-15 23:55
+	lage utkast av interface/design
+	få det godkjent av studass
+	opprette rapport (beskrivelse av designet)
+D2b (Rapportinnlevering)
+	2012-03-25 23:55
+	pilotteste med annen gruppe
+	skrive rapport
+D3 (Skjermdesign og konstruksjon av brukergrensesnittet)
+	2012-03-30 23:55
+1.	"Konseptuell modell"
+	lage konseptuell modell (UML)
+2.	"Skjermdesign"
+	utdypende beskrivelse/forklaring av designet/interfacen, beskrive forholdet mellom design og konseptuell modell ("Målet er å spesifisere brukeropplevelsen")
+3.	"Konstruksjonsbeskrivelse
+
+KTN:
+KTN1 (fase 1)
+	2012-03-12 23:59
+KTN1 (fase 2)
+	2012-03-18 23:59
+KTN2:
+	2012-04-20 23:59
+
+
+SU: 
+Fase 1
+Systemtestplan
+	2012-03-09
+Prosjektplan:
+	2012-03-09
+Overordnet design
+	2012-03-16
+Fase 2
+Realisering av systemet
+	ingen spesifikk frist
+Fase 3
+Sluttrapport
+	2012-03-30
