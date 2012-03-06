@@ -23,9 +23,13 @@ KTN	Yuming Jiang		iang@q2s.ntnu.no
 DB	Svein Erik Bratsberg	sveinbra@idi.ntnu.no 
 	Roger Midtstraum	roger.midtstraum@idi.ntnu.no 
 
+
+
 Utstyr
 
 Hvert gruppemedlem har sin egen laptop og eventuelt stasjonær pc. I tillegg er har datasaler på NTNU pcer til disposisjon.
+
+
 
 Rom 
 
