@@ -108,24 +108,33 @@ Konseptuell databasenormalisering (DB1)
 	beskrivelse: normalisering/endring av EER/UML
 
 KTN1 fase 2 (KTN1)
-	tidestimat: 
+	tidestimat: 6
 	start: 2012-03-13
 	slutt: 2012-03-18 23:59
 	avhengigheter: KTN1 fase 1 design, KTN1 fase 1 testplan
 	ansvar:
 	beskrivelse: revidere design og testplan fra fase 1 med utgangspunkt i tilbakemeldingene
 
-Overordnet system design (SU2)
-	tidestimat:
+Overordnet system design use case (SU2)
+	tidestimat: 8
 	start: 2012-03-12
 	slutt: 2012-03-16
 	avhengigheter: Systemtestplan
-	relasjon: Konseptuell databasemodell
+	relasjon: Konseptuell databasemodell, Overordnet system design use case
 	ansvar:
-	beskrivelse: use case, sekvensdiagram
+	beskrivelse: UML (use case, tekslig use case)
+
+Overordnet system design diagrammer (SU2)
+	tidestimat: 6
+	start: 2012-03-12
+	slutt: 2012-03-16
+	avhengigheter: Systemtestplan
+	relasjon: Konseptuell databasemodell, Overordnet system design use case
+	ansvar:
+	beskrivelse: UML (sekvensdiagram, klassediagram)
 
 Pilottesting (MMI D2a)
-	tidestimat:
+	tidestimat: 2
 	start: 2012-03-12
 	slutt: 2012-03-15 23:55
 	avhengigheter: Papirprototype
@@ -133,7 +142,7 @@ Pilottesting (MMI D2a)
 	beskrivelse: pilotteste papirprototype med studass
 
 Gruppetest (MMI D2b)
-	tidestimat:
+	tidestimat: 
 	start: 2012-03-12
 	slutt: 2012-03-25 23:55
 	avhengigheter: Pilottesting
