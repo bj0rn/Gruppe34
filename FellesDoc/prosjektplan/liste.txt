@@ -1,0 +1,21 @@
+Prosjektplan:
+* Hvilke ressurser har man til disposisjon, nemlig penger, personell og utstyr
+	Ressurser: studentassistenter og undasser i de forskjellige fagene, faglærere, medstudenter, internett, lærebøkene.
+	Alle lagmedlemmene har egen arbeidsstasjon (personlig eid laptop, muligens desktop, samt ntnu sine datasaler)
+	Budsjettet er foreløpig 0 NOK
+	SPM: får vi VPS til å hoste prosjektet på? sendt til NINA.
+	Personell: vi har 6 lagmedlemmer
+	
+Tid og kostnadsestimater for prosjektet:
+	fast møtetid
+
+Hvordan arbeidet skal brytes ned/opp i mindre deler
+	Arbeidsansvarinndeling
+	Overordnet ansvarlige individer for de forskjellige delene
+	I utgangspunkt delt inn ut i fra fag
+
+Til hvilke tidsfrister hver del skal være ferdig
+	se eget dokument
+
+Hvem som skal ha ansvaret for hvilke arbeidsoppgaver
+	
