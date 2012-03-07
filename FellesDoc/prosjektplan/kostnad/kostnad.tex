@@ -1,0 +1,155 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, February 15, 2012 15:32:19}
+%TCIDATA{LastRevised=Wednesday, March 07, 2012 11:55:57}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+\begin{document}
+
+
+\#\#Technical Complexity
+
+\[
+\begin{tabular}{|l|l|l|l|}
+\hline
+Technical Factor & Description & Weight & Perceived complexity \\ \hline
+T1 & Distributed system & 2 & 0 \\ \hline
+T2 & Performance & 1 & 1 \\ \hline
+T3 & End User Efficiency & 1 & 1.5 \\ \hline
+T4 & Complex Internal Processing & 1 & 0.5 \\ \hline
+T5 & Reusability & 1 & 2 \\ \hline
+T6 & Easy to install & 0.5 & 1 \\ \hline
+T7 & Easy to use & 0.5 & 3 \\ \hline
+T8 & Portable & 2 & 0 \\ \hline
+T9 & Easy to change & 1 & 1 \\ \hline
+T10 & Concurrent & 1 & 1 \\ \hline
+T11 & Special security features & 1 & 0 \\ \hline
+T12 & Provides direct access for third parties & 1 & 0.1 \\ \hline
+T13 & Special user training facilities are required & 1 & 0 \\ \hline
+TTF &  &  & $9.\,\allowbreak 1$ \\ \hline
+\end{tabular}%
+\]
+
+\[
+TCF=0.6+\left( 0.01\cdot 9.1\right) =\allowbreak 0.691
+\]%
+$\,$
+
+\#\#Environmental Complexity
+
+\[
+\begin{tabular}{|l|l|l|l|}
+\hline
+Environmental Factor & Description & Weight & Perceived complexity \\ \hline
+E1 & Familiarity with UML & 1.5 & 2 \\ \hline
+E2 & Application Experience & 0.5 & 3 \\ \hline
+E3 & Object Oriented Experience & 1 & 1 \\ \hline
+E4 & Lead analyst capability & 0.5 & 5 \\ \hline
+E5 & Motivation & 1 & 0 \\ \hline
+E6 & Stable Requirements & 2 & 0 \\ \hline
+E7 & Part-time workers & -1 & 1 \\ \hline
+E8 & Difficult Programming Language & -1 & 0 \\ \hline
+TEF &  &  & $7.0$ \\ \hline
+\end{tabular}%
+\]
+
+\[
+ECF=1.4+\left( -0.03\cdot 7.0\right) =\allowbreak 1.\,\allowbreak 19
+\]
+
+The perceived complexity is based on an estimate of our group's capabilities
+and individual personalities, we're assuming that we are the ones who will
+be developing the project.
+
+\bigskip 
+
+\#\#Unadjusted Use Case Points (UUCP)
+
+\#\#\#UUCW
+
+\begin{tabular}{|l|l|l|}
+\hline
+Use Case & Type & Weight \\ \hline
+Login & Simple & 5 \\ \hline
+Appointment & Simple & 5 \\ \hline
+Meeting & Average & 10 \\ \hline
+Notification & Simple & 5 \\ \hline
+Room res. & Simple & 5 \\ \hline
+\end{tabular}
+
+\#Simple:\ 4
+
+\#Average: 1
+
+\#Complex:\ 0
+
+\[
+UUCW=4\cdot 5+1\cdot 10=\allowbreak 30
+\]
+
+\#\#\#UAW
+
+\[
+\begin{tabular}{|l|l|l|}
+\hline
+Actor & Type & Weight \\ \hline
+User & Complex & 3 \\ \hline
+KTN & Average & 2 \\ \hline
+\end{tabular}%
+\]
+
+\[
+UAW=5
+\]
+
+\#\#\#Productivity Factor
+
+Since we have no recorded historical data for the team, we have chosen to
+use the industry default on this.
+
+\[
+PF=20
+\]
+
+\bigskip
+
+\#\#Final calc.
+
+\begin{eqnarray*}
+UCP &=&TCF\cdot ECF\cdot \left( UUCW+UAW\right) \cdot PF \\
+&=&\allowbreak 0.691\cdot \allowbreak 1.\,\allowbreak 19\cdot (30+5)\cdot 20
+\\
+&=&575.\,\allowbreak 6
+\end{eqnarray*}
+
+\end{document}
