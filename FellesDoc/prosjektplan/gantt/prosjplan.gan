@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Untitled Gantt Project" company="" webLink="http://" view-date="2012-03-03" view-index="0" gantt-divider-location="316" resource-divider-location="-1" version="2.0">
+<project name="Untitled Gantt Project" company="" webLink="http://" view-date="2012-03-05" view-index="0" gantt-divider-location="316" resource-divider-location="-1" version="2.0">
     <description/>
     <view zooming-state="default:2" id="gantt-chart"/>
     <view id="resource-table">
@@ -55,7 +55,7 @@
         <task id="12" name="Logisk databaseskjema" color="#8cb6ce" meeting="false" start="2012-03-16" duration="5" complete="0" priority="1" expand="true"/>
         <task id="13" name="MMI D3" color="#8cb6ce" meeting="false" start="2012-03-19" duration="5" complete="0" priority="1" expand="true"/>
         <task id="14" name="Implementasjon" color="#8cb6ce" meeting="false" start="2012-03-22" duration="6" complete="0" priority="1" expand="true"/>
-        <task id="15" name="KTN2" color="#8cb6ce" meeting="false" start="2012-03-20" duration="23" complete="0" priority="1" expand="true"/>
+        <task id="15" name="KTN2" color="#8cb6ce" meeting="false" start="2012-03-19" duration="23" complete="0" priority="1" expand="true"/>
         <task id="20" name="Sluttrapport" color="#8cb6ce" meeting="false" start="2012-03-20" duration="8" complete="0" priority="1" expand="true"/>
     </tasks>
     <resources/>
