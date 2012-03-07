@@ -3,37 +3,55 @@ Kontinuerlig
 Prosjekt
 	ansvar: alle
 	beskrivelse: logge timebruk
-		     lage arbeidsplan (hva skal jeg gjÃ¸re i dag)
-	             konkludere (hva ble gjort, hva gjenstÃ¥r)
+		     lage arbeidsplan (hva skal jeg gjøre i dag)
+	             konkludere (hva ble gjort, hva gjenstår)
 Implementasjon av systemet
-	ansvar: alle
-	beskrivelse: implementere/lage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
+ansvar: alle
+beskrivelse: implementere/lage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
+##########################
+Implementasjon av GUI
+	tidsestimat: 16
+	start: 
+	slutt:
+	ansvar:
+	avhengigheter:
+	beskrivelse: skrive kode for GUI
 
 Git
 	ansvar: alle
-	beskrivelse: sette seg inn i git.	
+	beskrivelse: sette seg inn i git.
 
+
+MAL:
+Aktivitetsnavn (Oppgave/fagtilhørighet)
+	tidsestimat: <#timer>
+	start: <datetime>
+	slutt: <datetime>
+	ansvar: <personer>
+	avhengigheter: <aktivitetsnavn>
+	relasjon: <aktivitetsnavn>
+	beskrivelse: <tekst>
 
 Kronologisk
 	
 Prosjektplan (SU Fase 1)
-	tidestimat: 4*2 + 6 + 
+	tidsestimat: 14
 	start: 2012-03-05
 	slutt: 2012-03-09
-	avhengigheter:
-	ansvar: HÃ¥vard, Odd
+	ansvar: Håvard, Odd
+	avhengigheter:	
 	beskrivelse: lager prosjektplan ihht kapittel 4.1 i kompendiet.
 
 Tid og kostnadsestimering (SU Fase 1)
-	tidestimat: 
+	tidsestimat: 
 	start: 2012-03-05
 	slutt: 2012-03-09
 	avhengigheter: Prosjektplan
-	ansvar: HÃ¥vard, Odd
-	beskrivelse: lage Ganttdiagram og kostnadsestimat for aktivitetene.
+	ansvar: Håvard, Odd
+	beskrivelse: Lage Ganttdiagram og kostnadsestimat for aktivitetene.
 
 Risikoanalyse (SU Fase 1)
-	tidestimat: 3
+	tidsestimat: 2
 	start: 2012-03-05
 	slutt: 2012-03-09
 	avhengigheter:
@@ -41,91 +59,91 @@ Risikoanalyse (SU Fase 1)
 	beskrivelse: lage risikoanalyse for prosjektet
 
 Systemtestplan (SU Fase 1)
-	tidestimat: 10
+	tidsestimat: 10
 	start: 2012-03-05
 	slutt: 2012-03-09
 	avhengigheter:
-	ansvar: Eivind, BjÃ¸rn
-	beskrivelse: testplan for svartboks test av systemet.
+	ansvar: Eivind, Bjørn
+	beskrivelse: testplan for svartboks-testing av systemet.
 
-KTN1 fase 1 tekstlig design (KTN1)
-	tidestimat: 12
+KTN1 fase 1 - tekstlig design (KTN1)
+	tidsestimat: 12
 	start: 2012-03-07
 	slutt: 2012-03-12 23:59
 	avhengigheter: 
-	ansvar: 
+	ansvar: Tina
 	beskrivelse: tekstlig beskrivelse av design
 
-KTN fase 1 design diagrammer (KTN1)
-	tidestimat: 8
+KTN fase 1 - designdiagrammer (KTN1)
+	tidsestimat: 8
 	start: 2012-03-07
 	slutt: 2012-03-12 23:59
 	avhengigheter: 
-	ansvar: 
+	ansvar: Håvard
 	beskrivelse: design av sekvens- og tilstanddiagrammer
 
-KTN1 fase 1 testplan (KTN1)
-	tidestimat: 4
+KTN1 fase 1 - testplan (KTN1)
+	tidsestimat: 4
 	start: 2012-03-07
 	slutt: 2012-03-12 23:59
 	avhengigheter: KTN1 fase 1 design
-	ansvar:
+	ansvar: Bjørn
 	beskrivelse: lage testplan for svartboks-test av KTN delen
 
 Papirprototype (MMI D2a)
-	tidestimat: 8
+	tidsestimat: 8
 	start: 2012-03-07
 	slutt: 2012-03-15 23:55
 	avhengigheter:
-	ansvar:
+	ansvar: Odd
 	beskrivelse: lage en papirprototype for brukergrensesnitt
 
 Konseptuell databasemodell identifisering av data (DB1)
-	tidestimat: 4
+	tidsestimat: 4
 	start: 2012-03-07
 	slutt: 2012-03-16 23:55
 	avhengigheter:
-	relasjon: Overordnet system design
-	ansvar:
-	beskrivelse: beskrive innholdet i databasen
+	relasjon: Overordnet systemdesign
+	ansvar: Eivind
+	beskrivelse: Skrive tekstlig beskrivelse av innholdet i databasen
 
 Konseptuell databasemodellering (DB1)
-	tidestimat: 6
+	tidsestimat: 6
 	start: 2012-03-07
 	slutt: 2012-03-16 23:55
 	avhengigheter: Konseptuell databasemodell identifisering av data
 	relasjon: Overordnet system design
-	ansvar:
+	ansvar: Andre
 	beskrivelse: lage EER/UML diagrammer, tekstlig forklaring/rapport
 
 Konseptuell databasenormalisering (DB1)
-	tidestimat: 4
+	tidsestimat: 4
 	start: 2012-03-07
 	slutt: 2012-03-16 23:55
 	avhengigheter: Konseptuell databasemodellering
 	relasjon: 
-	ansvar:
+	ansvar: Bjørn
 	beskrivelse: normalisering/endring av EER/UML
 
 KTN1 fase 2 (KTN1)
-	tidestimat: 6
+	tidsestimat: 6
 	start: 2012-03-13
 	slutt: 2012-03-18 23:59
 	avhengigheter: KTN1 fase 1 design, KTN1 fase 1 testplan
-	ansvar:
+	ansvar: 
 	beskrivelse: revidere design og testplan fra fase 1 med utgangspunkt i tilbakemeldingene
 
 Overordnet system design use case (SU2)
-	tidestimat: 8
+	tidsestimat: 8
 	start: 2012-03-12
 	slutt: 2012-03-16
 	avhengigheter: Systemtestplan
 	relasjon: Konseptuell databasemodell, Overordnet system design use case
-	ansvar:
+	ansvar: Tina
 	beskrivelse: UML (use case, tekslig use case)
 
 Overordnet system design diagrammer (SU2)
-	tidestimat: 6
+	tidsestimat: 6
 	start: 2012-03-12
 	slutt: 2012-03-16
 	avhengigheter: Systemtestplan
@@ -134,108 +152,108 @@ Overordnet system design diagrammer (SU2)
 	beskrivelse: UML (sekvensdiagram, klassediagram)
 
 Pilottesting (MMI D2a)
-	tidestimat: 2
+	tidsestimat: 2
 	start: 2012-03-12
 	slutt: 2012-03-15 23:55
 	avhengigheter: Papirprototype
-	ansvar:
+	ansvar: Odd
 	beskrivelse: pilotteste papirprototype med studass
 
 Gruppetest (MMI D2b)
-	tidestimat: 
+	tidsestimat: 6
 	start: 2012-03-12
 	slutt: 2012-03-25 23:55
 	avhengigheter: Pilottesting
-	ansvar:
+	ansvar: Tina
 	beskrivelse: brukbarhetstest med gruppe 32.
 
 Brukergrensesnittrapport (MMI D2 a&b)
-	tidestimat:
+	tidsestimat: 4
 	start: 2012-03-12
 	slutt: 2012-03-25 23:55
 	avhengigheter: Pilottesting, Gruppetest
-	ansvar:
-	beskrivelse: skrive rapport basert pÃ¥ pilot og gruppetest
+	ansvar: Eivind
+	beskrivelse: skrive rapport basert på pilot og gruppetest
 
 Logisk databaseskjema (DB2)
-	tidestimat:
+	tidsestimat: 2
 	start: 2012-03-19
 	slutt: 2012-03-30 23:55
 	avhengigheter: Konseptuell databasemodell
-	ansvar:
+	ansvar: Andre
 	beskrivelse: skrive SQL for oppretting av databaseskjemaet i MySQL
 
 Konseptuell modell (MMI D3)
-	tidestimat:
+	tidsestimat: 6
 	start: 2012-03-16
 	slutt: 2012-03-30 23:55
 	avhengigheter: Brukergrensesnittrapport
 	relasjon: Skjermdesign, Konstruksjonsbeskrivelse
-	ansvar:
+	ansvar: Håvard
 	beskrivelse: lage konseptuell modell av brukergrensesnittet med UML klasse og sekvensdiagram
 
 Skjermdesign (MMI D3)
-	tidestimat:
+	tidsestimat: 6
 	start: 2012-03-16
 	slutt: 2012-03-30 23:55
 	avhengigheter: Brukergrensesnittrapport
 	relasjon: Konseptuell modell, Konstruksjonsbeskrivelse
-	ansvar:
-	beskrivelse: lage skjermdesign
+	ansvar: Andre
+	beskrivelse: lage visuelt skjermdesign (ikke kode)
 
 Konstruksjonsbeskrivelse (MMI D3)
-	tidestimat:
+	tidsestimat: 6
 	start: 2012-03-16
 	slutt: 2012-03-30 23:55
 	avhengigheter:
 	relasjon: Konseptuell modell, Skjermdesign
-	ansvar: 
+	ansvar: Bjørn
 	beskrivelse: beskrive hvordan brukergrensesnittet er bygd opp (grunnlag for JUnit)
 
 Systemtestrapport (SU Fase 3)
-	tidestimat:
+	tidsestimat: 4
 	start: 2012-03-26
 	slutt: 2012-03-30
-	avhengigheter: Systemtest Plan, Imlementasjon av systemet
-	ansvar:
+	avhengigheter: Systemtest Plan, Implementasjon av systemet
+	ansvar: 
 	beskrivelse: rapport etter testing ihht. systemtest plan.
 
 Sluttrapport (SU Fase 3)
-	tidestimat:
+	tidsestimat: 12
 	start: 2012-03-26
 	slutt: 2012-03-30
 	avhengigheter: Implementasjon av systemet, Systemtestrapport
-	ansvar:
-	beskrivelse: oppsummering, evaluering og tidsbruk
+	ansvar: 
+	beskrivelse: oppsummering, evaluering og presentasjon av resultatene av prosjektet.
 
 Implementasjon av KTN (KTN2)
-	tidestimat:
+	tidsestimat: 16
 	start: 2012-03-19
 	slutt: 2012-04-20 23:59
 	avhengigheter: KTN1 fase 2
 	relasjon: Implementasjon av KTN
-	ansvar:
+	ansvar: Andre
 	beskrivelse: skrive ktn-koden
 
 Spesifisering av KTN tester (KTN2)
-	tidestimat:
+	tidsestimat: 6
 	start: 2012-03-19
 	slutt: 2012-04-20 23:59
 	avhengigheter: KTN1 fase 2
 	relasjon: Implementasjon av KTN
-	ansvar:
+	ansvar: Odd
 	beskrivelse: utføre tester for ktn-koden
 
 Testing av KTN (KTN2)
-	tidestimat:
+	tidsestimat: 6
 	start: 2012-03-19
 	slutt: 2012-04-20 23:59
 	avhengigheter: Spesifisering av KTN tester, Implementasjon av KTN
-	ansvar:
+	ansvar: Eivind
 	beskrivelse: utføre tester for ktn-koden
 
 Demonstrasjon for studass (KTN2)
-	tidestimat:
+	tidsestimat: 6
 	start: 2012-03-19
 	slutt: 2012-04-20 23:59
 	avhengigheter: Testing av KTN, Implementasjon av KTN
