@@ -7,15 +7,8 @@ Prosjekt
 	             konkludere (hva ble gjort, hva gjenstår)
 Implementasjon av systemet
 ansvar: alle
-beskrivelse: implementere/lage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
+beskrivelse: implementerelage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
 ##########################
-Implementasjon av GUI
-	tidsestimat: 16
-	start: 
-	slutt:
-	ansvar:
-	avhengigheter:
-	beskrivelse: skrive kode for GUI
 
 Git
 	ansvar: alle
@@ -43,7 +36,7 @@ Prosjektplan (SU Fase 1)
 	beskrivelse: lager prosjektplan ihht kapittel 4.1 i kompendiet.
 
 Tid og kostnadsestimering (SU Fase 1)
-	tidsestimat: 
+	tidsestimat: 4
 	start: 2012-03-05
 	slutt: 2012-03-09
 	avhengigheter: Prosjektplan
@@ -130,7 +123,7 @@ KTN1 fase 2 (KTN1)
 	start: 2012-03-13
 	slutt: 2012-03-18 23:59
 	avhengigheter: KTN1 fase 1 design, KTN1 fase 1 testplan
-	ansvar: 
+	ansvar: Tina
 	beskrivelse: revidere design og testplan fra fase 1 med utgangspunkt i tilbakemeldingene
 
 Overordnet system design use case (SU2)
@@ -148,13 +141,13 @@ Overordnet system design diagrammer (SU2)
 	slutt: 2012-03-16
 	avhengigheter: Systemtestplan
 	relasjon: Konseptuell databasemodell, Overordnet system design use case
-	ansvar:
+	ansvar: Eivind
 	beskrivelse: UML (sekvensdiagram, klassediagram)
 
 Pilottesting (MMI D2a)
 	tidsestimat: 2
-	start: 2012-03-12
-	slutt: 2012-03-15 23:55
+	start: 2012-03-12 11:00
+	slutt: 2012-03-12 13:00
 	avhengigheter: Papirprototype
 	ansvar: Odd
 	beskrivelse: pilotteste papirprototype med studass
@@ -210,12 +203,39 @@ Konstruksjonsbeskrivelse (MMI D3)
 	ansvar: Bjørn
 	beskrivelse: beskrive hvordan brukergrensesnittet er bygd opp (grunnlag for JUnit)
 
+Implementasjon av GUI
+	tidsestimat: 16
+	start: 2012-03-16
+	slutt: 2012-03-30
+	ansvar: Eivind
+	avhengigheter: Konseptuell modell, Skjermdesign, Konstruksjonsbeskrivelse
+	relasjon: Implementasjon av Model, Implementasjon av Databasekobling
+	beskrivelse: skrive kode for GUI
+
+Implementasjon av Model
+	tidsestimat: 16
+	start: 2012-03-16
+	slutt: 2012-03-30
+	ansvar: Tina
+	avhengigheter: Overordnet system design diagrammer 
+	relasjon: Implementasjon av GUI
+	beskrivelse: skrive kode for modeller
+
+Implementasjon av Databasekobling
+	tidsestimat: 16
+	start: 2012-03-16
+	slutt: 2012-03-30
+	ansvar: Bj¿rn
+	avhengigheter: Overordnet system design diagrammer
+	relasjon: Implementasjon av Model
+	beskrivelse: skrive kode for persistent lagring av modeller
+
 Systemtestrapport (SU Fase 3)
 	tidsestimat: 4
 	start: 2012-03-26
 	slutt: 2012-03-30
 	avhengigheter: Systemtest Plan, Implementasjon av systemet
-	ansvar: 
+	ansvar: HŒvard
 	beskrivelse: rapport etter testing ihht. systemtest plan.
 
 Sluttrapport (SU Fase 3)
@@ -223,15 +243,15 @@ Sluttrapport (SU Fase 3)
 	start: 2012-03-26
 	slutt: 2012-03-30
 	avhengigheter: Implementasjon av systemet, Systemtestrapport
-	ansvar: 
+	ansvar: Odd
 	beskrivelse: oppsummering, evaluering og presentasjon av resultatene av prosjektet.
 
 Implementasjon av KTN (KTN2)
 	tidsestimat: 16
 	start: 2012-03-19
 	slutt: 2012-04-20 23:59
-	avhengigheter: KTN1 fase 2
-	relasjon: Implementasjon av KTN
+	avhengigheter: KTN1 fase 2, Overordnet system design diagrammer
+	relasjon: Implementasjon av Model
 	ansvar: Andre
 	beskrivelse: skrive ktn-koden
 

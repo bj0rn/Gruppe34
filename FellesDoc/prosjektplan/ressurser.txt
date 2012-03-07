@@ -10,10 +10,12 @@ Gruppemedlemmer
 
 Student Assistenter
 
-SU	Nina Ripmann 		nripmann@gmail.com
+SU	Nina Ripmann 		nripmann@gmail.com *)
 MMI	Sigve Dreyer 		sigved@stud.ntnu.no
 KTN	ingen spesifikk 	se it's learning
 DB	ingen spesifikk 	se it's learning
+
+*) Tilgjenngelig på sal P414 10-12 tirsdager, onsdager og torsdager
 
 Forelesere
 SU	Torbjørn Skramstad 	torbjorn.skramstad@idi.ntnu.no
@@ -24,11 +26,20 @@ DB	Svein Erik Bratsberg	sveinbra@idi.ntnu.no
 	Roger Midtstraum	roger.midtstraum@idi.ntnu.no 
 
 
-
 Utstyr
 
 Hvert gruppemedlem har sin egen laptop og eventuelt stasjonær pc. I tillegg er har datasaler på NTNU pcer til disposisjon.
 
+
+Planleggingsverktøy
+
+Et prosjektområde er allokert på Scrum-verktøyet trello.com hvor alle aktivitetene er lagt inn.
+Dette vil bli oppdatert kontinuerlig for å reflektere status.
+
+
+Versjonskontroll
+
+For versjonskontroll vil git bli benyttet, et repository ligger på github og alle medlemmene har tilgang til dette.
 
 
 Rom 
@@ -46,3 +57,10 @@ Dato		Rom
 2012-04-17	R40
 2012-04-24	ELROM-G034
 2012-05-02	R91
+
+Følgende tider er reservert for plittest, gruppetest og lignende.
+
+Tid			Rom
+2012-03-12 10-18	ELROM-A172
+2012-03-13 10-12	R30
+2012-03-14 10-18	S2
