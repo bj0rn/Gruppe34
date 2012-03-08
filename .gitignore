@@ -2,3 +2,8 @@
 .settings
 .classpath
 .project
+*.aux
+*.log
+*.tex~
+*.bak
+.DS_Store
