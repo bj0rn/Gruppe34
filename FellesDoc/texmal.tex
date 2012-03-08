@@ -1,3 +1,13 @@
+% Sets page margins to 1", which is the academic standard
+% allows the included extensions of graphic files
+% sets graphic path, does not currently work because of space in folder name
+% I do not remember what this does
+% allows the xhead parameters (text on the top right/left areas of pages)
+% \setcounter{tocdepth}{the number of depth}
+% INCLUDEGRAPHICS EXPLANATION
+% \includegraphics[scale=1]{name of file}
+% sometimes you want to twice encase the filename in squiggly brackets. I do not know why but sometimes it is required.
+
 
 \documentclass{article}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -10,7 +20,7 @@
 %TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
 %TCIDATA{BibliographyScheme=Manual}
 %TCIDATA{Created=Monday, January 30, 2012 17:20:46}
-%TCIDATA{LastRevised=Monday, February 27, 2012 12:06:08}
+%TCIDATA{LastRevised=Thursday, March 08, 2012 10:40:21}
 %TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
 %TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
 %TCIDATA{CSTFile=40 LaTeX article.cst}
@@ -37,30 +47,23 @@
 \newtheorem{solution}[theorem]{Solution}
 \newtheorem{summary}[theorem]{Summary}
 \newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
-% Sets page margins to 1", which is the academic standard
 \geometry{left=1in,right=1in,top=1in,bottom=1in} 
-% allows the included extensions of graphic files
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
-% sets graphic path, does not currently work because of space in folder name
 \graphicspath{{D:/Dropbox/Private/BEHOLD SCIENCE/TDT4145/ov/01/}}
-% I do not remember what this does
 \setlength{\headheight}{15.2pt}
-% allows the xhead parameters (text on the top right/left areas of pages)
 \pagestyle{fancy}
 \lhead{Gruppe 34}
 \rhead{FP: watwat}
 \input{tcilatex}
 \setcounter{secnumdepth}{-1}
-% \setcounter{tocdepth}{the number of depth}
 
-% INCLUDEGRAPHICS EXPLANATION
-% \includegraphics[scale=1]{name of file}
-% sometimes you want to twice encase the filename in squiggly brackets. I do not know why but sometimes it is required.
 \begin{document}
+
+
 % begin title page, use \\ for newline
-\begin{titleplage}
+\begin{titlepage}
 \title{Collaboration Project\\
-watwat}
+\textbf{watwat}}
 % now one can list the authors, \textbf{} makes bold text
 \author{\textbf{Gruppe 34}\\
 Bj\o rn \AA ge Tungesvik\\
@@ -74,8 +77,10 @@ H\aa vard H\o iby}
 
 
 \newpage
-\tableofcontents
+% \tableofcontents
 
 \newpage
+
+\end{document}
 
 \end{document}
