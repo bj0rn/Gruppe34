@@ -2,7 +2,7 @@
 .settings
 .classpath
 .project
-.metadata/
+.metadata
 # Ignore LaTeX files
 *.aux
 *.log
