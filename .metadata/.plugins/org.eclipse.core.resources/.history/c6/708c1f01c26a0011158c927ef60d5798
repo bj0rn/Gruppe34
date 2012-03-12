@@ -1,0 +1,28 @@
+package no.ntnu.fp.net.network;
+
+import no.ntnu.fp.storage.db.Database;
+
+public class Worker extends Database implements Runnable {
+	//Fields
+	
+	
+	//Constructor
+	public Worker(){
+		//Setup connection to db
+		super();
+		
+	}
+	
+	//Methods
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		System.out.println("Created worker thread");
+		while(true){
+			//
+		}
+	}
+	
+	
+	
+}

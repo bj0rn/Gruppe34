@@ -1,0 +1,42 @@
+package no.ntnu.fp.net.network;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import no.ntnu.fp.net.co.Connection;
+import no.ntnu.fp.net.network.Listener;
+
+
+//Okey.....this is actually a controller, but for now, keep on going
+public class Server extends Listener {
+	//Fields
+	private Connection server;
+	private String addressServer = "localhost";
+	private InetAddress localAddress;
+	private int listenPort = 1337;
+	private boolean run = true;
+	//Constructor
+	public Server(){
+		server = new NetworkImpl(listenPort);
+		super(server);
+	}
+	
+	public void startServer(){
+		//Set up the address
+		try {
+			localAddress = InetAddress.getByName("localhost");
+		}catch(UnknownHostException e){
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+
+	@Override
+	void connected(Connection connection) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+}

@@ -1,0 +1,33 @@
+package no.ntnu.fp.net.network;
+
+import no.ntnu.fp.net.co.Connection;
+
+/**
+ * This class only listens for new connections
+ * **/
+
+ public abstract class Listener extends Thread {
+	//Fields
+	private Connection newConnection;
+	private Connection server;
+	
+	//Constructor
+	public Listener(Connection server){
+		this.server = server;
+	}
+	
+	//Run the listener
+	public void run(){
+		while(true){
+			//This call will block
+			newConnection = server.accept();
+			//This will handle the connection
+			connected(newConnection);
+		}
+	}
+	
+	 abstract void connected(Connection connection);
+	//Methods 
+	
+	
+}

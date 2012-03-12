@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="javax.sound.sampled.ReverbType"/>
+<fullyQualifiedTypeName name="no.ntnu.fp.net.cl.ClException"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="java.net.SocketTimeoutException"/>
+<fullyQualifiedTypeName name="no.ntnu.fp.net.co.ConnectionImpl"/>
+<fullyQualifiedTypeName name="java.net.InetAddress"/>
+<fullyQualifiedTypeName name="no.ntnu.fp.net.co.AbstractConnection.State"/>
+<fullyQualifiedTypeName name="no.ntnu.fp.net.cl.KtnDatagram"/>
+<fullyQualifiedTypeName name="java.net.ServerSocket"/>
+<fullyQualifiedTypeName name="java.net.Socket"/>
+<fullyQualifiedTypeName name="no.ntnu.fp.net.network.ReceiveWorker"/>
+</qualifiedTypeNameHistroy>

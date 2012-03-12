@@ -1,0 +1,5 @@
+package no.ntnu.fp.storage.db;
+
+abstract class Database {
+
+}

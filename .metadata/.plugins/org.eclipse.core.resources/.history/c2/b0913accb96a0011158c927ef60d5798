@@ -1,0 +1,11 @@
+package no.ntnu.fp.net.network;
+
+public class ClientHandler extends Thread {
+	//Fields
+	private int id;
+	
+	//Constructor
+	public ClientHandler(){
+		
+	}
+}

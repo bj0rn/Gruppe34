@@ -1,0 +1,5 @@
+package no.ntnu.fp.net.servertest;
+
+public class ServerImpl {
+
+}

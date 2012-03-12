@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="descent.debug.core.localDApplication">
+<stringAttribute key="descent.debug.core.PROGRAM_NAME" value="/Users/bj0rn/Programming/School/NTNU/2 sem/felles/Gruppe34/Code/src/no/ntnu/fp/net/co/AbstractConnection.java"/>
+<stringAttribute key="descent.debug.core.PROJECT_ATTR" value="Code"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/Code"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+</launchConfiguration>

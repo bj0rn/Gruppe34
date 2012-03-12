@@ -1,5 +1,5 @@
 /*
- * Created on 02.feb.2004
+  * Created on 02.feb.2004
  *
  */
 package no.ntnu.fp.net.separat.server;
@@ -189,15 +189,20 @@ public class ChatServer extends JFrame {
                         newConn = server.accept();
                         message = newConn.receive();
 
-                        if (message.substring(0, 6).equals("Hello:")) {
-                            User newUser;
-                            DBG("Fikk inn connection fra: "
-                                    + message.substring(6, message.length()));
-                            users.add(newUser = new User(message.substring(6,
-                                    message.length()), newConn));
-                            broadcast("*: " + message.substring(6, message.length()) + " joined.");
-                            broadcast(getUsers().toString());
-                        }
+                        
+                        System.out.println("Do nothing");
+                        
+                       // if (message.substring(0, 6).equals("Hello:")) {
+                        //    User newUser;
+                       //     DBG("Fikk inn connection fra: "
+                       //          + message.substring(6, message.length()));
+                       //     users.add(newUser = new User(message.substring(6,
+                       //             message.length()), newConn));
+                       //     broadcast("*: " + message.substring(6, message.length()) + " joined.");
+                       //     broadcast(getUsers().toString());
+                        //}
+                        
+                        
                     } catch (SocketTimeoutException e) {
 		      DBG("startServer(): Noe gikk galt, forsøk igjen.");
 		      e.printStackTrace();

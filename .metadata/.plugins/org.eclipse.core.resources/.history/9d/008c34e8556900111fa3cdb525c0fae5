@@ -1,0 +1,52 @@
+package no.ntnu.fp.net.network;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import no.ntnu.fp.net.co.Connection;
+import no.ntnu.fp.net.network.Listener;
+
+
+//Okey.....this is actually a controller, but for now, keep on going
+public class Server extends Listener {
+	//Fields
+	private static int listenPort = 1338;
+	private static Connection server = new NetworkImpl(listenPort);
+	private String addressServer = "localhost";
+	private InetAddress localAddress;
+	//Can use this if i need to broadcast ? 
+	private List connectedHosts;
+	private BlockingQueue inQueue;
+	
+	
+	private boolean run = true;
+	//Constructor
+	public Server(){
+		inQueue = new LinkedBlockingQueue();
+		server = new NetworkImpl(listenPort);
+		setServer(server);
+	}
+	
+	public void startServer(){
+		//Set up the address
+		try {
+			localAddress = InetAddress.getByName("localhost");
+		}catch(UnknownHostException e){
+			e.printStackTrace();
+		}
+		//Start listener thread
+		run();
+	}
+
+	@Override
+	void connected(Connection connection) {
+		// TODO Auto-generated method stub
+		System.out.println("What to do with the connections ? ");
+		//Start thread
+		new ReceiveWorker(connection, inQueue).run();
+	}
+	
+}

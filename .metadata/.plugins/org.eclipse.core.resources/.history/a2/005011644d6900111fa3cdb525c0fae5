@@ -1,0 +1,45 @@
+package no.ntnu.fp.net.network;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+
+import no.ntnu.fp.net.co.Connection;
+
+/**
+ * This class only listens for new connections
+ * **/
+
+ public abstract class Listener extends Thread {
+	//Fields
+	private Connection newConnection;
+	private Connection server;
+	
+	//Constructor
+	public Listener(Connection server){
+		this.server = server;
+	}
+	
+	//Run the listener
+	public void run(){
+		while(true){
+			//This call will block
+			try {
+				newConnection = server.accept();
+				System.out.println("Got connection");
+			} catch (SocketTimeoutException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//This will handle the connection
+			connected(newConnection);
+		}
+	}
+	
+	 abstract void connected(Connection connection);
+	//Methods 
+	
+	
+}
