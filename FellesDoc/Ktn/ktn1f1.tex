@@ -103,13 +103,13 @@ informing the server that the \texttt{\texttt{SYN}\_ACK} packet was
 received. When the server receives the \texttt{ACK} packet, the server
 enters the \texttt{ESTABLISHED} state.
 
-\subsection{connect()}
+\subsection{Sequence Diagram - connect()}
 \includegraphics[scale=0.95]{ktnConnect.pdf}
-\subsection{accept()}
+\subsection{Sequence Diagram - accept()}
 \includegraphics[scale=0.95]{ktnAccept.pdf}
-\subsection{receive()}
+\subsection{Sequence Diagram - receive()}
 \includegraphics[scale=0.95]{ktnRecv.pdf}
-\subsection{send()}
+\subsection{Sequence Diagram - send()}
 \includegraphics[scale=0.95]{ktnSend.pdf}
 \newpage
 \section{Disconnection}
@@ -146,10 +146,15 @@ is finally closed.
 Note: The server can also terminate a connection, thereby switching roles
 with the client.
 
-\subsection{\texttt{close()}}
+\subsection{Sequence Diagram - \texttt{close()}}
 \includegraphics[scale=0.95]{ktnClientClose.pdf}
-\subsection{ServerClose}
+\subsection{State Machine Diagram - Close Connection}
+\includegraphics[scale=0.95]{KtnStateConnectionClose.pdf}
+\subsection{Sequence Diagram - ServerClose}
 \includegraphics[scale=0.95]{ktnServerClose.pdf}
+\subsection{State Machine Diagram - Close Connection, Server}
+\includegraphics[scale=0.95]{KtnStateConnectionCloseServer.pdf}
+
 
 \subsection{ServerClose}
 
