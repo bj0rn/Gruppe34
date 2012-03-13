@@ -1,6 +1,4 @@
 # Ignore eclipse artifacts
-.settings
-.classpath
 .DS_Store
 .metadata
 
