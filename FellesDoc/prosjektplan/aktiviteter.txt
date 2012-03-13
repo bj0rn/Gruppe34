@@ -7,7 +7,7 @@ Prosjekt
 	             konkludere (hva ble gjort, hva gjenstår)
 Implementasjon av systemet
 ansvar: alle
-beskrivelse: implementerelage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
+beskrivelse: implementere/lage systemet. Blir gjort etter hvert som det blir aktuelt. (SU Fase 2)
 ##########################
 
 Git
@@ -20,7 +20,7 @@ Aktivitetsnavn (Oppgave/fagtilhørighet)
 	tidsestimat: <#timer>
 	start: <datetime>
 	slutt: <datetime>
-	ansvar: <personer>
+		ansvar: <personer>
 	avhengigheter: <aktivitetsnavn>
 	relasjon: <aktivitetsnavn>
 	beskrivelse: <tekst>
@@ -43,7 +43,7 @@ Tid og kostnadsestimering (SU Fase 1)
 	ansvar: Håvard, Odd
 	beskrivelse: Lage Ganttdiagram og kostnadsestimat for aktivitetene.
 
-Risikoanalyse (SU Fase 1)
+Risikoanalyse (SU Fase 1 FE1)
 	tidsestimat: 2
 	start: 2012-03-05
 	slutt: 2012-03-09
@@ -51,7 +51,7 @@ Risikoanalyse (SU Fase 1)
 	ansvar: Andy
 	beskrivelse: lage risikoanalyse for prosjektet
 
-Systemtestplan (SU Fase 1)
+Systemtestplan (SU Fase 1 FE2)
 	tidsestimat: 10
 	start: 2012-03-05
 	slutt: 2012-03-09
@@ -94,7 +94,7 @@ Papirprototype (MMI D2a)
 Konseptuell databasemodell identifisering av data (DB1)
 	tidsestimat: 4
 	start: 2012-03-07
-	slutt: 2012-03-16 23:55
+	slutt: 2012-03-09 23:55
 	avhengigheter:
 	relasjon: Overordnet systemdesign
 	ansvar: Eivind
@@ -133,7 +133,7 @@ Overordnet system design use case (SU2)
 	avhengigheter: Systemtestplan
 	relasjon: Konseptuell databasemodell, Overordnet system design use case
 	ansvar: Tina
-	beskrivelse: UML (use case, tekslig use case)
+	beskrivelse: UML (use case, tekstlig use case)
 
 Overordnet system design diagrammer (SU2)
 	tidsestimat: 6
@@ -208,16 +208,16 @@ Implementasjon av GUI
 	start: 2012-03-16
 	slutt: 2012-03-30
 	ansvar: Eivind
-	avhengigheter: Konseptuell modell, Skjermdesign, Konstruksjonsbeskrivelse
+	avhengigheter: Konseptuell Modell, Skjermdesign, Konstruksjonsbeskrivelse
 	relasjon: Implementasjon av Model, Implementasjon av Databasekobling
 	beskrivelse: skrive kode for GUI
 
-Implementasjon av Model
+Implementasjon av Modell
 	tidsestimat: 16
 	start: 2012-03-16
 	slutt: 2012-03-30
 	ansvar: Tina
-	avhengigheter: Overordnet system design diagrammer 
+	avhengigheter: Overordnet Systemdesign Diagrammer 
 	relasjon: Implementasjon av GUI
 	beskrivelse: skrive kode for modeller
 
@@ -226,7 +226,7 @@ Implementasjon av Databasekobling
 	start: 2012-03-16
 	slutt: 2012-03-30
 	ansvar: Bj¿rn
-	avhengigheter: Overordnet system design diagrammer
+	avhengigheter: Overordnet Systemdesign Diagrammer
 	relasjon: Implementasjon av Model
 	beskrivelse: skrive kode for persistent lagring av modeller
 
@@ -251,7 +251,7 @@ Implementasjon av KTN (KTN2)
 	start: 2012-03-19
 	slutt: 2012-04-20 23:59
 	avhengigheter: KTN1 fase 2, Overordnet system design diagrammer
-	relasjon: Implementasjon av Model
+	relasjon: Implementasjon av Modell
 	ansvar: Andre
 	beskrivelse: skrive ktn-koden
 
@@ -262,7 +262,7 @@ Spesifisering av KTN tester (KTN2)
 	avhengigheter: KTN1 fase 2
 	relasjon: Implementasjon av KTN
 	ansvar: Odd
-	beskrivelse: utføre tester for ktn-koden
+	beskrivelse: skrive tester for ktn-koden
 
 Testing av KTN (KTN2)
 	tidsestimat: 6

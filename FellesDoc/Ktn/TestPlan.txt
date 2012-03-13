@@ -1,0 +1,267 @@
+
+Testing strategy
+The tests in this plan is laid out in an incremental fashion. First tests will be performed for all features (connection, tear down, send and receive) without errors enabled to ensure that everything works in an trivial environment. Then each error will be added one by one. After two errors have been tested individually those two are tested in combination, when three errors have been tested all three errors will be tested together. And so on until all errors is accounted fore. 
+
+Error probability
+Each test case, containing errors, will be run twice at 10% and 50% error rate in conjunction with the specifications (ref: Kompendium for Fellesprosjektet chap. 6.3.1)
+
+Test repetition
+All test containing the sending and reception of an actual payload will dispatch 10 distinct payloads, in order to evaluate the received payloads precisely.
+
+Initial connection (no errors enabled) - T-KTN01
+
+Preconditions
+			
+Methods connect() and accept() must be implemented in A1 (ConnectionImpl). The errors variable in settings.xml should be false.
+			
+Dependencies
+
+NA
+			
+Objective
+			
+Setup a connection between two hosts running the same implementation of A1. 
+
+How to test
+
+This is done by creating a ConnectionImpl object on both the server and the client side. First the server executes the accept() method with port X, then the client executes the method connect() with the server IP and port X.
+			
+Expected Result
+			
+A three-way handshake should be observed. This can be verified on the client side by the connect() method returning without throwing a SocketTimeoutException. On the server side the test is passed if the accept method returns a Connection as opposed to throwing a SocketTimeoutException.
+
+		
+Connection and tear down (no errors enabled) - T-KTN02
+
+Preconditions
+			
+The close() method must be implemented in A1 (ConnectionImpl). The errors variable in settings.xml should be false.
+			
+Dependencies
+
+T-KTN01
+			
+Objective
+			
+Close a connection between two hosts running the same implementation of A1. 
+
+How to test
+
+This is done by first creating a connection as described in T-KTN01. After the connection is established either the client or the server calls the close(). This should be tested in two separate runs.
+			
+Expected Result
+			
+A four-way handshake should be observed. The caller of the close() method can verify a successful test if method returns without an exception.
+
+Send and receive (no errors enabled) T-KTN03
+
+Preconditions
+			
+Methods send() and receive() must be implemented in A1 (ConnectionImpl) The errors variable in settings.xml should be false.
+			
+Dependencies
+
+T-KTN02
+			
+Objective
+			
+Send a packet between two hosts running the same implementation of A1. 
+
+How to test
+
+A connection must be established as in T-KTN01. The server calls receive() in a loop in order to handle multiple messages. The client calls send() 10 times with distinct payloads containing a sequence number. When the test is executed the client calls close() as described in T-KTN02 to end the session.
+			
+Expected Result
+
+The packages sent by the client host should be received by the server host. This test should be considered a success if the sending client can call send(), and the receiving client can call receive() without either client throwing a ConnectionException or an IOException. And all the 10 Strings returned by the receive() function should be equal to the String arguments to the send() function.
+With loss error - T-KTN04
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and the loss variable in the settings.xml should be set to first 10% errors and then 50%. The errors variable should be true and all other numeric variables must be 0%
+			
+Dependencies
+			
+T-KTN03
+			
+Objective
+			
+Test if the system can handle packet loss. 
+
+How to test
+
+A connection must be established as in T-KTN01. The method send() should be called on the client side and receive() in a loop on the server side. The send method should be applied 10 times with distinct String arguments. Once the packages has been received by the second host, the connection should close by the client, as described in T-KTN02. 
+		
+Expected Result
+
+The connect() and accept() must first return without exceptions. Regardless of packet loss error rate(Unless it’s 100%, in which case there should be thrown a SocketTimeoutException on the clients connect() call), the receiving client should receive all packets sent by the sender client. I.E. all the 10 distinct String should be equal. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+Test with delay - T-KTN05
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and the delay variable in the settings.xml should be set to first 10% errors and then 50%. The errors variable should be true and all other numeric variables must be 0%
+			
+Dependencies
+			
+T-KTN03
+			
+Objective
+			
+Test if the system handles packet delay.
+
+How to test
+
+A connection must be established as in T-KTN01. The server calls receive() in a loop in order to handle multiple messages. The client calls send() 10 times with distinct payloads containing a sequence number. When the test is executed the client calls close() as described in T-KTN02 to end the session.
+			
+Expected Result
+			
+The connect() and accept() must first return without exceptions. The test should be considered a success if all 10 messages are received by the server in the order the client sends them. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+With loss error and delay - T-KTN06
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and the loss and delay variables in the settings.xml should be set to first 10% errors, and then 50%. The errors variable should be true and all other numeric variables must be 0%
+			
+Dependencies
+			
+T-KTN03
+			
+Objective
+			
+Test if the system can handle packet loss and delay at the same time. 
+
+How to test
+
+A connection must be established as in T-KTN01. The method send() should be called on the client side and receive() in a loop on the server side. The send method should be applied 10 times with distinct String arguments with sequence numbers. Once the packages has been received by the second host, the connection should close by the client, as described in T-KTN02. 
+		
+Expected Result
+
+The connect() and accept() must first return without exceptions. The test should be considered a success if 10 messages are received by the server in the order the client sends them. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+Test with ghost - T-KTN07
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and the ghost variable in the settings.xml should be set to first 10% errors, and then 50%. The errors variable should be true and all other numeric variables must be 0%
+			
+Dependencies
+			
+T-KTN03
+			
+Objective
+			
+Test if the system can handle ghost packages.
+
+How to test
+
+A connection must be established as in T-KTN01. The server calls receive() in a loop in order to handle multiple messages. The client calls send() 10 times with distinct payloads containing a sequence number. When the test is executed the client calls close() as described in T-KTN02 to end the session.
+			
+Expected Result
+			
+The connect() and accept() must first return without exceptions. The test should be considered a success if only the 10 messages sent by the client is received by the server. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+With loss error, delay and ghost - T-KTN08
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and the loss, delay and ghost variables in the settings.xml should be set to first 10% errors and then 50%. The errors variable should be true and all other numeric variables must be 0%
+			
+Dependencies
+			
+T-KTN03
+			
+Objective
+			
+Test if the system can handle packet loss, delay and ghost packages at the same time.
+
+How to test
+
+A connection must be established as in T-KTN01. The method send() should be called on the client side and receive() in a loop on the server side. The send method should be applied 10 times with distinct String arguments with sequence numbers. Once the packages has been received by the second host, the connection should close by the client, as described in T-KTN02. 
+		
+Expected Result
+
+The connect() and accept() must first return without exceptions. The test should be considered a success if only 10 messages are received by the server in the order the client sends them. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+Test payload bit errors - T-KTN09
+
+Preconditions
+			
+The Send() and Receive() methods should be implemented and working, the program should first be tested for 10%, and then 50% payload bit errors. The errors variable should be true and all other numeric variables must be 0%
+
+			
+Dependencies
+			
+T-KTN03
+			
+Objective
+			
+Test if the system handles payload bit errors.
+
+How to test
+
+A connection must be established as in T-KTN01. The server calls receive() in a loop in order to handle multiple messages. The client calls send() 10 times with distinct payloads containing a sequence number. When the test is executed the client calls close() as described in T-KTN02 to end the session.
+			
+Expected Result
+			
+The connect() and accept() must first return without exceptions. The test should be considered a success if all the 10 messages sent by the client is received by the server and content is equal. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+With loss error, delay, ghost and payload bit errors - T-KTN10
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and the loss, delay, ghost and payload variables in the settings.xml should be set to first 10% errors and then 50%. The errors variable should be true and header variables must be 0%
+			
+Dependencies
+			
+T-KTN07, T-KTN09
+			
+Objective
+			
+Test if the system can handle packet loss, delay, payload bit errors and ghost packages at the same time.
+
+How to test
+
+A connection must be established as in T-KTN01. The method send() should be called on the client side and receive() in a loop on the server side. The send method should be applied 10 times with distinct String arguments. Once the packages has been received by the second host, the connection should close by the client, as described in T-KTN02. 
+		
+Expected Result
+
+The connect() and accept() must first return without exceptions. The test should be considered a success if only 10 messages are received by the server in the order the client sends them and the content of the messages is equal. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+Test with header bit errors - T-KTN11
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and the header variable in the settings.xml should be set to first 10% errors and then 50%. The errors variable should be true and all other numeric variables must be 0%
+			
+Dependencies
+			
+T-KTN03
+			
+Objective
+			
+Test if the system handles header bit errors.
+
+How to test
+
+A connection must be established as in T-KTN01. The server calls receive() in a loop in order to handle multiple messages. The client calls send() 10 times with distinct payloads containing a sequence number. When the test is executed the client calls close() as described in T-KTN02 to end the session.
+			
+Expected Result
+			
+The connect() and accept() must first return without exceptions. The test should be considered a success if all the 10 messages sent by the client is received by the server and content is equal. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException. 
+
+Test with all errors enabled - T-KTN12
+
+Preconditions
+			
+Methods send() and receive() must be implemented and working, and all numeric variables in the settings.xml should be set to first 10% errors and then 50%.
+			
+Dependencies
+			
+T-KTN10, T-KTN11
+			
+Objective
+			
+Test if the system is robust enough to handle all errors enabled at the same time.
+
+How to test
+
+A connection must be established as in T-KTN01. The server calls receive() in a loop in order to handle multiple messages. The client calls send() 10 times with distinct payloads containing a sequence number. When the test is executed the client calls close() as described in T-KTN02 to end the session.
+			
+Expected Result
+	
+The connect() and accept() must first return without exceptions. This test should be considered successful if the receiving side receives only 10 messages with the exact content and order the sending side sends. Additionally, all send() and receive() calls must return without throwing either a ConnectionException or an IOException.

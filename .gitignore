@@ -2,3 +2,21 @@
 .settings
 .classpath
 .project
+.metadata
+
+
+# Ignore LaTeX files
+*.aux
+*.log
+*.tex~
+*.bak
+
+# Ignore Mac OS X files
+.DS_Store
+
+# Ignore temp files
+.txt
+
+
+#ignore compiled files
+bin/

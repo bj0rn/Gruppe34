@@ -1,0 +1,197 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, March 07, 2012 16:04:37}
+%TCIDATA{LastRevised=Wednesday, March 07, 2012 17:38:43}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+\begin{document}
+
+
+\section{SU1}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+& Prosjektplan & Tid og kostnadsestimering & Risikoanalyse & Systemtestplan
+\\ \hline
+Tidsestimat & 14 & 4 & 2 & 10 \\ \hline
+Start & 2012-03-05 & 2012-03-05 & 2012-03-05 & 2012-03-09 \\ \hline
+Slutt & 2012-03-09 & 2012-03-09 & 2012-03-09 & 2012-03-09 \\ \hline
+Ansvarlig & H\aa vard, Odd & H\aa vard, Odd & Andr\'{e} & Eivind, Bj\o rn \\ 
+\hline
+Avhengigheter &  &  &  &  \\ \hline
+Relasjoner &  & Prosjektplan & Prosjektplan &  \\ \hline
+Beskrivelse & lager prosjektplan ihht kapittel 4.1 i kompendiet. & Lage
+Ganttdiagram og kostnadsestimat for aktivitetene. & lage risikoanalyse for
+prosjektet & testplan for svartboks-testing av systemet. \\ \hline
+\end{tabular}
+
+\section{SU2}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|}
+\hline
+& Use Cases & Designdiagrammer \\ \hline
+Tidsestimat & 8 & 6 \\ \hline
+Ansvarlig & Tina & Eivind \\ \hline
+Avhengigheter & Systemtestplan & Systemtestplan \\ \hline
+Relasjoner & Konseptuell Databasemodellering, Use Case &  \\ \hline
+Beskrivelse & UML (use case, tekstlig use case) & UML (sekvensdiagram,
+klassediagram) \\ \hline
+\end{tabular}
+
+\section{SU3}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|}
+\hline
+& Systemtestrapport & Sluttrapport \\ \hline
+Tidsestimat & 4 & 12 \\ \hline
+Ansvarlig & H\aa vard & Odd \\ \hline
+Avhengigheter & Systemtest Plan, Implementasjon av Systemet & Implementasjon
+av Systemet, Systemtestrapport \\ \hline
+Relasjoner &  &  \\ \hline
+Beskrivelse & rapport etter testing ihht. systemtest plan. & oppsummering,
+evaluering og presentasjon av resultatene av prosjektet \\ \hline
+\end{tabular}
+
+\bigskip
+
+\section{KTN1}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+& Tekstlig design & Designdiagrammer & Testplan & Fase 2 \\ \hline
+Tidsestimat & 12 & 8 & 4 & 6 \\ \hline
+Ansvarlig & Tina & H\aa vard & Bj\o rn & Tina \\ \hline
+Avhengigheter & KTN1 Fase 1 design &  &  & KTN1 \\ \hline
+Relasjoner & KTN1 Fase 1 Tekstlig Design & KTN1 Fase 1 Designdiagrammer &  & 
+\\ \hline
+Beskrivelse & En tekstlig beskrivelse av KTN-designet & Design av sekvens-
+og tilstandsdiagrammer & Lage en testplan for svartboks-testing av KTN delen
+& revidere design og testplan fra fase 1 med utgangspunkt i tilbakemeldingene
+\\ \hline
+\end{tabular}
+
+\section{KTN2}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+& Implementasjon & Testspesifisering & Testing & Demonstrasjon \\ \hline
+Tidsestimat & 16 & 6 & 6 & 6 \\ \hline
+Ansvarlig & Andr\'{e} & Odd & Eivind & Alle \\ \hline
+Avhengigheter & KTN1, Overordnet Systemdesign & KTN1 & Testspesifisering,
+Implementasjon av KTN & Testing og Implementasjon av KTN-l\o sningen \\ 
+\hline
+Relasjoner & Implementasjon av Modell & Implementasjon av KTN &  &  \\ \hline
+Beskrivelse & Skrive KTN-koden & Lage tester for KTN-l\o sningen & Utf\o re
+testene for KTN-l\o sningen & Demonstrere l\o sningen for studass \\ \hline
+\end{tabular}
+
+\section{MMI D2}
+
+\begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+& Papirprototype & Pilottesting & Gruppetesting & Brukergrensesnittrapport
+\\ \hline
+Tidsestimat & 8 & 2 & 6 &  \\ \hline
+Ansvarlig & Odd & Odd & Tina & Eivind \\ \hline
+Avhengigheter &  & Papirprototype & Pilottesting & Pilottesting, Gruppetest
+\\ \hline
+Relasjoner &  &  &  &  \\ \hline
+Beskrivelse & Lage en papirprototype av brukergrensesnittet & Pilotteste
+papirprototype med studass & Brukbarhetstest med gruppe 32 & Skrive rapport
+av testene \\ \hline
+\end{tabular}
+
+\section{MMI D3}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+& Konseptuell Modell & Skjermdesign & Konstruksjonsbeskrivelse \\ \hline
+Tidsestimat & 6 & 6 & 6 \\ \hline
+Ansvarlig & H\aa vard & Andr\'e & Bj\o rn \\ \hline
+Avhengigheter & Brukergrensesnittrapport & Brukergrensesnittrapport & 
+Brukergrensesnittrapport \\ \hline
+Relasjoner & Skjermdesign, Konstruksjonsbeskrivelse & Konseptuell Modell,
+Konstruksjonsbeskrivelse & Konseptuell Modell, Skjermdesign \\ \hline
+Beskrivelse & lage konseptuell modell av brukergrensesnittet med UML klasse
+og sekvensdiagram & lage visuelt skjermdesign (ikke kode) & beskrive hvordan
+brukergrensesnittet er bygd opp (grunnlag for JUnit) \\ \hline
+\end{tabular}
+
+\section{DB1}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+& Identifisering av Data & Konseptuell Databasemodellering & Konseptuell
+databasenormalisering \\ \hline
+Tidsestimat & 4 & 6 & 4 \\ \hline
+Ansvarlig & Eivind & Andr\'e & Bj\o rn \\ \hline
+Avhengigheter &  & Identifisering av Data & Konseptuell Databasemodellering
+\\ \hline
+Relasjoner & Overordnet Systemdesign & Overordnet Systemdesign &  \\ \hline
+Beskrivelse & Skrive tekstlig beskrivelse av innholdet i databasen & lage
+EER/UML diagrammer, tekstlig forklaring/rapport & normalisering/endring av
+EER/UML \\ \hline
+\end{tabular}
+
+\section{DB2}
+
+\begin{tabular}{|l|p{3cm}|}
+\hline
+& Logisk Databaseskjema \\ \hline
+Tidsestimat & 2 \\ \hline
+Ansvarlig & Andr\'{e} \\ \hline
+Avhengigheter & Konseptuell Databasemodellering \\ \hline
+Relasjoner &  \\ \hline
+Beskrivelse & Skrive SQL for oppretting av databaseskjemaet i MySQL \\ \hline
+\end{tabular}
+
+\bigskip
+
+\section{Implementasjon}
+
+\begin{tabular}{|l|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+& Implementasjon av GUI & Implementasjon av Modell & Implementasjon av
+Databasekobling \\ \hline
+Tidsestimat & 16 & 16 & 16 \\ \hline
+Ansvarlig & Eivind & Tina & Bj\o rn \\ \hline
+Avhengigheter & Konseptuell Modell, Skjermdesign, Konstruksjonsbeskrivelse & 
+Overordnet Systemdesign Diagrammer & Overordnet Systemdesign Diagrammer \\ 
+\hline
+Relasjoner & Implementasjon av Model, Implementasjon av Databasekobling & 
+Implementasjon av GUI & Implementasjon av Modell \\ \hline
+Beskrivelse & skrive kode for GUI & skrive kode for modeller & Skrive kode
+for persistent lagring av modeller \\ \hline
+\end{tabular}
+
+\end{document}
