@@ -14,3 +14,7 @@
 
 # Ignore temp files
 .txt
+
+
+#ignore compiled files
+bin/
