@@ -1,0 +1,25 @@
+
+Scenario 2 -- Call a meeting
+* Create a new meeting
+	* Specify date and time
+	* Specify participants
+	* Book meeting room
+	* Meeting invites are automatically distributed to the appropriate people
+* Await response from invitees.
+* React appropriately. 
+** Receive meeting invitation immediately or upon next use of system
+** Respond appropriately by accepting, rejecting or doing nothing.
+Scenario 3 -- Reacting to meeting invite responses
+* Receive notification from system that an invitee has rejected the meeting 
+	* Change the meeting's time
+	* Notifications are automatically distributed
+* Await response from invitees.
+** Receive notification about an alteration to a meeting's time
+** Respond appropriately by accepting, rejecting or doing nothing.
+* Receive response
+* Remove all invitees that have rejected the invite
+Secnario 4 -- Cancelling a meeting
+* Become unable to attend meeting
+* Cancel meeting by removing it from calendar
+** Receive notification regarding cancellation of meeting upon next use of system
+** React appropriately
