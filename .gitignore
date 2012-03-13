@@ -1,10 +1,7 @@
 # Ignore eclipse artifacts
 .settings
 .classpath
-.project
-<<<<<<< HEAD
 .DS_Store
-=======
 .metadata
 
 
@@ -23,4 +20,3 @@
 
 #ignore compiled files
 bin/
->>>>>>> 8e3f5999562004c4e6aab20825952ea761b4a681
