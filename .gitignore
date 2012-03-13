@@ -2,4 +2,25 @@
 .settings
 .classpath
 .project
+<<<<<<< HEAD
 .DS_Store
+=======
+.metadata
+
+
+# Ignore LaTeX files
+*.aux
+*.log
+*.tex~
+*.bak
+
+# Ignore Mac OS X files
+.DS_Store
+
+# Ignore temp files
+.txt
+
+
+#ignore compiled files
+bin/
+>>>>>>> 8e3f5999562004c4e6aab20825952ea761b4a681

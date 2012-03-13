@@ -6,7 +6,6 @@ INDEX VERSION 1.126+/Users/bj0rn/Programming/School/NTNU/2 sem/felles/Gruppe34/.
 2545238116.index
 156905802.index
 272178059.index
-1943015282.index
 1001145814.index
 3632739156.index
 765977872.index
@@ -18,7 +17,6 @@ INDEX VERSION 1.126+/Users/bj0rn/Programming/School/NTNU/2 sem/felles/Gruppe34/.
 3954040986.index
 2326659272.index
 3004609673.index
-3738961281.index
 3000285004.index
 3302703152.index
 1833648217.index

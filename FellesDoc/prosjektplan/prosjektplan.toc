@@ -1,0 +1,22 @@
+\contentsline {part}{Introduction}{1}
+\contentsline {part}{Work Breakdown Structure}{2}
+\contentsline {section}{SU Phase 1}{2}
+\contentsline {section}{SU\ Phase 2}{2}
+\contentsline {section}{SU Phase 3}{2}
+\contentsline {section}{KTN1}{3}
+\contentsline {section}{KTN2}{3}
+\contentsline {section}{MMI D2}{4}
+\contentsline {section}{MMI D3}{4}
+\contentsline {section}{DB1}{5}
+\contentsline {section}{DB2}{5}
+\contentsline {section}{Implementation}{6}
+\contentsline {part}{Cost Estimate}{7}
+\contentsline {section}{Technical Complexity}{7}
+\contentsline {section}{Environmental Complexity}{7}
+\contentsline {section}{Unadjusted Use Case Points (UUCP)}{7}
+\contentsline {subsection}{UUCW}{7}
+\contentsline {subsection}{UAW}{8}
+\contentsline {section}{Productivity Factor}{8}
+\contentsline {section}{Final Calculation}{8}
+\contentsline {part}{Gantt diagram}{9}
+\contentsline {part}{Risk Analysis}{10}

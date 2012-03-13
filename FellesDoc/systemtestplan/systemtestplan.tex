@@ -1,0 +1,472 @@
+% Sets page margins to 1", which is the academic standard
+% allows the included extensions of graphic files
+% sets graphic path, does not currently work because of space in folder name
+% I do not remember what this does
+% allows the xhead parameters (text on the top right/left areas of pages)
+% \setcounter{tocdepth}{the number of depth}
+% INCLUDEGRAPHICS EXPLANATION
+% \includegraphics[scale=1]{name of file}
+% sometimes you want to twice encase the filename in squiggly brackets. I do not know why but sometimes it is required.
+
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage[pdftex]{graphicx}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Monday, January 30, 2012 17:20:46}
+%TCIDATA{LastRevised=Thursday, March 08, 2012 10:29:09}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\geometry{left=1in,right=1in,top=1in,bottom=1in} 
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\graphicspath{{D:/Dropbox/Private/BEHOLD SCIENCE/TDT4145/ov/01/}}
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\lhead{Group 34}
+\rhead{FP: System Testing Plan}
+\input{tcilatex}
+\setcounter{secnumdepth}{-1}
+
+\begin{document}
+
+
+% begin title page, use \\ for newline
+\begin{titlepage}
+\title{Collaboration Project\\
+\textbf{System Testing Plan}}
+% now one can list the authors, \textbf{} makes bold text
+\author{\textbf{Gruppe 34}\\
+Bj\o rn \AA ge Tungesvik\\
+Tina Syversen\\
+Andr\'e Philipp\\
+Odd Magnus Trondrud
+\\Eivind Kvissel\\
+H\aa vard H\o iby}
+\maketitle
+\end{titlepage}
+%\tableofcontents
+
+\part{FE2: System Testing Plan}
+
+The structure of this part is as follows:
+
+\section{Test Name - TestId}
+
+\subsection{Preconditions}
+
+Required conditions.
+
+\subsection{Dependencies}
+
+Tests that are required to work before this test can be run.
+
+\subsection{Objective}
+
+What is the goal of the test?
+
+\subsection{Expected Result}
+
+The test's expected result(s). \newpage
+
+\section{Login - TestId: LoginT}
+
+\subsection{Precondition(s)}
+
+A connection to the server is already established.
+
+\subsection{Dependencies}
+
+Working TCP connection, on both the client and the server side. A working
+database is recommended, but not required to perform the test.
+
+\subsection{Objective}
+
+Authenticate users on the system. The system should take user name and
+password as input, and produce appropriate feedback, whether the
+authentication is successful or not. Some additional feedback is handled
+locally by the client, like missing input and/or invalid input, such errors
+are handled locally as to not bother the system.
+
+\subsection{Expected Result}
+
+If the login is successful, the system should respond by changing to the
+user's personal view. For testing purposes, the system should also give some
+feedback in form of a message, in order for the developers to test the part
+independently. \newpage
+
+\section{Add Appointment - TestId: AddApp}
+
+\subsection{Precondition(s)}
+
+An authenticated connection to the server has been established.
+
+\subsection{Dependencies}
+
+LoginT
+
+\subsection{Objective}
+
+Add appointments to the system. An appointment contains date, start and end
+time, description, place and when the appointment was added to the system.
+The system should gather this input from the user. The data should be tested
+locally, before adding the appointment to the calendar system. These test
+may include validation tests on the input; invalid input, missing data, etc.
+If such an error occurs the user should be informed and the data should not
+be sent.
+
+\subsection{Expected Result}
+
+If the operation is successful, the system should give feedback inform of
+changes in the view, and additional messages informing, the user of success.
+The latter messages are included to make the testing independently, e.g do
+not require GUI.
+
+If the operation yields unsuccessful, the system gives feedback in form of a
+message telling the user that the action failed. The message should include
+why the operation failed. Possible failures, the appointment already exists,
+the room is already booked, and so on. \newpage
+
+\section{Remove Appointment - TestId: RmvApp}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is presented with the correct
+view.
+
+\subsection{Dependencies}
+
+LoginT, AddApp
+
+\subsection{Objective}
+
+Remove a registered appointment from the user's personal calendar. Note: The
+appointment has no participants.
+
+\subsection{Expected Result}
+
+The information about the appointment to be deleted, is sent to the server.
+The information is required by the server in order to delete appropriate
+appointment. The server respond in form of a message that yields
+``successful'\ or ``unsuccessful''.
+
+If the operation is successful, the local system perform the appropriate
+updates to the view.
+
+If the operation is unsuccessful, the message should indicate why, and the
+system must apply the appropriate steps to recover. \newpage
+
+\section{Edit Appointment - TestID: EdApp}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is presented with the correct
+view.
+
+\subsection{Dependencies}
+
+LoginT, AddApp
+
+\subsection{Objective}
+
+Edit information in an already existing appointment in the users personal
+calendar. The local system should send the updated information to the
+server, some validation is performed on the data to make sure the
+information is correct before it is sent. The server should respond to the
+update request with ``successful'', or ``unsuccessful''.
+
+\subsection{Expected Result}
+
+If the server positively responds to the operation, the local system should
+respond by updating the view, and report that the changes are made.
+
+If the server negatively responds to the operation, the local system should
+give the appropriate feedback and recover. The feedback should include why
+the operation failed. \newpage
+
+\section{Call a meeting - TestId: CallM}
+
+\subsection{Precondition(s)}
+
+A connection is already established.
+
+\subsection{Dependencies}
+
+LoginT
+
+\subsection{Objective}
+
+Create a new meeting, setting the person calling the meeting as the meeting
+leader. The meeting leader should be able to invite other users from the
+company. The data is encapsulated in an appropriate manner, forming a
+request to the server. The data should be validated locally before it's
+sent. This may involving checking if the participants as well. The server
+should request the operation, yielding successful or unsuccessful.
+
+\subsection{Expected Result}
+
+If the operation is successful, the view should be updated accordingly, and
+status information about the operation should be printed. \bigskip If the
+operation is unsuccessful, a message indicating the error should be
+displayed, and the system must recover. This may involve interaction by the
+user. \newpage
+
+\section{Receive notification of meeting - TestId: RcvNoM}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is in the same company as the
+meeting leader.
+
+\subsection{Dependencies}
+
+LoginT, CallM
+
+\subsection{Objective}
+
+User should receive the notification, and then be prompted to either accept
+or refuse it. Should the user accept it, the meeting should be added as an
+appointment to his or her personal calendar. If he refuses it, it should not
+be added, and a message is sent to the meeting leader that the meeting was
+not accepted by this user. The meeting Leader should then be prompted if he
+wants to set a new meeting date, cancel the meeting, or remove the user from
+the meeting list.
+
+\subsection{Expected Result}
+
+The participants should receive a notification object from the server. The
+object contains all relevant information about the meeting. On client side,
+the user should be prompted with the notification. The user can either
+accept or decline.
+
+If the user accepts, the view should reflect the changes by adding the
+meeting to his personal calendar.
+
+If the user declines, a message notification object should be sent to the
+leader. The server is responsible for receiving and correctly re-sending the
+notification.
+
+If the operation is unsuccessful, the operation should prompt the user where
+the error occurred, and recover. For easier debugging, the sever should in
+any case generate a report of the operations carried out. \newpage
+
+\section{Change notification of meeting - TestId: ChngNoM}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user must be the leader of the
+meeting in question. The user is presented with the correct view.
+
+\subsection{Dependencies}
+
+LoginT, CallM
+
+\subsection{Objective}
+
+The meeting leader should be able to edit the date of a meeting. There
+should then be sent out message to everyone invited that states the new
+date, and the users can accept or refuse the new date. Should a user refuse
+the new date, a message should be sent to all other meeting participants,
+and the meeting leader should be able to either set another date or cancel
+the meeting.
+
+\subsection{Expected Result}
+
+The leader of a meeting should have the ability to change the date of a
+meeting through the view from his calendar. Once the date is changed and
+committed, the server should send out a notification to all users
+participating in the meeting. The users should then be prompted to either
+accept the new date, or reject it. Should a user reject the new date, the
+leader should get a notification back, and should get an notification to
+either cancel the meeting or set a new date. \newpage
+
+\section{Cancel meeting - TestiD: CMeet}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is the leader of the meeting
+in question. The user is presented with the correct view.
+
+\subsection{Dependencies}
+
+LoginT, CallM
+
+\subsection{Objective}
+
+The meeting leader should be able to cancel a meeting. If the leader chooses
+to do so a message should be sent to everyone involved, and the meeting
+should be cancelled in their personal calendars. Information about the
+meeting, including its participants, is encapsulated and sent to the server.
+Some local validation of the data may be carried out before its sent. The
+server is required to detect and perform the operation, this includes
+updating the database, and send a ``cancel'\ notification to all
+participants in the list. When completed, or if an error occurs, the server
+should either way produce a report containing the operations performed.
+
+\subsection{Expected Result}
+
+If the request is carried out successfully, the view will be updated
+accordingly in all the clients. For debugging purposes, the result should
+also contain a report of the actions performed by the system. This report
+should only be sent to the client which performed the operation \newpage
+
+\section{Cancel appointment to meeting - TestId: CApptMeet}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is presented with the correct
+view. The user must have received a notification to a meeting.
+
+\subsection{Dependencies}
+
+LoginT, CallM, RcVNoM
+
+\subsection{Objective}
+
+A user should be able to cancel his or her appointment to a meeting by
+deleting the meeting in his or her personal calendar. A message should then
+be sent to all other participants to the meeting, and the meeting leader
+should be given a choice to change the meeting date, or cancel the meeting.
+The information about the appointment, including information about the
+participants, is encapsulated in an appropriate manner, and sent to the
+server. \bigskip The server is responsible for sending out notifications to
+the other participants, and generate a proper message in the form of a
+report, indicating success or unsuccessful. The report should be generated
+when the server have the proper responses from the clients. The server may
+also keep track of ``pending'\ messages so the users are aware of any
+changes made, during offline time.
+
+\subsection{Expected Result}
+
+If the operation is carried out successful, the view should be updated
+accordingly. Either way a report is generated. The report is used for
+debugging. \newpage
+
+\section{Reserve a meeting room - TestId: RsrvMRoom}
+
+\subsection{Precondition(s)}
+
+A connection is already established.The user must have called a meeting or
+have set up an appointment. The user is presented with the correct view.
+
+\subsection{Dependencies}
+
+LoginT, CallM or AddApp
+
+\subsection{Objective}
+
+When creating a meeting or an appointment, a user should be able to, instead
+of writing a place where the meeting/appointment should take place, reserve
+a meeting room from a list of available rooms. The application should create
+a list with available rooms in the time period when the meeting is
+scheduled, the user should then be able to choose a room from this list.
+Should a meeting or an appointment with a booked room be canceled, the
+application should delete the room reservation from the calendar.
+
+\subsection{Expected Result}
+
+The user should receive a message if the reservation process went through
+successfully, including the room number and the allocated time frame. If an
+error occurred, the program should return an error message and file a report
+to be used for debugging. \newpage
+
+\section{Show all - TestId: ShowAll}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is presented with the correct
+view.
+
+\subsection{Dependencies}
+
+Login, CallM or AddApp
+
+\subsection{Objective}
+
+The application shall show a weekly calendar in which all the users
+appointments and meetings are inserted. It should be easy to flip between
+different weeks.
+
+\subsection{Expected Result}
+
+If the operation is successful, the user should be given a view of a weekly
+calendar with all his appointments and meetings inserted. If the user has no
+appointments or meetings, the calendar should be empty, possibly displaying
+a message that there are no plans for the coming weeks. \newpage
+
+\section{Track meeting notifications - TestId: TrckMNot}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is presented with the correct
+view.
+
+\subsection{Dependencies}
+
+Login, CallM, RcvNoM
+
+\subsection{Objective}
+
+The calendar server should track the following notifications for a meeting;
+accepted, cancelled and pending. The server should produce a report whenever
+an update is made on a specific meeting. The report should be sent to the
+leader of the meeting.
+
+\subsection{Expected Result}
+
+The report from the server is analyzed and the notifications are updated
+accordingly. \newpage
+
+\section{Show other calendars - TestId: ShowOtherCal}
+
+\subsection{Precondition(s)}
+
+A connection is already established. The user is presented with the calendar
+view.
+
+\subsection{Dependencies}
+
+Login, CallM or AddApp
+
+\subsection{Objective}
+
+The application should be able to show other users appointments side by side
+the current users appointments in his calendar.
+
+\subsection{Expected Result}
+
+The user should, upon choosing another user from the ``other calendars'\
+button, be presented with a calendar view including that users meetings and
+appointments and meetings, as well as the other users appointments and
+meetings.
+
+\end{document}

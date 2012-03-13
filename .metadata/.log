@@ -1597,3 +1597,86 @@ org.eclipse.jgit.api.errors.InvalidConfigurationException: No value for key bran
 	at org.eclipse.egit.ui.internal.pull.PullOperationUI.execute(PullOperationUI.java:117)
 	at org.eclipse.egit.ui.internal.pull.PullOperationUI$1.run(PullOperationUI.java:92)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.egit.ui 4 0 2012-03-13 12:43:39.272
+!MESSAGE Failed to refresh projects from index changes
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Errors occurred while refreshing resources with the local file system.
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.refreshResource(FileSystemResourceManager.java:923)
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.refresh(FileSystemResourceManager.java:904)
+	at org.eclipse.core.internal.resources.Resource.refreshLocal(Resource.java:1657)
+	at org.eclipse.egit.ui.Activator$ResourceRefreshJob.run(Activator.java:334)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Contains: The project description file (.project) for 'Code' is missing.  This file contains important information about the project.  The project will not function properly until this file is restored.
+!SUBENTRY 1 org.eclipse.core.resources 4 271 2012-03-13 12:43:39.273
+!MESSAGE Errors occurred while refreshing resources with the local file system.
+!SUBENTRY 2 org.eclipse.core.resources 4 567 2012-03-13 12:43:39.273
+!MESSAGE The project description file (.project) for 'Code' is missing.  This file contains important information about the project.  The project will not function properly until this file is restored.
+
+!ENTRY org.eclipse.egit.ui 4 0 2012-03-13 12:43:39.284
+!MESSAGE Errors occurred while refreshing resources with the local file system.
+
+!ENTRY org.eclipse.egit.ui 4 0 2012-03-13 12:45:12.728
+!MESSAGE git@github.com:bj0rn/Gruppe34.git: Auth cancel
+!STACK 1
+org.eclipse.core.runtime.CoreException: git@github.com:bj0rn/Gruppe34.git: Auth cancel
+	at org.eclipse.egit.ui.internal.fetch.FetchOperationUI.execute(FetchOperationUI.java:102)
+	at org.eclipse.egit.ui.internal.synchronize.SynchronizeFetchJob.run(SynchronizeFetchJob.java:74)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: org.eclipse.jgit.errors.TransportException: git@github.com:bj0rn/Gruppe34.git: Auth cancel
+	at org.eclipse.jgit.transport.JschConfigSessionFactory.getSession(JschConfigSessionFactory.java:141)
+	at org.eclipse.jgit.transport.SshTransport.getSession(SshTransport.java:121)
+	at org.eclipse.jgit.transport.TransportGitSsh$SshFetchConnection.<init>(TransportGitSsh.java:248)
+	at org.eclipse.jgit.transport.TransportGitSsh.openFetch(TransportGitSsh.java:147)
+	at org.eclipse.jgit.transport.FetchProcess.executeImp(FetchProcess.java:127)
+	at org.eclipse.jgit.transport.FetchProcess.execute(FetchProcess.java:113)
+	at org.eclipse.jgit.transport.Transport.fetch(Transport.java:1062)
+	at org.eclipse.jgit.api.FetchCommand.call(FetchCommand.java:129)
+	at org.eclipse.egit.core.op.FetchOperation.run(FetchOperation.java:128)
+	at org.eclipse.egit.ui.internal.fetch.FetchOperationUI.execute(FetchOperationUI.java:99)
+	... 2 more
+Caused by: com.jcraft.jsch.JSchException: Auth cancel
+	at com.jcraft.jsch.Session.connect(Session.java:451)
+	at org.eclipse.jgit.transport.JschConfigSessionFactory.getSession(JschConfigSessionFactory.java:116)
+	... 11 more
+!SUBENTRY 1 org.eclipse.egit.ui 4 0 2012-03-13 12:45:12.728
+!MESSAGE git@github.com:bj0rn/Gruppe34.git: Auth cancel
+!STACK 0
+org.eclipse.jgit.errors.TransportException: git@github.com:bj0rn/Gruppe34.git: Auth cancel
+	at org.eclipse.jgit.transport.JschConfigSessionFactory.getSession(JschConfigSessionFactory.java:141)
+	at org.eclipse.jgit.transport.SshTransport.getSession(SshTransport.java:121)
+	at org.eclipse.jgit.transport.TransportGitSsh$SshFetchConnection.<init>(TransportGitSsh.java:248)
+	at org.eclipse.jgit.transport.TransportGitSsh.openFetch(TransportGitSsh.java:147)
+	at org.eclipse.jgit.transport.FetchProcess.executeImp(FetchProcess.java:127)
+	at org.eclipse.jgit.transport.FetchProcess.execute(FetchProcess.java:113)
+	at org.eclipse.jgit.transport.Transport.fetch(Transport.java:1062)
+	at org.eclipse.jgit.api.FetchCommand.call(FetchCommand.java:129)
+	at org.eclipse.egit.core.op.FetchOperation.run(FetchOperation.java:128)
+	at org.eclipse.egit.ui.internal.fetch.FetchOperationUI.execute(FetchOperationUI.java:99)
+	at org.eclipse.egit.ui.internal.synchronize.SynchronizeFetchJob.run(SynchronizeFetchJob.java:74)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: com.jcraft.jsch.JSchException: Auth cancel
+	at com.jcraft.jsch.Session.connect(Session.java:451)
+	at org.eclipse.jgit.transport.JschConfigSessionFactory.getSession(JschConfigSessionFactory.java:116)
+	... 11 more
+
+!ENTRY org.eclipse.core.resources 2 2 2012-03-13 12:46:05.968
+!MESSAGE Save operation warnings.
+!SUBENTRY 1 org.eclipse.core.resources 2 234 2012-03-13 12:46:05.968
+!MESSAGE The project description file (.project) for 'Code' was missing.  This file contains important information about the project.  A new project description file has been created, but some information about the project may have been lost.
+
+!ENTRY org.eclipse.tm.tcf 4 0 2012-03-13 12:46:42.966
+!MESSAGE Cannot send datagram packet to /78.91.23.255
+!STACK 0
+java.io.IOException: Network is down
+	at java.net.PlainDatagramSocketImpl.send(Native Method)
+	at java.net.DatagramSocket.send(DatagramSocket.java:625)
+	at org.eclipse.tm.internal.tcf.services.local.LocatorService.sendDatagramPacket(LocatorService.java:764)
+	at org.eclipse.tm.internal.tcf.services.local.LocatorService.sendEmptyPacket(LocatorService.java:856)
+	at org.eclipse.tm.internal.tcf.services.local.LocatorService.sendAll(LocatorService.java:866)
+	at org.eclipse.tm.internal.tcf.services.local.LocatorService.refresh_timer(LocatorService.java:522)
+	at org.eclipse.tm.internal.tcf.services.local.LocatorService.access$0(LocatorService.java:474)
+	at org.eclipse.tm.internal.tcf.services.local.LocatorService$1$1.run(LocatorService.java:184)
+	at org.eclipse.tm.tcf.protocol.Protocol$3.run(Protocol.java:209)
+	at org.eclipse.tm.tcf.EventQueue.run(EventQueue.java:99)
+	at java.lang.Thread.run(Thread.java:680)

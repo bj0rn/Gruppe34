@@ -6,7 +6,7 @@
 %TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
 %TCIDATA{BibliographyScheme=Manual}
 %TCIDATA{Created=Wednesday, February 15, 2012 15:32:19}
-%TCIDATA{LastRevised=Wednesday, March 07, 2012 11:55:57}
+%TCIDATA{LastRevised=Wednesday, March 07, 2012 15:58:28}
 %TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
 %TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
 %TCIDATA{CSTFile=40 LaTeX article.cst}
@@ -37,7 +37,7 @@
 \begin{document}
 
 
-\#\#Technical Complexity
+\section{Technical Complexity}
 
 \[
 \begin{tabular}{|l|l|l|l|}
@@ -61,11 +61,11 @@ TTF &  &  & $9.\,\allowbreak 1$ \\ \hline
 \]
 
 \[
-TCF=0.6+\left( 0.01\cdot 9.1\right) =\allowbreak 0.691
+TCF=0.6+\left( 0.01\cdot 9.1\right) =\allowbreak 0.691 
 \]%
 $\,$
 
-\#\#Environmental Complexity
+\section{Environmental Complexity}
 
 \[
 \begin{tabular}{|l|l|l|l|}
@@ -84,18 +84,18 @@ TEF &  &  & $7.0$ \\ \hline
 \]
 
 \[
-ECF=1.4+\left( -0.03\cdot 7.0\right) =\allowbreak 1.\,\allowbreak 19
+ECF=1.4+\left( -0.03\cdot 7.0\right) =\allowbreak 1.\,\allowbreak 19 
 \]
 
 The perceived complexity is based on an estimate of our group's capabilities
 and individual personalities, we're assuming that we are the ones who will
 be developing the project.
 
-\bigskip 
+\bigskip
 
-\#\#Unadjusted Use Case Points (UUCP)
+\section{Unadjusted Use Case Points (UUCP)}
 
-\#\#\#UUCW
+\subsection{UUCW}
 
 \begin{tabular}{|l|l|l|}
 \hline
@@ -114,10 +114,10 @@ Room res. & Simple & 5 \\ \hline
 \#Complex:\ 0
 
 \[
-UUCW=4\cdot 5+1\cdot 10=\allowbreak 30
+UUCW=4\cdot 5+1\cdot 10=\allowbreak 30 
 \]
 
-\#\#\#UAW
+\subsection{UAW}
 
 \[
 \begin{tabular}{|l|l|l|}
@@ -129,21 +129,21 @@ KTN & Average & 2 \\ \hline
 \]
 
 \[
-UAW=5
+UAW=5 
 \]
 
-\#\#\#Productivity Factor
+\section{Productivity Factor}
 
 Since we have no recorded historical data for the team, we have chosen to
 use the industry default on this.
 
 \[
-PF=20
+PF=20 
 \]
 
 \bigskip
 
-\#\#Final calc.
+\section{Final Calculation}
 
 \begin{eqnarray*}
 UCP &=&TCF\cdot ECF\cdot \left( UUCW+UAW\right) \cdot PF \\
@@ -151,5 +151,9 @@ UCP &=&TCF\cdot ECF\cdot \left( UUCW+UAW\right) \cdot PF \\
 \\
 &=&575.\,\allowbreak 6
 \end{eqnarray*}
+
+Assuming each team member puts in an average of 40 hours a week and given
+perfect productivity from all six team members, then, according to this
+number, the project should be done in less than three weeks.
 
 \end{document}
