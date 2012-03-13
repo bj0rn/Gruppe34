@@ -22,6 +22,10 @@ public class MockModel {
 		return name;
 	}
 	
+	public void setAge(String age) {
+		this.age = Integer.parseInt(age);
+	}
+	
 	public void setAge(int age) {
 		this.age = age;
 	}
