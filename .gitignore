@@ -3,7 +3,6 @@
 .classpath
 .metadata
 
-
 # Ignore LaTeX files
 *.aux
 *.log
