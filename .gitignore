@@ -1,7 +1,13 @@
 # Ignore eclipse artifacts
+
 .settings
 .classpath
 .metadata
+
+.DS_Store
+.metadata
+.class
+
 
 # Ignore LaTeX files
 *.aux
