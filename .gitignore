@@ -1,7 +1,7 @@
 # Ignore eclipse artifacts
 .DS_Store
 .metadata
-
+.class
 
 # Ignore LaTeX files
 *.aux
