@@ -1,7 +1,6 @@
 # Ignore eclipse artifacts
 .settings
 .classpath
-.project
 .metadata
 
 
