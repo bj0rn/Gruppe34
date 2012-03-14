@@ -1,0 +1,128 @@
+﻿Oppfyllelse av kravspesifikasjoner for database
+
+
+
+
+Krav 1:
+Logge på. Ansatte får tilgang til kalendersystemet ved å logge seg på kalenderklienten
+med brukernavn og passord.
+
+
+Databasen inneholder informasjon som kan verifisere brukere (Username Password) under User tabellen, så personer som logger på får sin egen User-rad assosiert med den sesjonen.
+
+
+Krav 2:
+Legge inn avtale. Ansatte skal kunne legge inn avtaler i den personlige kalenderen sin.
+En avtale legges inn på avtaledato med et start- og sluttidspunkt, samt en kort
+beskrivelse av avtalen ("Bil på verksted") og eventuelt sted for avtalen ("Strandveien
+Auto").
+
+
+CalendarEntry tabellen inneholder felt for start- og slutttidspunkt, felt for beskrivelse (Henholdsvis TimeStart, TimeEnd og Descripton feltene), og en relasjon til en tabell kalt Location for å holde orden på sted. (Sted ligger i Place tabellen som er subklasse til Location)Hver CalendarEntry rad er knyttet til den spesifikke brukeren som oppretter raden.
+
+
+Krav 3:
+Slette avtale. Ansatte skal kunne slette en avtale som ligger i den personlige
+kalenderen sin.
+
+
+Hver avtale er representert som en CalendarEntry i databasen. En bruker skal ha full kontroll over avtaler som han har laget, inkludert å slette dem. 
+
+
+Krav 4:
+Endre avtale. Ansatte skal kunne endre på en avtale som ligger i den personlige
+kalenderen sin. Alle feltene kan endres.
+
+
+En bruker skal kunne gå inn i og endre hvert felt bortsett ifra “timeCreated” i CalendarEntry og Location.
+
+
+Krav 5:
+Kalle inn til møte. En ansatt skal kunne kalle andre ansatte i Firma X inn til et møte.
+Den som kaller inn til møte kalles en møteleder. En ansatt skal kunne kalle inn til
+møte på samme måte som han/hun legger ny avtale inn i personlig kalender. I tillegg
+til feltene for en vanlig avtale, inneholder også møteinnkallingen en liste over innkalte
+møtedeltakere.
+
+
+En User skal kunne oprette en rad i Meeting tabellen på samme måte som en avtale, og bli satt som “leader” for “Role” feltet i “Is in” - relasjonen mellom Calendar og CalendarEntry, og bruke “Owns” relasjonen mellom User og Calendar. Han skal også kunne invitere andre til møtet, de skal bli satt som “Participant” i “Role” feltet i “Is in” relasjonen. Kun den som har “Leader” i Role i “is in” relasjonen skal kunne endre feltene innenfor møtet. CalendarEntry - objektet skal også ha en liste over alle som er assosiert med møtet.
+
+
+Krav 6:
+Motta møteinnkalling. Når en ansatt mottar innkalling til et møte, kan han/hun svare
+'Godta' eller 'Forkast'. Ved å svare 'Godta', legges møteinnkallingen inn som en avtale
+i den innkalte ansattes personlige kalender. Om den ansatte svarer 'Avslag', sendes
+svar tilbake til møtelederen om at innkallingen ikke er godtatt. Møteleder kan da velge
+å finne et nytt tidspunkt, avlyse møtet (se under) eller fjerne deltakeren fra
+innkallingslista.
+
+
+“State” feltet innenfor “Is in” relasjonen mellom Calendar og CalendarEntry tabellen holder orden på statusen for de som er assosiert med møte. Dette felte skal bare kunne endres av deltakere i et møte, men skal kunne sees av alle som er innkalt
+
+
+Krav 7:
+Endre møteinnkalling. Møteleder kan endre tidspunkt på en møteinnkalling. Det
+sendes da beskjed ut til alle møtedeltakerne, som kan svare 'Godta' eller 'Forkast'. Ved
+å svare 'Godta', endres avtalen i den innkalte ansattes personlige kalender. Ved å svare
+'Forkast' sendes beskjed ut til alle innkalte møtedeltakere. Møteleder kan da velge å
+finne et nytt tidspunkt eller å avlyse møtet (se under).
+
+
+Når lederen for en CalendarEntry endrer datoen for møte, skal det sendes ut en beskjed, og en melding om å oppdatere “state” til alle assosiert med møtet. “State” vil også bli resatt til “Pending” for alle deltakere når dette skjer. Om en ansatt setter statusen sin til “reject”, vil møteleder motta en beskjed om at han må endre tidspunkt igjen, eller avlyse møtet. Disse notifikasjonene lagres ikke i databasen men kommer av hvilken state “Is in” relasjonen står i.
+
+
+Krav 8:
+Avlyse møte. Møteleder kan avlyse et møte. Det sendes da beskjed til alle
+møtedeltakerne, og systemet sletter møtet i deltakernes personlige kalender.
+
+
+Når en leder avlyser et møte, skal det sendes ut en melding til alle deltakere, og raden slettes fra databasen.
+
+
+Krav 9:
+Melde avbud for møte. En ansatt kan melde avbud på en møteinnkalling ved å slette
+avtalen i sin personlige kalender. Når en ansatt melder avbud, sendes melding til alle
+de andre møtedeltakerne. Møteleder kan da velge om møtet skal avlyses eller om
+han/hun skal endre tidspunkt på møtet.
+
+
+Når en User melder avbud til en avtale som han står  som participant i, vil “State”-en hans skiftast til rejected, og CalendarEntry-en vil forsvinne fra “Calendar”-raden hans. Det vil også sendes en melding til alle andre som har assosiasjon med det objektet. Den som står som Leader for det møtet vil i tillegg få beskjed om enten å endre TimeStart/TimeEnd for CalendarEntryen, eller å slette det (Avlyse).
+
+
+Krav 10:
+Reservere møterom. I stedet for å skrive inn sted for en avtale eller et møte, skal
+brukeren kunne reservere møterom. Kalendertjeneren skal lage en liste med
+tilgjengelige møterom (mao. ikke reserverte) i tidsperioden for avtalen/møtet.
+Brukeren kan da velge møterom fra denne listen. Om en avtale med booket møterom
+slettes, skal reservasjonen slettes på kalendertjeneren. Det samme gjelder for møter
+som avlyses.
+
+
+Subklassen Room under Location holder orden på møterom. Relasjonen mellom Location og CalenderEntry gir tilgang på informasjon om når rommet er ledig.
+
+
+________________
+Krav 11:
+Visning. Kalenderklienten skal vise en ukekalender der alle avtaler og møter i den
+ansattes personlige kalender vises. Det skal være enkelt å bla mellom ukene.
+
+
+Calendar klassen samler alle CalendarEntry - radene for en user.
+
+
+Krav 12:
+Spore møteinnkallinger. Kalenderklienten skal indikere i ukekalenderen om a) en
+møteinnkalling venter på svar fra en eller flere deltakere, b) en eller flere
+møtedeltakere har avslått møteinnkalling, eller c) om alle innkalte har godtatt
+møteinnkallingen.
+
+
+Dette blir tatt hånd om av State - feltet under “is in” relasjonen mellom Calendar og CalendarEntry.
+
+
+Krav 13:
+Vis flere kalendere. Det skal være mulig å vise andre ansattes avtaler sammen med sine
+egne i kalenderklienten.
+
+
+“Shows” relasjonen mellom user og Calendar gir mulighet for å requeste andres kalendere for å bli vist sammen med ditt eget view (representert med “owns” relasjonen.
