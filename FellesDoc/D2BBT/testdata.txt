@@ -36,6 +36,6 @@
 	Skal det være mulig, eller må man bruke ny avtale/møte-knappene?
 
 "Unødvendig mye vinduer"
-	Noen synes det var veldig mange vinduer og klikke seg gjennom, dette kan fikses ved at man kan avvise/akseptere møtet på meldinger, og at man kan fjerne folk som ikke kan komme på møtet man har laget. Dette gjøres da sammen med en vis-knapp mest sannsynlig.
+	Noen synes det var veldig mange vinduer og klikke seg gjennom, dette kan fikses ved at man kan avvise/akseptere møtet på meldinger, og at man kan fjerne folk som ikke kan komme på møtet man har laget. Dette gjøres da sammen med en vis-knapp mest sannsynlig. En annen ting som kan gjøres er at man kan få opp en dropbox når man skal velge rom og hvis man velger ett av rommene som er der kommer det opp beskrivelse, kapasitet og hvor det er under, i stedet for at man må inn på et nytt vindu. Er også mulig å legge hele brukere-vinduet i en droppbox i stedet for å lage det til et nytt vindu.
 	
 
