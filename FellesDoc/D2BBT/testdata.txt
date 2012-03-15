@@ -1,6 +1,9 @@
 "Skjønte ikke sluttid"
 	Sluttiden blir automatisk satt til starttid+1t, det virket som dette ble oppfattet som uintuitivt. Vi har vurdert å ikke gjøre noe med dette ettersom det er standard og har valgt å skylde det på papirprototypens post-it formidling.
 
+"Skrev sluttid f¿rst"
+	NŒr sluttid ble skrevet inn f¿rst og sŒ starttid, skal da sluttiden endres til starttid+1 eller skal den bli stŒende? Kan v¾re lurt at man heller legger til sluttid sŒ en kan skrive slutt/startid i f¿rste boks?
+
 "Feilmelding på manglende sted?"
 	Skal det komme en feilmelding når brukeren prøver å lage avtale eller møte uten å ha valgt sted? Vi må sjekke specs. Specs sier at sted ikke skal være påkrevd. Feilmelding skal ikke komme på avtaler. Må ha sted på møter?
 
@@ -19,11 +22,20 @@
 "møterom-seleksjon har ingen avbryt-knapp"
 	Dette må ordnes.
 
+"Booke rom"
+	Skal det v¾re sŒnn at f¿rste rom er markert nŒr man gŒr inn pŒ velge rom, eller skal ingen v¾re markert? Kan ordnes med avbryt-knapp.
+
 "[...] knappen på stedsfeltet burde hete "rom", ettersom det var uklart at man kunne trykke på selve feltet og skrive selv."
 	tenke på hvordan dette skal løses.
 
 "systemet viser alle møterom, ikke bare de ledige i et gitt tidspunkt."
 	Hvordan skal vi håndtere dette? Bare vise ledige møterom.
 	Dette er et KTN-problem, men kompleksiteten er relativt stor.
+
+"Legge inn avtale ved Œ trykke i kalender"
+	Skal det v¾re mulig, eller mŒ man bruke ny avtale/m¿te-knappene?
+
+"Un¿dvendig mye vinduer"
+	Noen synes det var veldig mange vinduer og klikke seg gjennom, dette kan fikses ved at man kan avvise/akseptere m¿tet pŒ meldinger, og at man kan fjerne folk som ikke kan komme pŒ m¿tet man har laget. Dette gj¿res da sammen med en vis-knapp mest sannsynlig.
 	
 
