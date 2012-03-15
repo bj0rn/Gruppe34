@@ -6,8 +6,6 @@
 <attribute is_hidden="false" is_key="false" name="Password" type="Text"/>
 <attribute is_hidden="false" is_key="false" name="Name" type="String"/>
 <attribute is_hidden="false" is_key="false" name="Age" type="Integer"/>
-<attribute is_hidden="false" is_key="false" name="Position" type="String"/>
-<attribute is_hidden="false" is_key="false" name="Company" type=""/>
 <attribute is_hidden="false" is_key="false" name="Phone_number" type=""/>
 <attribute is_hidden="false" is_key="false" name="Email" type=""/>
 </attributes>
@@ -46,6 +44,8 @@
 <entity id="7" is_weak="false" name="Room" x="565" y="265">
 <attributes>
 <attribute is_hidden="false" is_key="false" name="RoomName" type=""/>
+<attribute is_hidden="false" is_key="false" name="Description" type=""/>
+<attribute is_hidden="false" is_key="false" name="Capacity" type=""/>
 </attributes>
 </entity>
 <diamond id="20" is_weak="false" name="is at" x="541" y="50">
@@ -78,7 +78,7 @@
 </text>
 </comment>
 <line cardinality_string="" has_u="true" id="12" is_weak="false" role="" style="1" turned="false">
-<connection connection_side="1" direction="1" object_id="7" relation_point_x="603" relation_point_y="265"/>
+<connection connection_side="1" direction="1" object_id="7" relation_point_x="604" relation_point_y="265"/>
 <connection connection_side="3" direction="1" object_id="9" relation_point_x="558" relation_point_y="223"/>
 </line>
 <line cardinality_string="" has_u="true" id="13" is_weak="false" role="" style="1" turned="false">
@@ -106,7 +106,7 @@
 <connection connection_side="3" direction="1" object_id="26" relation_point_x="287" relation_point_y="189"/>
 </line>
 <line cardinality_string="(1,1)" has_u="false" id="31" is_weak="false" role="" style="0" turned="false">
-<connection connection_side="1" direction="1" object_id="0" relation_point_x="86" relation_point_y="282"/>
+<connection connection_side="1" direction="1" object_id="0" relation_point_x="87" relation_point_y="282"/>
 <connection connection_side="0" direction="0" object_id="30" relation_point_x="64" relation_point_y="164"/>
 </line>
 <line cardinality_string="(1,1)" has_u="false" id="32" is_weak="false" role="" style="0" turned="false">
@@ -126,7 +126,7 @@
 <connection connection_side="1" direction="1" object_id="9" relation_point_x="558" relation_point_y="193"/>
 </line>
 <line cardinality_string="(0,n)" has_u="false" id="57" is_weak="false" role="" style="0" turned="false">
-<connection connection_side="0" direction="0" object_id="0" relation_point_x="39" relation_point_y="353"/>
+<connection connection_side="0" direction="0" object_id="0" relation_point_x="39" relation_point_y="342"/>
 <connection connection_side="3" direction="1" object_id="56" relation_point_x="20" relation_point_y="224"/>
 </line>
 <line cardinality_string="(0,n)" has_u="false" id="58" is_weak="false" role="" style="0" turned="false">
