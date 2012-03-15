@@ -5,9 +5,18 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.smartcardio.ATR;
+
+import com.sun.xml.internal.fastinfoset.algorithm.IEEE754FloatingPointEncodingAlgorithm;
+
+import nu.xom.Attribute;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -31,34 +40,102 @@ public class GenericXmlSerializer {
 		System.out.println(fromXml(xml));	
 	}
 	
-	public static String toXmlSimple(Object obj) throws IllegalArgumentException, IllegalAccessException {
-		
-		Class < ? extends Object> clazz = obj.getClass();
-		
-		Field[] fields = clazz.getDeclaredFields();
-		
-		for (Field field : fields) {
-			
-			field.getName();
-			field.setAccessible(true);
-			Object value = field.get(obj);
-			field.setAccessible(false);
-			
-			 if (value.getClass().isInstance(new Integer())) {
-					
-			} else if (value.getClass().isInstance(new String())) {
-				
-			} else if (value.getClass().isInstance(new Double())) {
-				
-			} else if (value.getClass().isInstance(obj))
-			
-			
-			
-			
-		}
-		
-		return null;
-	}
+	
+	
+	/**
+	   * @param type the type to check.
+	   *
+	   * @return Returns <code>true</code> if <code>type</code> is a iterable type, <code>false</code> otherwise.
+	   */
+	  public static boolean isIterable(Type type) {
+	    if ( type instanceof Class && isIterableClass( ( Class ) type ) ) {
+	      return true;
+	    }
+	    if ( type instanceof ParameterizedType ) {
+	      return isIterable( ( ( ParameterizedType ) type ).getRawType() );
+	    }
+	    if ( type instanceof WildcardType ) {
+	      Type[] upperBounds = ( ( WildcardType ) type ).getUpperBounds();
+	      return upperBounds.length != 0 && isIterable( upperBounds[0] );
+	    }
+	    return false;
+	  }
+
+	  /**
+	   * Checks whether the specified class parameter is an instance of a collection class.
+	   *
+	   * @param clazz <code>Class</code> to check.
+	   *
+	   * @return <code>true</code> is <code>clazz</code> is instance of a collection class, <code>false</code> otherwise.
+	   */
+	  private static boolean isIterableClass(Class<?> clazz) {
+	    ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+	    computeClassHierarchy( clazz, classes );
+	    return classes.contains( Iterable.class );
+	  }
+
+	  /**
+	   * Get all superclasses and interfaces recursively.
+	   *
+	   * @param clazz The class to start the search with.
+	   * @param classes List of classes to which to add all found super classes and interfaces.
+	   */
+	  private static void computeClassHierarchy(Class<?> clazz, ArrayList<Class<?>> classes) {
+	    for ( Class current = clazz; current != null; current = current.getSuperclass() ) {
+	      if ( classes.contains( current ) ) {
+	        return;
+	      }
+	      classes.add( current );
+	      for ( Class currentInterface : current.getInterfaces() ) {
+	        computeClassHierarchy( currentInterface, classes );
+	      }
+	    }
+	  }
+	
+	  
+	  public static String toXmlSimple(Object obj) throws IllegalArgumentException, IllegalAccessException{
+		  Class <? extends Object> clazz = obj.getClass();
+		  return toXmlSimple(obj, true).toXML();
+	  }
+	  
+	  
+	  //TODO: How to handle cyclic shit
+	  public static Element toXmlSimple(Object obj, boolean signature) throws IllegalArgumentException, IllegalAccessException{
+		  Class <? extends Object> clazz = obj.getClass();
+		  Element root = new Element(clazz.getName());
+		  Attribute attr = new Attribute("type", "object");
+		  root.addAttribute(attr);
+		  Field[] fields = clazz.getDeclaredFields();
+		  for(Field field: fields){
+			  //Get value
+			  field.setAccessible(true);
+			  Object value = field.get(obj);
+			  field.setAccessible(false);
+			  Element tmp = null;
+			  if(!isIterable(field.getGenericType())){
+				  //ordinary field
+				  tmp = new Element(field.getName());
+				  tmp.addAttribute(new Attribute("type", "field"));
+				  //TODO: Handle null values 
+				  tmp.appendChild(value.toString());
+				  root.appendChild(tmp);
+				  //continue;
+			  }else{
+				  //New object(s)
+				  for(Object t : (Iterable)value){
+					  System.out.println("Hei");
+					  tmp = toXmlSimple(t, true);
+					  root.appendChild(tmp);
+				  }
+			  }
+		  }
+		  
+		  
+		  return root;
+	  }
+	  
+	
+	 
 	
 	public static String toXmlDeep(Object obj) {
 		
