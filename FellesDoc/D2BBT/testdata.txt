@@ -1,0 +1,29 @@
+"Skjønte ikke sluttid"
+	Sluttiden blir automatisk satt til starttid+1t, det virket som dette ble oppfattet som uintuitivt. Vi har vurdert å ikke gjøre noe med dette ettersom det er standard og har valgt å skylde det på papirprototypens post-it formidling.
+
+"Feilmelding på manglende sted?"
+	Skal det komme en feilmelding når brukeren prøver å lage avtale eller møte uten å ha valgt sted? Vi må sjekke specs. Specs sier at sted ikke skal være påkrevd. Feilmelding skal ikke komme på avtaler. Må ha sted på møter?
+
+"flere møter/avtaler på samme tidspunkt?"
+	Dette skal være lov.
+
+"pga papir ble håndteringen av datepicker feiltolket"
+	Dette ordner seg når vi ikke har A4 ark med utskrift av bildene på.
+
+"datoer vises ikke på ukeskalenderen"
+	Skal ordne.
+
+"starter dagen kl 07?"
+	Fikse scrollbaren. Default view satt til 07-16kl.
+
+"møterom-seleksjon har ingen avbryt-knapp"
+	Dette må ordnes.
+
+"[...] knappen på stedsfeltet burde hete "rom", ettersom det var uklart at man kunne trykke på selve feltet og skrive selv."
+	tenke på hvordan dette skal løses.
+
+"systemet viser alle møterom, ikke bare de ledige i et gitt tidspunkt."
+	Hvordan skal vi håndtere dette? Bare vise ledige møterom.
+	Dette er et KTN-problem, men kompleksiteten er relativt stor.
+	
+

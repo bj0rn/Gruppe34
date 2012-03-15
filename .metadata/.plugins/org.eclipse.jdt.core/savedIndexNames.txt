@@ -1,1 +1,0 @@
-INDEX VERSION 1.126+C:\Users\Eivind\Desktop\Unistuff\Fellesprosjekt\Git\Gruppe34\.metadata\.plugins\org.eclipse.jdt.core
