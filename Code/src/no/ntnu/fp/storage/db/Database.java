@@ -8,9 +8,9 @@ import java.sql.SQLException;
 public abstract class Database {
 	//Fields 
 	private String driver = "org.gjt.mm.mysql.Driver";
-	private String host = "jdbc:mysql://mysql.stud.ntnu.no/batunges_data";
-	private String user = "batunges_uber13";
-	private String pass = "uber13";
+	private String host = "jdbc:mysql://mysql.stud.ntnu.no/batunges_Gruppe34";
+	private String user = "batunges_uber34";
+	private String pass = "uber34";
 	private Connection connect;
 	
 	//Constructor

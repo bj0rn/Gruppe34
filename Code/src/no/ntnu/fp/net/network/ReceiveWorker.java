@@ -11,17 +11,17 @@ import no.ntnu.fp.net.co.Connection;
 
 public class ReceiveWorker extends Thread {
 	//Fields
-	private Socket c;
-	private BlockingQueue q;
+	private Socket mySocket;
+	private BlockingQueue<String> inQueue;
 	private DataInputStream is;
-	private DataOutputStream os;
+	//private DataOutputStream os;
 	//Constructor
-	public ReceiveWorker(Socket c){
-		this.c = c;
+	public ReceiveWorker(Socket mySocket){
+		this.mySocket = mySocket;
 		//this.q = q;
 		try {
-			os = new DataOutputStream(c.getOutputStream());
-			is = new DataInputStream(c.getInputStream());
+			//os = new DataOutputStream(c.getOutputStream());
+			is = new DataInputStream(mySocket.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -31,17 +31,19 @@ public class ReceiveWorker extends Thread {
 	
 	public void run(){
 		while(true){
-			System.out.println("hei");
 			try {
-				//Does it block ? YESS!!!!
-				String s = is.readLine();
-				System.out.println(s);
-				//q.add(s);
+				//This blocks, no need to sleep 
+				String xml = is.readLine(); //TODO: Change this to readUTF
+				System.out.println("Adding job");
+				inQueue.put(xml);
 				System.out.println("Receiving job");
 			} catch (ConnectException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
