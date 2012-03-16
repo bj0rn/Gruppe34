@@ -1,56 +1,66 @@
-CREATE TABLE "User" 
+CREATE TABLE User
 (Username Varchar(20) NOT NULL,
 Password Varchar(20) NOT NULL,
 Name Varchar(50) NOT NULL,
 Age Int NOT NULL,
 PhoneNumber Int NOT NULL,
 Email Varchar(30) NOT NULL,
-PRIMARY KEY(Username))
+PRIMARY KEY(Username));
 
-CREATE TABLE "Calendar"
+CREATE TABLE Calendar
 (CalendarID Int NOT NULL,
 Username Varchar(20),
 PRIMARY KEY(CalendarID),
-FOREIGN KEY(Username) references User(Username))
+FOREIGN KEY(Username) references User(Username)
+        ON UPDATE CASCADE ON DELETE CASCADE);
 
-CREATE TABLE "Shows"
+CREATE TABLE Shows
 (Username Varchar(20),
 CalendarID Int,
 PRIMARY KEY(Username, CalendarID),
-FOREIGN KEY(Username) references User(Username),
-FOREIGN KEY(CalendarID) references Calendar(CalendarID))
+FOREIGN KEY(Username) references User(Username)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+FOREIGN KEY(CalendarID) references Calendar(CalendarID)
+        ON UPDATE CASCADE ON DELETE CASCADE);
 
-CREATE TABLE "CalendarEntry"
+CREATE TABLE Location
+(LocationID int NOT NULL,
+PRIMARY KEY(LocationID));
+
+CREATE TABLE CalendarEntry
 (CalendarEntryID Int NOT NULL,
 TimeStart Datetime,
 TimeEnd Datetime,
-TimeCreated Datetime NOT NULL DEFAULT GET_DATE(),
+TimeCreated Datetime,
 Description Varchar(100),
 EntryType ENUM('Meeting', 'Appointment'),
 LocationID Int,
-PRIMARY KEY(CalendarEntryID)
-FOREIGN KEY(LocationID) references Location)
+PRIMARY KEY(CalendarEntryID),
+FOREIGN KEY(LocationID) references Location(LocationID)
+        ON UPDATE CASCADE);
 
-CREATE TABLE "Contains"
+CREATE TABLE Contains
 (Role Enum("Owner", "Participant") NOT NULL,
-State Enum("Accepted", "Rejected", "Pending") NOT NULL
+State Enum("Accepted", "Rejected", "Pending") NOT NULL,
 CalendarID Int,
 CalendarEntryID Int,
 PRIMARY KEY(CalendarID, CalendarEntryID),
-FOREIGN KEY(CalendarID) references Calendar(CalendarID),
-FOREIGN KEY(CalendarEntryID) references CalendarEntry(CalendarEntryID))
+FOREIGN KEY(CalendarID) references Calendar(CalendarID)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+FOREIGN KEY(CalendarEntryID) references CalendarEntry(CalendarEntryID)
+        ON UPDATE CASCADE ON DELETE CASCADE);
 
-CREATE TABLE "Location"
-(LocationID int NOT NULL,
-PRIMARY KEY(LocationID))
-
-CREATE TABLE "Place"
+CREATE TABLE Place
 (Description Varchar(100),
-FOREIGN KEY(LocationID) references Location(LocationID))
+LocationID INT NOT NULL,
+PRIMARY KEY (LocationID),
+FOREIGN KEY(LocationID) references Location(LocationID)
+        ON UPDATE CASCADE ON DELETE CASCADE);
 
-CREATE TABLE "ROOM"
-(RoomName Varchar(20) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Room
+(RoomName Varchar(20) NOT NULL PRIMARY KEY,
 Description Varchar(100),
 Capacity Int NOT NULL,
-FOREIGN KEY(LocationID) references Location(LocationID))
-
+LocationID INT NOT NULL,
+FOREIGN KEY(LocationID) references Location(LocationID)
+        ON UPDATE CASCADE ON DELETE CASCADE);
