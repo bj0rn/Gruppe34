@@ -1,6 +1,5 @@
 # Ignore eclipse artifacts
 .settings
-.classpath
 .metadata
 
 # Ignore LaTeX files
