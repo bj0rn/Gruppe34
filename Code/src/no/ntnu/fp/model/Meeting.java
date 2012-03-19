@@ -1,7 +1,7 @@
 package no.ntnu.fp.model;
 
 
-public class Meeting {
+public class Meeting extends CalendarEntry{
 	private ModelChangeListener modelChangeListener;
 	private List<Participants> participants;
 	
