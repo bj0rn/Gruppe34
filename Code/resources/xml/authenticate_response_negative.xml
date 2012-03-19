@@ -1,0 +1,7 @@
+<response>
+	<header>
+		<method>login</method>
+		<status>401</status>
+		<message>not authenticated</message>
+	</header>
+</response>

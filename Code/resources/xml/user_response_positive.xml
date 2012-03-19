@@ -1,0 +1,50 @@
+<response>
+	<header>
+		<method>get_user</method>
+		<status>200</status>
+	</header>
+	<data>
+		<user>
+			<id>"..."</id>
+			<username>"..."</username>
+			<name>"..."</name>
+			<phone_number>"..."</phone_number>
+			<email>"..."</email>
+			<calendar>
+				<id>"..."</id>
+				<calendar_entries>
+					<calendar_entry>
+						<id>"..."</id>
+						<type>meeting</type> or <type>appointment</type>
+						<description>"..."</description>
+						<owner>"..."</owner>
+						<location>
+							<room>
+								<name>"..."</name>
+								<description>"..."</description>
+								<capacity>"..."</capacity>
+							</room>
+							or
+							<place>
+								<description>"..."</description>
+							</place>
+						</location>
+						<participants> if type = meeting
+							<participant>
+								<id>"..."</id>
+								<state>"..."</state>
+								<user>"..."</user>
+							</participant>
+						</participants>
+					</calendar_entry>
+				</calendar_entries>
+			</calendar>
+			<notifications>
+				<notification>
+					<type>invite</type> or <type>reply</type>
+					<participant>"..."</participant>
+				</notification>
+			</notifications>
+		</user>
+	</data>
+</response>

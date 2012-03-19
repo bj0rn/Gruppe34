@@ -1,0 +1,12 @@
+<request>
+	<header>
+		<method>get_user</method>
+		<authenticate>
+			<user>"username"</user>
+			<pass>"passhash"</pass>
+		</authenticate>
+	</header>
+	<data>
+		<user>"username"</user>
+	</data>
+</request>
