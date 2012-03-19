@@ -12,18 +12,14 @@ Databasen inneholder informasjon som kan verifisere brukere (Username Password) 
 
 
 Krav 2:
-Legge inn avtale. Ansatte skal kunne legge inn avtaler i den personlige kalenderen sin.
-En avtale legges inn på avtaledato med et start- og sluttidspunkt, samt en kort
-beskrivelse av avtalen ("Bil på verksted") og eventuelt sted for avtalen ("Strandveien
-Auto").
+Legge inn avtale. Ansatte skal kunne legge inn avtaler i den personlige kalenderen sin. En avtale legges inn på avtaledato med et start- og sluttidspunkt, samt en kort beskrivelse av avtalen ("Bil på verksted") og eventuelt sted for avtalen ("Strandveien Auto").
 
 
 CalendarEntry tabellen inneholder felt for start- og slutttidspunkt, felt for beskrivelse (Henholdsvis TimeStart, TimeEnd og Descripton feltene), og en relasjon til en tabell kalt Location for å holde orden på sted. (Sted ligger i Place tabellen som er subklasse til Location)Hver CalendarEntry rad er knyttet til den spesifikke brukeren som oppretter raden.
 
 
 Krav 3:
-Slette avtale. Ansatte skal kunne slette en avtale som ligger i den personlige
-kalenderen sin.
+Slette avtale. Ansatte skal kunne slette en avtale som ligger i den personlige kalenderen sin.
 
 
 Hver avtale er representert som en CalendarEntry i databasen. En bruker skal ha full kontroll over avtaler som han har laget, inkludert å slette dem. 
@@ -38,11 +34,7 @@ En bruker skal kunne gå inn i og endre hvert felt bortsett ifra “timeCreated�
 
 
 Krav 5:
-Kalle inn til møte. En ansatt skal kunne kalle andre ansatte i Firma X inn til et møte.
-Den som kaller inn til møte kalles en møteleder. En ansatt skal kunne kalle inn til
-møte på samme måte som han/hun legger ny avtale inn i personlig kalender. I tillegg
-til feltene for en vanlig avtale, inneholder også møteinnkallingen en liste over innkalte
-møtedeltakere.
+Kalle inn til møte. En ansatt skal kunne kalle andre ansatte i Firma X inn til et møte. Den som kaller inn til møte kalles en møteleder. En ansatt skal kunne kalle inn til møte på samme måte som han/hun legger ny avtale inn i personlig kalender. I tillegg til feltene for en vanlig avtale, inneholder også møteinnkallingen en liste over innkalte møtedeltakere.
 
 
 En User skal kunne oprette en rad i Meeting tabellen på samme måte som en avtale, og bli satt som “leader” for “Role” feltet i “Is in” - relasjonen mellom Calendar og CalendarEntry, og bruke “Owns” relasjonen mellom User og Calendar. Han skal også kunne invitere andre til møtet, de skal bli satt som “Participant” i “Role” feltet i “Is in” relasjonen. Kun den som har “Leader” i Role i “is in” relasjonen skal kunne endre feltene innenfor møtet. CalendarEntry - objektet skal også ha en liste over alle som er assosiert med møtet.
@@ -80,10 +72,7 @@ Når en leder avlyser et møte, skal det sendes ut en melding til alle deltakere
 
 
 Krav 9:
-Melde avbud for møte. En ansatt kan melde avbud på en møteinnkalling ved å slette
-avtalen i sin personlige kalender. Når en ansatt melder avbud, sendes melding til alle
-de andre møtedeltakerne. Møteleder kan da velge om møtet skal avlyses eller om
-han/hun skal endre tidspunkt på møtet.
+Melde avbud for møte. En ansatt kan melde avbud på en møteinnkalling ved å slette avtalen i sin personlige kalender. Når en ansatt melder avbud, sendes melding til alle de andre møtedeltakerne. Møteleder kan da velge om møtet skal avlyses eller om han/hun skal endre tidspunkt på møtet.
 
 
 Når en User melder avbud til en avtale som han står  som participant i, vil “State”-en hans skiftast til rejected, og CalendarEntry-en vil forsvinne fra “Calendar”-raden hans. Det vil også sendes en melding til alle andre som har assosiasjon med det objektet. Den som står som Leader for det møtet vil i tillegg få beskjed om enten å endre TimeStart/TimeEnd for CalendarEntryen, eller å slette det (Avlyse).
