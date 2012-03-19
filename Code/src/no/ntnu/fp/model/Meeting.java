@@ -4,11 +4,13 @@ import java.util.List;
 
 
 public class Meeting extends CalendarEntry{
+	
+	
 	private ModelChangeListener modelChangeListener;
 	private List<Participant> participants;
 	
 	public Meeting(String description){
-		
+		super(description);
 	}
 	
 	public void addParticipant(Participant participant){

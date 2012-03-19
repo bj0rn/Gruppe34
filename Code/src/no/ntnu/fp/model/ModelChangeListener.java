@@ -1,18 +1,12 @@
 package no.ntnu.fp.model;
 
 
-public class ModelChangeListener {
-	private String type;
+public interface ModelChangeListener {
 	
-	public int newModel(String type){
-		return type;
-	}
-	public boolean propertyChange(Model source, String key){
-		
-	}
+	public int newModel(String type);
 	
-	public void distribute(Model source){
-		
-	}
+	public boolean propertyChange(Model source, String key);
+	
+	public void distribute(Model source);
 
 }
