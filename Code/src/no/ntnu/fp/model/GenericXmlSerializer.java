@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.smartcardio.ATR;
@@ -30,6 +31,8 @@ public class GenericXmlSerializer {
 	private static String TYPE_OBJECT = "object";
 	private static String TYPE_FIELD = "field";
 	private static String TYPE_REF = "ref";
+	private static final HashSet <Class<?>> WRAPPER_TYPES = getWrapperTypes();
+	
 	
 	public static void main(String[] args) throws ValidityException, ParsingException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String mockmodel1 = "<no.ntnu.fp.model.MockModel id=\"1\" type=\"object\"><Name type=\"field\">Navn</Name><Age type=\"field\">13</Age></no.ntnu.fp.model.MockModel>";
@@ -40,6 +43,24 @@ public class GenericXmlSerializer {
 		System.out.println(fromXml(xml));	
 	}
 	
+	 public static boolean isWrapperType(Class<?> clazz){
+		 return WRAPPER_TYPES.contains(clazz);
+	    }
+	
+	private static HashSet<Class <?>> getWrapperTypes(){
+		HashSet<Class<?>> ret = new HashSet<Class<?>>();
+	 	ret.add(Boolean.class);
+        ret.add(Character.class);
+        ret.add(Byte.class);
+        ret.add(Short.class);
+        ret.add(Integer.class);
+        ret.add(Long.class);
+        ret.add(Float.class);
+        ret.add(Double.class);
+        ret.add(Void.class);
+        ret.add(String.class);
+        return ret;
+	}
 	
 	
 	/**
@@ -99,7 +120,6 @@ public class GenericXmlSerializer {
 	  }
 	  
 	  
-	  //TODO: How to handle cyclic shit
 	  public static Element toXmlSimple(Object obj, boolean signature) throws IllegalArgumentException, IllegalAccessException{
 		  Class <? extends Object> clazz = obj.getClass();
 		  Element root = new Element(clazz.getName());
@@ -112,7 +132,21 @@ public class GenericXmlSerializer {
 			  Object value = field.get(obj);
 			  field.setAccessible(false);
 			  Element tmp = null;
-			  if(!isIterable(field.getGenericType())){
+			  
+			 
+			 if(isIterable(field.getGenericType())){
+				  //New objects
+				  for(Object t : (Iterable)value){
+					  System.out.println("Hei");
+					  tmp = toXmlSimple(t, true);
+					  root.appendChild(tmp);
+				  }
+			 }else if(!isWrapperType(value.getClass())){
+				 System.out.println("new Object: "+value .getClass().getName());
+				  tmp = toXmlSimple(value, true);
+			  	  root.appendChild(tmp);
+			
+			 }else{
 				  //ordinary field
 				  tmp = new Element(field.getName());
 				  tmp.addAttribute(new Attribute("type", "field"));
@@ -120,17 +154,8 @@ public class GenericXmlSerializer {
 				  tmp.appendChild(value.toString());
 				  root.appendChild(tmp);
 				  //continue;
-			  }else{
-				  //New object(s)
-				  for(Object t : (Iterable)value){
-					  System.out.println("Hei");
-					  tmp = toXmlSimple(t, true);
-					  root.appendChild(tmp);
-				  }
 			  }
 		  }
-		  
-		  
 		  return root;
 	  }
 	  

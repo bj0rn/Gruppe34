@@ -23,6 +23,7 @@ public class TestClass {
 		
 		GenericXmlSerializer xml = new GenericXmlSerializer();
 		String test = xml.toXmlSimple(list);
+		
 		System.out.println(test);
 		
 		

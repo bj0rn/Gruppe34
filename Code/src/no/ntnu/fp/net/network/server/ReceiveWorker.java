@@ -1,4 +1,4 @@
-package no.ntnu.fp.net.network;
+package no.ntnu.fp.net.network.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,8 +1,10 @@
-package no.ntnu.fp.net.network;
+package no.ntnu.fp.net.network.server;
 
+import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
 import no.ntnu.fp.storage.db.Database;
@@ -15,19 +17,25 @@ import no.ntnu.fp.storage.db.Database;
  */
 
 
-public class Worker extends Database implements Runnable {
+public class Worker implements Runnable {
 	//Fields
 	private BlockingQueue<String> inQueue;
-	private HashMap<Integer, Socket> test;
+	private HashMap<String, Socket> clients;
+	private Scanner input;
+	private DataOutputStream os;
+	
+	private ServerController serverController;
 	
 	
 	//Constructor
-	public Worker(BlockingQueue<String> inQueue, HashMap<Integer, Socket> test){
+	public Worker(BlockingQueue<String> inQueue, HashMap<String, Socket> clients){
 		//Setup connection to db
-		super();
+		//super();
 		System.out.println("The connection is made...");
 		this.inQueue = inQueue;
-		this.test = test;
+		this.clients = clients;
+		input = new Scanner(System.in);
+		serverController = new ServerController();
 	}
 	
 	//Methods
@@ -38,11 +46,11 @@ public class Worker extends Database implements Runnable {
 		while(true){
 			try {
 				//Sleep
-				Thread.currentThread().sleep(5000);
-				System.out.println("Print hei");
+				Thread.currentThread().sleep(500);
 				if(!inQueue.isEmpty()){
 					String data = inQueue.poll();
 					System.out.println("Data: "+data);
+					handleRequest(data);
 				}
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -54,17 +62,11 @@ public class Worker extends Database implements Runnable {
 	}
 	
 	public void handleRequest(String data){
-		//Determine type of operation
-		//Who requested the operation ? 
-		//Should this thread answer as well ?
-		
-		//I should map all the clients!!!
+		serverController.inspectRequest(data);
 		
 		
 	}
 	
-	private synchronized Socket get(int key){
-		return test.get(key);
-	}
+	
 	
 }

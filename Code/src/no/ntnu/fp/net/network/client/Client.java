@@ -1,9 +1,12 @@
-package no.ntnu.fp.net.network;
+package no.ntnu.fp.net.network.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.BlockingQueue;
+
+import no.ntnu.fp.net.network.TestCommunicationClient;
+import no.ntnu.fp.net.network.server.ReceiveWorker;
 
 
 /**/
@@ -15,7 +18,7 @@ public class Client {
 	
 	//Constructor 
 	public Client(){
-		
+		//Do nothing
 	}
 	
 	public void connect(String host, int port){
@@ -36,7 +39,10 @@ public class Client {
 		(new Thread(new ClientWorker(mySocket, inQueue))).start();
 		//Spawn new receiver 
 		System.out.println("Spawn new receiver");
-		(new Thread(new ReceiveWorker(mySocket))).start();
+		(new Thread(new InternalReceiver(mySocket, inQueue))).start();
+		//(new Thread(new ReceiveWorker(mySocket))).start();
+		System.out.println("Some test shit");
+		(new Thread(new TestCommunicationClient(mySocket))).start();
 		
 	}
 	

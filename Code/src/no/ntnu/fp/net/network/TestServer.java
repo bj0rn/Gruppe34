@@ -1,5 +1,7 @@
 package no.ntnu.fp.net.network;
 
+import no.ntnu.fp.net.network.server.Server;
+
 public class TestServer {
 
 	/**

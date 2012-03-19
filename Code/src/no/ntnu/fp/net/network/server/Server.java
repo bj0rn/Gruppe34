@@ -1,10 +1,11 @@
-package no.ntnu.fp.net.network;
+package no.ntnu.fp.net.network.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import no.ntnu.fp.net.co.Connection;
-import no.ntnu.fp.net.network.Listener;
+
+import no.ntnu.fp.net.network.TestCommunicationServer;
+import nu.xom.Attribute;
 
 
 //Okey.....this is actually a controller, but for now, keep on going
@@ -23,20 +26,20 @@ public class Server implements Runnable{
 	private static int listenPort = 1337;
 	private String addressServer = "localhost";
 	private InetAddress localAddress;
-	private List connectedHosts;
+	private ArrayList<Socket> connectedHosts;
 	private BlockingQueue <String> inQueue;
 	private Socket newSockfd;
 	private ServerSocket sockfd;
-	private List <Socket> connectedClients;
+	private ArrayList<Socket>  connectedClients;
 	private Map<Object, Socket> mapClient;
-	HashMap<Integer, Socket> test;
+	HashMap<String, Socket> clients;
 	
 	private boolean run = true;
 	//Constructor
 	public Server(){
-		connectedClients = new LinkedList<Socket>();
+		connectedClients = new ArrayList<Socket>();
 		inQueue = new LinkedBlockingQueue<String>();
-		test = new HashMap<Integer, Socket>();
+		clients  = new HashMap<String, Socket>();
 	}
 	
 	public void startServer(){
@@ -55,7 +58,9 @@ public class Server implements Runnable{
 	public void run() {
 		startServer();
 		System.out.println("Start the worker thread..");
-		(new Thread(new Worker(inQueue, test))).start();
+		(new Thread(new Worker(inQueue, clients))).start();
+		System.out.println("Test communication thread started");
+		(new Thread(new TestCommunicationServer(clients, connectedClients))).start();
 		while(true){
 			try {
 				System.out.println("Waiting for connections");
@@ -64,8 +69,8 @@ public class Server implements Runnable{
 				connected();
 				System.out.println("Spawn a new client handler");
 				//Spawn new clientHandler
-				(new Thread(new ClientHandler(newSockfd, connectedClients.size(), inQueue))).start();
-				put(connectedClients.size(), newSockfd);
+				(new Thread(new ClientHandler(newSockfd, connectedClients.size(), inQueue,clients ))).start();
+				//put(connectedClients.size(), newSockfd);
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -81,10 +86,6 @@ public class Server implements Runnable{
 		
 	}
 	
-	private synchronized void put(int id, Socket socket){
-		//mapClient.put(new Integer(id), socket);
-		test.put(id, socket);
-	}
 	
 	
 }
