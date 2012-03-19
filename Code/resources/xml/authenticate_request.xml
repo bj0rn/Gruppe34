@@ -1,0 +1,9 @@
+<request>
+	<header>
+		<method>login</method>
+		<authenticate>
+			<user>"username"</user>
+			<pass>"passhash"</pass>
+		</authenticate>
+	</header>
+</request>

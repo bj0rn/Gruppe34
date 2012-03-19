@@ -1,0 +1,7 @@
+<response>
+	<header>
+		<method>login</method>
+		<status>200</status>
+		<message>authenticated</message>
+	</header>
+</response>
