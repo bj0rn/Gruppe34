@@ -1,5 +1,7 @@
 package no.ntnu.fp.model;
 
+import java.util.List;
+
 
 public class User {
 	private String username;
