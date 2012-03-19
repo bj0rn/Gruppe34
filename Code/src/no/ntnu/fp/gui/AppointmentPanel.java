@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class AppointmentPanel extends JPanel{
-	private JLabel description, startTime, endTime, location;
+	private JLabel appointment, description, startTime, endTime, location;
 	private JTextField descComp, startComp, endComp;
 	private JComboBox locComp;
 	//private Room[] rooms =
@@ -23,6 +23,7 @@ public class AppointmentPanel extends JPanel{
 	protected GridBagConstraints constraints;
 	
 	public AppointmentPanel(){
+		appointment = new JLabel("Avtale");
 		description = new JLabel("Beskrivelse");
 		startTime = new JLabel("Start Tid");
 		endTime = new JLabel("Slutt Tid");
@@ -43,33 +44,34 @@ public class AppointmentPanel extends JPanel{
 		
 		constraints.gridx = 0;
 		constraints.gridy = 0;
+		add(appointment, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 1;
 		add(description, constraints);
 		constraints.gridx = 0;
-		constraints.gridy = 1;
+		constraints.gridy = 2;
 		add(startTime, constraints);
 		constraints.gridx = 0;
-		constraints.gridy = 2;
+		constraints.gridy = 3;
 		add(endTime, constraints);
 		constraints.gridx = 0;
-		constraints.gridy = 3;
+		constraints.gridy = 4;
 		add(location, constraints);
 		constraints.gridx = 1;
-		constraints.gridy = 0;
+		constraints.gridy = 1;
 		add(descComp, constraints);
 		constraints.gridx = 1;
-		constraints.gridy = 1;
+		constraints.gridy = 2;
 		add(startComp, constraints);
 		constraints.gridx = 1;
-		constraints.gridy = 2;
+		constraints.gridy = 3;
 		add(endComp, constraints);
 		constraints.gridx = 0;
-		constraints.gridy = 4;
+		constraints.gridy = 5;
 		add(save, constraints);
 		constraints.gridx = 1;
-		constraints.gridy = 4;
+		constraints.gridy = 5;
 		add(delete, constraints);
-		
-		
 		
 	}
 	
@@ -78,12 +80,11 @@ public class AppointmentPanel extends JPanel{
 		JFrame frame = new JFrame("Frame"); //create a frame
 		
 		AppointmentPanel panel = new AppointmentPanel();
-		frame.add(panel);
-		//frame.setContentPane(contentPane)
+		frame.add(panel); //adder alt i konstrukt¿ren
+		
 		frame.setLocationRelativeTo(null); //center a frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true); //display the frame
-		//frame.add(Ap)
 		
 		frame.pack();
 	}
