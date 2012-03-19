@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sound.sampled.ReverbType;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import no.ntnu.fp.net.admin.Log;
@@ -35,7 +37,7 @@ import no.ntnu.fp.net.cl.KtnDatagram.Flag;
  * @see no.ntnu.fp.net.cl.ClSocket
  */
 public class ConnectionImpl extends AbstractConnection {
-
+	
     /** Keeps track of the used ports for each server port. */
     private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
 
@@ -46,7 +48,19 @@ public class ConnectionImpl extends AbstractConnection {
      *            - the local port to associate with this connection
      */
     public ConnectionImpl(int myPort) {
-        throw new NotImplementedException();
+        //Call the abstractionConnection 
+    	/*
+    	 * InternalQueue
+    	 * externalQueue
+    	 * nextSequence number 
+    	 * disconnectRequest = null
+    	 * lastDataPacketSent = null
+    	 * lastValidPacketReceived = null
+    	 * state = State.Closed
+    	 * */
+    	super();
+        this.myPort = myPort;
+        this.myAddress = getIPv4Address();
     }
 
     private String getIPv4Address() {
@@ -72,8 +86,43 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#connect(InetAddress, int)
      */
     public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
-            SocketTimeoutException {
-        throw new NotImplementedException();
+    SocketTimeoutException {
+    	
+    	KtnDatagram packetSent = constructInternalPacket(Flag.FIN);
+    	KtnDatagram packetRecv;
+    	
+    	packetSent.
+    	
+    	packetSent.setDest_port(remotePort);
+    	packetSent.setDest_addr(remoteAddress.getHostAddress());
+    	packetSent.setFlag(Flag.FIN);
+    	System.out.println("Debugging information");
+    	System.out.println("Sequence number: " + nextSequenceNo);
+    	System.out.println("Try sending: ");
+    	
+    		
+		//Will wait for an response (Ack)
+		System.out.println("Packet is sent");
+		this.state = State.SYN_SENT;
+		
+		//Need to send the packet, but how ? 
+		
+		//packetRecv = sendAck(packetToAck, synAck);
+		if(packetRecv.getFlag() == Flag.SYN_ACK){
+			//this.state = State.
+			System.out.println("SYS_ACK message is received");
+			packetSent = constructInternalPacket(Flag.ACK);
+			packetSent.setDest_addr(packetRecv.getSrc_addr());
+			packetSent.setDest_port(packetRecv.getSrc_port());
+			sendAck(packetSent, false);
+			this.state = State.ESTABLISHED;
+			System.out.println("Connection is established");
+		}
+    	
+    	System.out.println("What to do ?");
+    	
+    	
+    	
     }
 
     /**
@@ -83,7 +132,38 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
-        throw new NotImplementedException();
+        KtnDatagram packetRecv;
+        KtnDatagram packetSend;
+        //Need to bind port, but for now; use static
+        if((packetRecv = receivePacket(true)) != null){
+    		if(packetRecv.getFlag() == Flag.FIN){
+        		System.out.println("Got the flag!!!");
+        		//Changing the state to SYN_RECV
+        		state = State.SYN_RCVD;
+        		//Sending syn ack 
+        		packetSend = constructInternalPacket(Flag.SYN_ACK);
+        		packetSend.setDest_addr(packetRecv.getSrc_addr());
+        		packetSend.setDest_port(packetRecv.getSrc_port());
+        		sendAck(packetSend, true);
+        		System.out.println("SYS ACK sent");
+        		//Block: Wait for response
+        		System.out.println("Block: Receive Ack");
+        		
+        		//There is a receiveAck function Use that instead
+        		
+        		
+        		packetRecv = receivePacket(true);
+        		if(packetRecv.getFlag() == Flag.ACK){
+        			System.out.println("Got ACK! Connection is established");
+        			this.state = State.ESTABLISHED;
+        		}
+        		
+    		}
+    		
+    	}
+    	return this;
+        
+        
     }
 
     /**
@@ -99,7 +179,21 @@ public class ConnectionImpl extends AbstractConnection {
      * @see no.ntnu.fp.net.co.Connection#send(String)
      */
     public void send(String msg) throws ConnectException, IOException {
-        throw new NotImplementedException();
+        KtnDatagram packetSend = constructDataPacket(msg);
+        KtnDatagram packetRecv;
+        //Set some error checking ? 
+        
+        
+        //This is very basic: send one packet and wait for ACK
+        //This implementation should be improved
+        
+        
+        //This function will block
+        packetRecv = sendDataPacketWithRetransmit(packetSend);
+        if(packetRecv.getFlag() == Flag.ACK){
+        	System.out.println("Got ACK send");
+        	return;
+        }
     }
 
     /**
@@ -111,7 +205,15 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-        throw new NotImplementedException();
+        
+    	//Again, this implementation sucks
+    	//Remember to handle retransmissions (This is not handled now)
+    	//Handle checksum as well
+    	KtnDatagram packetRecv;
+        KtnDatagram packetSend;
+        packetRecv = receivePacket(false);
+        sendAck(packetRecv, false);
+        return packetRecv.getPayload().toString();
     }
 
     /**
@@ -120,7 +222,11 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#close()
      */
     public void close() throws IOException {
-        throw new NotImplementedException();
+        //4 way handshake
+    	
+    	
+    	System.out.println("Ignore close for now");
+    	
     }
 
     /**
@@ -132,6 +238,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-        throw new NotImplementedException();
+        System.out.println("Ignore is valid for now");
+        return true;
     }
 }
