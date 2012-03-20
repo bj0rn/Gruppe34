@@ -1,16 +1,13 @@
 package no.ntnu.fp.model;
 
 import java.util.Date;
-
-
 import java.beans.PropertyChangeSupport;
 import java.util.Calendar;
 
 public abstract class CalendarEntry {
-	
 	public final static String MEETING = "Meeting";
 	public final static String APPOINTMENT = "Appointment";
-	
+
 	private ModelChangeListener modelChangeListener;
 	private String description;
 	private User owner;
@@ -26,7 +23,6 @@ public abstract class CalendarEntry {
 
 	public CalendarEntry(String description) {
 		this.description = description;
-
 
 	}
 
@@ -104,7 +100,7 @@ public abstract class CalendarEntry {
 
 	public enum CalendarEntryType {
 		MEETING, APPOINTMENT;
-		
+
 		public String toString() {
 			switch (this) {
 			case MEETING:
