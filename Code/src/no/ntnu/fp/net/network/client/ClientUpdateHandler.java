@@ -1,17 +1,17 @@
 package no.ntnu.fp.net.network.client;
 
-import no.ntnu.fp.model.XmlHandler;
+
 
 public class ClientUpdateHandler {
 	//Fields 
 	private Communication communication;
-	private XmlHandler xmlhandler;
+	//private XmlHandler xmlhandler;
 	
 	
 	//Constructor
-	public ClientUpdateHandler(Communication communication, XmlHandler xmlhandler){
+	public ClientUpdateHandler(Communication communication/*, XmlHandler xmlhandler*/){
 		this.communication = communication;
-		this.xmlhandler = xmlhandler;
+		//this.xmlhandler = xmlhandler;
 	}
 	
 	

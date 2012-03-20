@@ -9,7 +9,7 @@ public class User {
 	private String password;
 	private String name;
 	private int age;
-	private String phoneNumber;
+	private int phoneNumber;
 	private String email;
 	
 	private ModelChangeListener modelChangeListener;
@@ -30,6 +30,14 @@ public class User {
 		this.password = password;
 	}
 	
+	public User(String username, String name, int age, int phoneNumber,	String email) {
+		this.username = username;
+		this.name = name;
+		this.age = age;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+	}
+
 	public void setUsername(String username){
 		String oldValue = this.username;
 		this.username = username;
@@ -86,12 +94,12 @@ public class User {
 		return age;
 	}
 	
-	public void setPhoneNumber(String phoneNumber){
-		String oldValue = this.phoneNumber;
+	public void setPhoneNumber(int phoneNumber){
+		int oldValue = this.phoneNumber;
 		this.phoneNumber = phoneNumber;
 		pcs.firePropertyChange(PNUMBER_PROPERT, oldValue, phoneNumber);
 	}
-	public String getPhoneNumber(){
+	public int getPhoneNumber(){
 		return phoneNumber;
 	}
 	
@@ -104,4 +112,12 @@ public class User {
 		return email;
 	}
 
+	public String toString() {
+		return 	"Username: " + username + "\n" 
+		+ 		"Name: " + name + "\n" 
+		+ 		"Age: " + age + "\n" 
+		+ 		"PhoneNumber: " + phoneNumber + "\n"
+		+		"Email: " + email;
+	}
+	
 }

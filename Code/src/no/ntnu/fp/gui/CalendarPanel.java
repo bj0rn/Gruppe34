@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import no.ntnu.fp.model.Calendar;
 
 public class CalendarPanel extends JPanel {
 
@@ -21,6 +24,10 @@ public class CalendarPanel extends JPanel {
 	private JLabel weekLabel;
 	private JLabel yearLabel;
 	
+	private WeekCalendar weekCalendar;
+	
+	private List<Calendar> model;
+	
 	public CalendarPanel() {
 		
 		setLayout(new BorderLayout());
@@ -29,28 +36,39 @@ public class CalendarPanel extends JPanel {
 		JPanel buttons = new JPanel();
 		
 		prevWeekButton = new JButton("<");
-		//prevWeekButton.addActionListener();
-		
-		nextWeekButton = new JButton(">");
-		
-		prevYearButton = new JButton("<");
-		nextYearButton = new JButton(">");
+		prevWeekButton.addActionListener(new PrevWeekAction(this));
+		buttons.add(prevWeekButton);
 		
 		weekLabel = new JLabel("Uke 10");
-		yearLabel = new JLabel("2012");
-		
-		buttons.add(prevWeekButton);
 		buttons.add(weekLabel);
+		
+		nextWeekButton = new JButton(">");
+		nextWeekButton.addActionListener(new NextWeekAction(this));
 		buttons.add(nextWeekButton);
 		
+		prevYearButton = new JButton("<");
+		prevYearButton.addActionListener(new PrevYearAction(this));
 		buttons.add(prevYearButton);
-		buttons.add(yearLabel);
-		buttons.add(nextYearButton);
 		
+		yearLabel = new JLabel("2012");
+		buttons.add(yearLabel);
+		
+		nextYearButton = new JButton(">");
+		nextYearButton.addActionListener(new NextYearAction(this));
+		buttons.add(nextYearButton);
+			
 		add(buttons, BorderLayout.NORTH);
 		
-		addMockImage();
+		weekCalendar = new WeekCalendar();
 		
+	}
+	
+	public List<Calendar> getModel() {
+		return model;
+	}
+	
+	public void setModel(List<Calendar> model) {
+		this.model = model;
 	}
 
 	private void addMockImage() {

@@ -33,7 +33,7 @@ public class Worker implements Runnable {
 		this.inQueue = inQueue;
 		this.clients = clients;
 		input = new Scanner(System.in);
-		serverController = new ServerController();
+		serverController = new ServerController(clients);
 	}
 	
 	//Methods

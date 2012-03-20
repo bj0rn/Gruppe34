@@ -20,7 +20,7 @@
 %TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
 %TCIDATA{BibliographyScheme=Manual}
 %TCIDATA{Created=Monday, January 30, 2012 17:20:46}
-%TCIDATA{LastRevised=Monday, March 19, 2012 13:03:56}
+%TCIDATA{LastRevised=Tuesday, March 20, 2012 10:40:12}
 %TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
 %TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
 %TCIDATA{CSTFile=40 LaTeX article.cst}
@@ -70,19 +70,92 @@ Group 34}
 \maketitle
 \end{titlepage}
 \newpage
+
 \part{The Design}
 
-Login dialogue: \newline \includegraphics[scale=0.5]{Login.png}\newline
-The calendar view: \newline \includegraphics[scale=0.5]{Kalender.png}\newline
-Calendar selection: \newline \includegraphics[scale=0.5]{kalendere.png}\newline
-User selection: \newline \includegraphics[scale=0.5]{brukere.png}\newline
-Appointment edit-dialogue: \newline \includegraphics[scale=0.5]{Avtale.png}\newline
-Datepick dialogue: \newline \includegraphics[scale=0.5]{datepicker.png}\newline
-Meeting invitation dialogue: \newline \includegraphics[scale=0.5]{moteinvite.png}%
-\newline
-Create-a-meeting dialogue: \newline \includegraphics[scale=0.5]{mote.png}\newline
-Meeting room booking dialogue: \newline \includegraphics[scale=0.5]{moterom.png}%
-\newline
+\section{Graphical User Interface}
+
+Login dialogue\{0\}:\newline
+\includegraphics[scale=0.3]{Login.png}\newline
+The calendar view\{1\}: \newline
+\includegraphics[scale=0.3]{Kalender.png}\newline
+Calendar selection\{2\}: \newline
+\includegraphics[scale=0.3]{kalendere.png}\newline
+User selection\{3\}:\newline
+\includegraphics[scale=0.3]{brukere.png}\newline
+Appointment edit-dialogue\{4\}: \newline
+\includegraphics[scale=0.3]{Avtale.png}\newline
+Datepick dialogue\{5\}: \newline
+\includegraphics[scale=0.3]{datepicker.png}\newline
+Meeting invitation dialogue\{6\}: \newline
+\includegraphics[scale=0.3]{moteinvite.png}\newline
+Create-a-meeting dialogue\{7\}: \newline
+\includegraphics[scale=0.3]{mote.png}\newline
+Meeting room booking dialogue\{8\}: \newline
+\includegraphics[scale=0.3]{moterom.png}
+
+\section{State Diagram}
+
+The picture illustrates the diagram while the following block of text
+further explains what has to be pressed as I\ couldn't figure out how to get
+text to appear above the arrows in the program.\newline
+\includegraphics[scale=0.6]{tilstand.png}
+
+Uppercase text describes a feature not visible in the design prototype.
+
+FROM 0:
+
+\qquad \TEXTsymbol{>}1:Login
+
+FROM 1:
+
+\qquad \TEXTsymbol{>}0:LOGOUT
+
+\qquad \TEXTsymbol{>}2:"Kalendere"
+
+\qquad \TEXTsymbol{>}4:"Ny avtale"
+
+\qquad \TEXTsymbol{>}6:VIEW MEETING INVITE
+
+\qquad \TEXTsymbol{>}7:"Nytt m\o te"
+
+FROM 2:
+
+\qquad \TEXTsymbol{>}1:OK/Avbryt
+
+FROM\ 3:
+
+\qquad \TEXTsymbol{>}7:"OK/Avbryt"
+
+FROM 4:
+
+\qquad \TEXTsymbol{>}1:"Lagre/Slett"
+
+\qquad \TEXTsymbol{>}8:[...]
+
+\qquad \TEXTsymbol{>}5:Start/Slutt
+
+FROM 5:
+
+\qquad \TEXTsymbol{>}4 ELLER \TEXTsymbol{>}7:"OK"
+
+FROM 6:
+
+\qquad \TEXTsymbol{>}1:"OK/Avbryt/Slett"
+
+FROM 7:
+
+\qquad \TEXTsymbol{>}3:"Legg til deltager(e)"
+
+\qquad \TEXTsymbol{>}8:[...]
+
+\qquad \TEXTsymbol{>}1:"Lagre/Slett"
+
+\qquad \TEXTsymbol{>}5:Start/Slutt
+
+FROM 8:
+
+\qquad \TEXTsymbol{>}7/4:"OK"
 \newpage
 \part{Testing}
 
@@ -265,11 +338,17 @@ A\# is how many testers that selected \# as their answer to the question.
 \textbf{Q10} & $1$ & $2$ & $0$ & $0$ & $0$ \\ \hline
 \end{tabular}
 \newpage
+
 \part{The Revised Design}
 
 Having completed the tests, the following screens have been visually
 redesigned:
 
-Create-a-meeting dialogue: \newline \includegraphics[scale=0.5]{mote2.png}\newline
+\bigskip 
+
+MANGLER: kalender-view med dato p\aa\ ukedagene og fikset scrollbar
+
+Create-a-meeting dialogue: \newline
+\includegraphics[scale=0.3]{mote2.png}\newline
 
 \end{document}

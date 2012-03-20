@@ -23,7 +23,6 @@ public class Calendar {
 		return entries.remove(appointment);
 	}
 	
-
 	public void addCalendarEntry(CalendarEntry entry) {
 		entries.add(entry);
 	}

@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 import java.util.concurrent.BlockingQueue;
 
 import no.ntnu.fp.net.network.TestCommunicationClient;
-import no.ntnu.fp.net.network.server.ReceiveWorker;
 
 
 /**/
@@ -45,6 +44,7 @@ public class Client {
 		(new Thread(new TestCommunicationClient(mySocket))).start();
 		
 	}
+	
 	
 	
 
