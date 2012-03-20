@@ -17,7 +17,7 @@ public class Calendar {
 	}
 	
 	public Meeting modifyMeeting(Meeting meeting){
-		
+		return null;
 	}
 	
 	public void addAppointment(Appointment appointment){
@@ -29,7 +29,7 @@ public class Calendar {
 	}
 	
 	public Appointment modifyAppointment(Appointment appointment){
-		
+		return null;
 	}
 
 }

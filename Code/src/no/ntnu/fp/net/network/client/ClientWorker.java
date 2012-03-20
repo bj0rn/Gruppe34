@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 
-import com.sun.corba.se.pept.transport.Connection;
+import no.ntnu.fp.model.XmlHandler;
+
+
 
 
 public class ClientWorker implements Runnable {
@@ -45,17 +47,9 @@ public class ClientWorker implements Runnable {
 	
 	
 	public void handle(String xml){
-		//Inspect header
-		if(xml.equals("Update")){
-			System.out.println("Update gui");
-		}
-		else if(xml.equals("Insert")){
-			communication.receive(xml);
-		}
-		//Use Communication to send 
+		String inspect = XmlHandler.inspect(xml);
+		System.out.println("Inspect "+inspect);
 		
-		System.out.println("Not implemented!!!");
-		//Not implemented 
 	}
 
 }

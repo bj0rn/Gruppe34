@@ -1,9 +1,14 @@
 package no.ntnu.fp.net.network.server;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import no.ntnu.fp.storage.db.DatabaseController;
+import no.ntnu.fp.model.*;
 //TODO: Communicate with the db
 public class ServerController {
 	//fields
@@ -11,7 +16,9 @@ public class ServerController {
 	private ArrayList<String> locations;
 	private HashMap<String, Socket> connectedClients;
 	private  ArrayList<String> participants;
-	
+	private DatabaseController databaseController;
+	private DataOutputStream os;
+	private XmlHandler xmlHandler;
 	
 	//Test Protocoll
 	private static String INSERT = "INSERT";
@@ -19,52 +26,54 @@ public class ServerController {
 	private static String DISTRUBUTE = "DISTRUBUTE";
 	private static String GET= "GET";
 	private static String UPDATE = "UPDATE";
-	
+	private static String AUTH = "AUTH";
 	private DistrubutionHandler distrubuteHandler;
 	private XmlToSqlHandler xmltosqlhandler;
-	//TODO: Speaks directly with the database
+	
+	
 	
 	//Constructor
-	public ServerController(){
+	public ServerController(HashMap<String, Socket> clients){
 		//Get users
 		//Get locations
 		xmltosqlhandler = new XmlToSqlHandler();
+		databaseController = new DatabaseController();
+		connectedClients = clients;
 	}
 	
-	//Methods
-	//Methods
-		//TODO: Model with parameters
-	public void addUser(String user){
+	public void authenticate(String clientID, String xml) throws SQLException, IOException{
+		String userData[] = XmlHandler.loginFromXml(xml);
+		Socket sockfd = connectedClients.get(clientID);
+		os = new DataOutputStream(sockfd.getOutputStream());
+		if(databaseController.authenticate(userData[0], userData[1])){
+			connectedClients.remove(clientID);
+			connectedClients.put(userData[1], sockfd);
+			os.writeUTF(XmlHandler.loginSuccessful());
 			
+		}else {
+			os.writeUTF(xmlHandler.loginUnsucessful());
+		}
 	}
+	
+	public void saveMeeting(String xml){
 		
-	public void addLocation(String location){
-			
 	}
+	
+	
+	public void update(String xml){
 		
-	public void unpack(){
-			
 	}
+	
+	
 	
 	public void inspectRequest(String xml){
-		System.out.println("Inspect header");
-		System.out.println("Dispatch");
-		System.out.println("XML: "+xml);
-		if(xml.equals(INSERT)){
-			xmltosqlhandler.insert(xml);
-		}
-		else if(xml.equals(DELETE)){
-			xmltosqlhandler.delete(xml);
-		}
-		else if(xml.equals(DISTRUBUTE)){
-			xmltosqlhandler.distribute(xml);
-		}
-		else if(xml.equals(GET)){
-			xmltosqlhandler.get(xml);
-		}
-		else if(xml.equals(UPDATE)){
-			xmltosqlhandler.update(xml);
-		}
+		
+		
+		String res[] = xml.split(" ",2);
+		System.out.println("Xml: "+res[1]);
+		String test = XmlHandler.inspectMethod(res[1]);
+		System.out.println("Test: "+test);
+		
 		
 	}
 	

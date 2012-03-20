@@ -1,15 +1,14 @@
 package no.ntnu.fp.net.network.client;
 
-import no.ntnu.fp.model.XmlHandler;
 
 public class UpdateHandler {
 	//fields
 	//TODO: Add some model shit
-	private XmlHandler xmlHandler;
+	//private XmlHandler xmlHandler;
 	
 	//Constructor
 	public UpdateHandler(){
-		xmlHandler = new XmlHandler();
+		//xmlHandler = new XmlHandler();
 	}
 	
 	//Methods
