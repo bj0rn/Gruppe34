@@ -62,3 +62,7 @@
 		<calendarEntryID> calendar entry id </calendarEntryId>
 	</data> 
 </request>
+
+
+
+<request><header><method>getUsers</method><authenticate><user>havard</user><pass>test</pass></authenticate></header></request>	
