@@ -36,7 +36,7 @@ public class GenericXmlSerializer {
 		User u2 = new User("Bjorn", "test", 20, 124124, "test@test.com");
 		User u3 = new User("Bjorn", "test", 20, 124124, "test@test.com");
 		User u4 = new User("Bjorn", "test", 20, 124124, "test@test.com");
-
+		
 		List<User> users = new ArrayList<User>();
 		users.add(u1);
 		users.add(u2);
@@ -44,13 +44,13 @@ public class GenericXmlSerializer {
 		users.add(u4);
 
 		String test = toXmlSimple(users);
-
+		
 		ArrayList<User> usersReceive = (ArrayList<User>)fromXml(test);
-
+		
 		for(User u: usersReceive) {
 			System.out.println(u);
 		}
-
+		
 	}
 
 	 public static boolean isWrapperType(Class<?> clazz){
@@ -132,38 +132,38 @@ public class GenericXmlSerializer {
 
 
 	  public static Element toXmlSimple(Object obj, boolean signature) throws IllegalArgumentException, IllegalAccessException{
-
+		  
 		  Class <? extends Object> clazz = obj.getClass();
 
 		  // Create root
 		  Element root = new Element(clazz.getName());
-
+		 
 		  if (obj instanceof Iterable) {
 			  // List<Model>
-
+			  
 			  Attribute attr = new Attribute("type", TYPE_ITERABLE);
 			  root.addAttribute(attr);
-
+			  
 			  for (Object o : (Iterable) obj) {
 				  root.appendChild(toXmlSimple(o, true));
 			  }
 
 		  } else {
 			  // Model
-
+					 
 
 			  Attribute attr = new Attribute("type", TYPE_OBJECT);
 			  root.addAttribute(attr); 
-
+			  
 			  for(Field field: clazz.getDeclaredFields()){
-
+				  
 				  if(!field.isAccessible() && !Modifier.isStatic(field.getModifiers())) {
-
+				  
 					  Object value = getFieldValue(obj, field);
-
+					  
 					  if(value != null) {
 						  Element elem = null;
-
+						  
 						  if(value instanceof Iterable) {
 							  elem = toXmlSimple(value, true);
 							  root.appendChild(elem);
@@ -261,7 +261,7 @@ public class GenericXmlSerializer {
 			} else if (type.equals(TYPE_FIELD)) {
 
 				String methodName = element.getQualifiedName();
-
+				
 				methodName = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
 
 				Method method = findSetMethod(clazz, methodName);

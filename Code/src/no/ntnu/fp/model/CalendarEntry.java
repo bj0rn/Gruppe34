@@ -2,9 +2,9 @@ package no.ntnu.fp.model;
 
 import java.util.Date;
 import java.beans.PropertyChangeSupport;
+import java.util.Calendar;
 
 public abstract class CalendarEntry {
-
 	public final static String MEETING = "Meeting";
 	public final static String APPOINTMENT = "Appointment";
 

@@ -410,11 +410,6 @@ public class DatabaseController {
 	 * @return the {@code Place}s database id
 	 */
 	public int savePlace(Place place) {
-		
-		DbConnection db = getConnection();
-		
-		String sql = "";
-		
 		return 0;
 		
 	}
