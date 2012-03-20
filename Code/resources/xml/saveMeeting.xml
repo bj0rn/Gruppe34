@@ -35,6 +35,14 @@
 	 	<description> description </description>
 	 	<EntryType> Meeting </entryType>
 	 	<LocationID> foreign </locationID>
+	 	<users>
+	 		<user>
+	 			<username..
+	 		</user>
+	 		<user>
+	 		</user>
+	 		...
+	 	</users>
 	 </data> 
 </request> 
 
