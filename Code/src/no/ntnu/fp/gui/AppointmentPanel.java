@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import no.ntnu.fp.model.Appointment;
+
 public class AppointmentPanel extends JPanel{
 	private JLabel appointment, description, startTime, endTime, location;
 	private JTextField descComp, startComp, endComp;
@@ -21,6 +23,8 @@ public class AppointmentPanel extends JPanel{
 	//få det ryddig i boksen
 	protected GridBagLayout grid;
 	protected GridBagConstraints constraints;
+	
+	private Appointment model;
 	
 	public AppointmentPanel(){
 		appointment = new JLabel("Avtale");
