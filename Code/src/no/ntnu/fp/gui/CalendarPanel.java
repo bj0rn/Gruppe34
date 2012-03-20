@@ -25,7 +25,7 @@ public class CalendarPanel extends JPanel {
 	private JLabel weekLabel;
 	private JLabel yearLabel;
 	
-	private WeekCalendar weekCalendar;
+	private WeekSheet weekSheet;
 	
 	private List<Calendar> model;
 	
@@ -60,7 +60,7 @@ public class CalendarPanel extends JPanel {
 			
 		add(buttons, BorderLayout.NORTH);
 		
-		weekCalendar = new WeekCalendar();
+		weekSheet = new WeekSheet();
 		
 	}
 	
