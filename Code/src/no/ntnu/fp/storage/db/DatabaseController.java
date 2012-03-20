@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Properties;
 
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Calendar;
+import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.CalendarEntry.CalendarEntryType;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
@@ -80,7 +82,7 @@ public class DatabaseController {
 		
 		if (rs.first()) {
 			int count = rs.getInt(1); 
-			assert(count == 1 || count == 0);
+			assert(count == 1 || count == 0); // the database should not contain two equal usernames.
 			authenticated = count == 1;
 		}
 		
@@ -192,6 +194,8 @@ public class DatabaseController {
 	/**
 	 * Gets a {@code List} of {@code User}s from the database.
 	 * 
+	 * @author Håvard
+	 * 
 	 * @return the {@code List} of {@code User}
 	 * 
 	 * @throws SQLException 
@@ -227,14 +231,37 @@ public class DatabaseController {
 	 * all {@code CalendarEntry}s and a {@code List} of
 	 * {@code Notification}s.
 	 * 
+	 * @author Håvard
+	 * 
 	 *  @param username
 	 *  	   The {@code User}s username as a {@code String}.
 	 *  
 	 *  @return the {@code User} object.
+	 * @throws SQLException 
 	 */
 	
-	public User getFullUser(String username) {
-		return null;
+	public User getFullUser(String username) throws SQLException {
+		User user = null;
+		
+		DbConnection db = getConnection();
+		
+		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM User WHERE Username = " + username;
+		
+		ResultSet rs = db.query(sql);
+		
+		if(rs.first()) {
+			String uname = rs.getString("Username");
+			String name = rs.getString("Name");
+			int age = rs.getInt("Age");
+			int phoneNumber = rs.getInt("PhoneNumber");
+			String email = rs.getString("Email");
+			
+			user = new User(uname, name, age, phoneNumber, email);
+			
+			user.setCalendar(getCalendar(user));
+		}
+		
+		return user;
 	}
 	
 	/**
@@ -242,14 +269,56 @@ public class DatabaseController {
 	 * The {@code Calendar} will contain a {@code List} of
 	 * {@code CalendarEntry}s.
 	 * 
+	 * @author Håvard
+	 * 
 	 * @param user 
 	 * 		  the {@code User} to pull the {@code Calendar} for
 	 * 
 	 * @return the {@code Calendar} for the {@code User}
+	 * @throws SQLException 
 	 */
 	
-	public Calendar getCalendar(User user) {
-		return null;
+	public Calendar getCalendar(User user) throws SQLException {
+		
+		Calendar calendar = new Calendar();
+		
+		String username = user.getName();
+		
+		String sql = 
+			"SELECT " 
+		+		"CE.EntryType AS type," 
+		+		"CE.TimeStart AS start," 
+		+		"CE.TimeEnd AS end," 
+		+		"CE.Description AS desc," 
+		+	"FROM Calendar AS C"
+		+	"JOIN Contains AS CO ON CO.CalendarID = C.CalendarID"
+		+	"JOIN CalendarEntry AS CE ON CE.CalendarID = C.CalendarID"
+		+	"WHERE C.Username = " + username;
+
+		DbConnection db = getConnection();
+		
+		ResultSet rs = db.query(sql);
+		
+		rs.beforeFirst();
+		while(rs.next()) {
+			String type = rs.getString("type");
+			Date start = rs.getDate("start");
+			Date end = rs.getDate("end");
+			String desc = rs.getString("desc");
+			
+			CalendarEntry entry = null;
+			
+			if (type.equals(CalendarEntry.MEETING)) {
+				entry = new Meeting(start, end, desc);
+			} else {
+				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
+				entry = new Appointment(start, end, desc);
+			}
+			
+			calendar.addCalendarEntry(entry);
+		}
+		
+		return calendar;
 	}
 	
 	/**
@@ -333,7 +402,7 @@ public class DatabaseController {
 	/**
 	 * Saves a {@code Place} to the database.
 	 * A non-existing {@code Place} will be created,
-	 * a existing will be updated
+	 * a existing will not be touched.
 	 * 
 	 * @param user
 	 * 		  the {@code Place} to created/change
@@ -341,7 +410,13 @@ public class DatabaseController {
 	 * @return the {@code Place}s database id
 	 */
 	public int savePlace(Place place) {
+		
+		DbConnection db = getConnection();
+		
+		String sql = "";
+		
 		return 0;
+		
 	}
 	
 	/**
