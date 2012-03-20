@@ -14,8 +14,8 @@ public class Meeting extends CalendarEntry{
 		super(description);
 	}
 	
-	public Meeting(Date start, Date end, String description) {
-		super(start, end, description);
+	public Meeting(String description,Date start, Date end) {
+		super(description, start, end);
 	}
 	
 	public void addParticipant(Participant participant){

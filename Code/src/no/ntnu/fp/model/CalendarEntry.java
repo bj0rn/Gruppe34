@@ -2,6 +2,7 @@ package no.ntnu.fp.model;
 
 import java.util.Date;
 import java.beans.PropertyChangeSupport;
+import java.util.Calendar;
 
 public abstract class CalendarEntry {
 
@@ -20,6 +21,7 @@ public abstract class CalendarEntry {
 	public final static String DESC_PROPERTY = "Description";
 	public final static String OWNER_PROPERTY = "Owner";
 	public final static String LOC_PROPERTY = "Location";
+	private Calendar cal = Calendar.getInstance();
 
 	public CalendarEntry(String description) {
 		this.description = description;
@@ -50,12 +52,30 @@ public abstract class CalendarEntry {
 	}
 
 	/**
+	 * 
+	 * @return day of week according to {@code static int Calendar.<DAY>}
+	 */
+	public int getDayOfWeek() {
+		cal.setTime(startDate);
+		return cal.get(Calendar.DAY_OF_WEEK);
+	}
+
+	/**
+	 * 
+	 * @return time of day in minutes since 00:00
+	 */
+	public int getTimeOfDay() {
+		cal.setTime(startDate);
+		return cal.get(Calendar.HOUR)*60 + cal.get(Calendar.MINUTE);
+	}
+
+	/**
 	 * Returns the duration of the entry
 	 * 
-	 * @return the duration of this entry in milliseconds
+	 * @return the duration of this entry in minutes
 	 */
 	public long getDuration() {
-		return endDate.getTime() - startDate.getTime();
+		return (endDate.getTime() - startDate.getTime())/60000;
 	}
 
 	public void setLocation(Location location) {
