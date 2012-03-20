@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -189,9 +190,32 @@ public class DatabaseController {
 	 * Gets a {@code List} of {@code User}s from the database.
 	 * 
 	 * @return the {@code List} of {@code User}
+	 * 
+	 * @throws SQLException 
 	 */
-	public List<User> getListOfUsers() {
-		return null;
+	public List<User> getListOfUsers() throws SQLException {
+	
+		List<User> result = new ArrayList<User>();
+		
+		DbConnection db = getConnection();
+		
+		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM USER";
+		
+		ResultSet rs = db.query(sql);
+	
+		rs.beforeFirst();
+		while(rs.next()) {
+			String username = rs.getString("Username");
+			String name = rs.getString("Name");
+			int age = rs.getInt("Age");
+			int phoneNumber = rs.getInt("PhoneNumber");
+			String email = rs.getString("Email");
+			
+			result.add(new User(username, name, age, phoneNumber, email));
+		}
+		
+		return result;
+		
 	}
 	
 	/**
