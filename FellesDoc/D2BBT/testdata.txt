@@ -1,41 +1,45 @@
-"Skjønte ikke sluttid"
+*"Skjønte ikke sluttid"
 	Sluttiden blir automatisk satt til starttid+1t, det virket som dette ble oppfattet som uintuitivt. Vi har vurdert å ikke gjøre noe med dette ettersom det er standard og har valgt å skylde det på papirprototypens post-it formidling.
 
-"Skrev sluttid f¿rst"
-	NŒr sluttid ble skrevet inn f¿rst og sŒ starttid, skal da sluttiden endres til starttid+1 eller skal den bli stŒende? Kan v¾re lurt at man heller legger til sluttid sŒ en kan skrive slutt/startid i f¿rste boks?
+"Skrev sluttid først"
+	Når sluttid ble skrevet inn først og så starttid, skal da sluttiden endres til starttid+1 eller skal den bli stående? Kan være lurt at man heller legger til sluttid så en kan skrive slutt/startid i første boks?
 
-"Feilmelding på manglende sted?"
-	Skal det komme en feilmelding når brukeren prøver å lage avtale eller møte uten å ha valgt sted? Vi må sjekke specs. Specs sier at sted ikke skal være påkrevd. Feilmelding skal ikke komme på avtaler. Må ha sted på møter?
+*"Feilmelding på manglende sted?"
+	Skal det komme en feilmelding når brukeren prøver å lage avtale eller møte uten å ha valgt sted? Vi må sjekke specs. Specs sier at sted ikke skal være påkrevd. Feilmelding skal ikke komme på avtaler. Må ha sted på møter? Vi må ha sted på møter.
 
-"flere møter/avtaler på samme tidspunkt?"
+*"flere møter/avtaler på samme tidspunkt?"
 	Dette skal være lov.
 
-"pga papir ble håndteringen av datepicker feiltolket"
+*"pga papir ble håndteringen av datepicker feiltolket"
 	Dette ordner seg når vi ikke har A4 ark med utskrift av bildene på.
 
-"datoer vises ikke på ukeskalenderen"
+*"datoer vises ikke på ukeskalenderen"
 	Skal ordne.
 
-"starter dagen kl 07?"
+*"starter dagen kl 07?"
 	Fikse scrollbaren. Default view satt til 07-16kl.
 
-"møterom-seleksjon har ingen avbryt-knapp"
+*"møterom-seleksjon har ingen avbryt-knapp"
 	Dette må ordnes.
 
 "Booke rom"
-	Skal det v¾re sŒnn at f¿rste rom er markert nŒr man gŒr inn pŒ velge rom, eller skal ingen v¾re markert? Kan ordnes med avbryt-knapp.
+	Skal det være sånn at første rom er markert når man går inn på velge rom, eller skal ingen være markert? Kan ordnes med avbryt-knapp.
 
-"[...] knappen på stedsfeltet burde hete "rom", ettersom det var uklart at man kunne trykke på selve feltet og skrive selv."
+*"[...] knappen på stedsfeltet burde hete "rom", ettersom det var uklart at man kunne trykke på selve feltet og skrive selv."
 	tenke på hvordan dette skal løses.
 
-"systemet viser alle møterom, ikke bare de ledige i et gitt tidspunkt."
+*"systemet viser alle møterom, ikke bare de ledige i et gitt tidspunkt."
 	Hvordan skal vi håndtere dette? Bare vise ledige møterom.
 	Dette er et KTN-problem, men kompleksiteten er relativt stor.
 
-"Legge inn avtale ved Œ trykke i kalender"
-	Skal det v¾re mulig, eller mŒ man bruke ny avtale/m¿te-knappene?
+*"Legge inn avtale ved å trykke i kalender"
+	Skal det være mulig, eller må man bruke ny avtale/møte-knappene?
 
-"Un¿dvendig mye vinduer"
-	Noen synes det var veldig mange vinduer og klikke seg gjennom, dette kan fikses ved at man kan avvise/akseptere m¿tet pŒ meldinger, og at man kan fjerne folk som ikke kan komme pŒ m¿tet man har laget pŒ meldinger. Dette gj¿res da sammen med en vis-knapp mest sannsynlig. En annen ting som kan gj¿res er at man kan fŒ opp en dropbox nŒr man skal velge rom og hvis man velger ett av rommene som er der kommer det opp beskrivelse, kapasitet og hvor det er under, i stedet for at man mŒ inn pŒ et nytt vindu. Er ogsŒ mulig Œ legge hele brukere-vinduet i en droppbox i stedet for Œ lage det til et nytt vindu.
+*"Unødvendig mye vinduer"
+	Noen synes det var veldig mange vinduer og klikke seg gjennom, dette kan fikses ved at man kan avvise/akseptere møtet på meldinger, og at man kan fjerne folk som ikke kan komme på møtet man har laget på meldinger. Dette gjøres da sammen med en vis-knapp mest sannsynlig. En annen ting som kan gjøres er at man kan få opp en dropbox når man skal velge rom og hvis man velger ett av rommene som er der kommer det opp beskrivelse, kapasitet og hvor det er under, i stedet for at man må inn på et nytt vindu. Er også mulig å legge hele brukere-vinduet i en droppbox i stedet for å lage det til et nytt vindu.
 	
+    EProblem = feil.
 
+    Problem = problem relatert til designvalg
+
+    AProblem = confusion

@@ -58,8 +58,8 @@ public class User {
 		notifications.remove(notification);
 	}
 	
-	public Calendar setCalendar(Calendar calendar){
-		String oldValue = this.calendar;
+	public void setCalendar(Calendar calendar){
+		Calendar oldValue = this.calendar;
 		this.calendar = calendar;
 		pcs.firePropertyChange(CAL_PROPERT, oldValue, calendar);
 	} 
