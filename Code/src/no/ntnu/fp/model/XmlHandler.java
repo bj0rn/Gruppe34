@@ -13,17 +13,7 @@ import nu.xom.ValidityException;
 
 public class XmlHandler {
 	public static void main(String[] args) {
-		String test = loginToXml("bj¿rn", "123");
-		String res[] = loginFromXml(test);
-		System.out.println("Username " +res[0] );
-		System.out.println("Password "+res[1]);
 		
-		System.out.println(inspectMethod(test));
-		
-		System.out.println(loginSuccessful());
-		System.out.println(loginUnsucessful());
-		
-		System.out.println(inspectStatus(loginSuccessful()));
 	}
 	
 	//Fields
@@ -135,4 +125,31 @@ public class XmlHandler {
 		
 		return "";
 	}
+
+
+
+	public static String formatResponseXml(String xml, String m) throws ValidityException, ParsingException, IOException{
+		Element root = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(m);
+		Element status = new Element("status");
+		status.appendChild("200");
+		header.appendChild(method);
+		header.appendChild(status);
+		
+		root.appendChild(header);
+		
+		Builder builder = new Builder();
+		Document doc = builder.build(xml, null);
+		Element xmlData = doc.getRootElement();
+		
+		Element data = new Element("data");
+		data.appendChild(xmlData);
+		root.appendChild(data);
+
+	
+	
+		return root.toXML();
+}
 }

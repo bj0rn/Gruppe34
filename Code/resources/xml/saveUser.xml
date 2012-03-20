@@ -1,0 +1,28 @@
+<request>
+	<header>
+		<method> getUser</method>
+		<status> 200 </status>
+		<authenticate>
+			<user> </user>
+			<pass> </pass>
+		</athenticate>
+	</header>
+	<data>
+		<java.util.ArrayList type="iterable">
+			<no.ntnu.fp.model.User type="object">
+				<username type="field">havard</username>
+				<name type="field">Håvard Wormdal Høiby</name>
+				<age type="field">24</age>
+				<phoneNumber type="field">95933245</phoneNumber>
+				<email type="field">havardwhoiby@gmail.com</email>
+			</no.ntnu.fp.model.User>
+			<no.ntnu.fp.model.User type="object">
+				<username type="field">bjorn</username>
+				<name type="field">bjorninator</name>
+				<age type="field">23</age>
+				<phoneNumber type="field">6565656</phoneNumber>
+				<email type="field">test@test.com</email>
+			</no.ntnu.fp.model.User>
+		</java.util.ArrayList>
+	</data>
+</request>

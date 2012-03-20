@@ -10,6 +10,8 @@ import java.util.List;
 
 import no.ntnu.fp.storage.db.DatabaseController;
 import no.ntnu.fp.model.*;
+import nu.xom.ParsingException;
+import nu.xom.ValidityException;
 //TODO: Communicate with the db
 public class ServerController {
 	//fields
@@ -67,7 +69,24 @@ public class ServerController {
 			os = new DataOutputStream(sockfd.getOutputStream());
 			users = databaseController.getListOfUsers();
 			System.out.println("Got the users");
-			
+			try {
+				String retXml = genericXml.toXmlSimple(users);
+				//System.out.println(retXml);
+				String resXml = XmlHandler.formatResponseXml(xml, XmlHandler.inspectMethod(xml));
+				System.out.println(resXml);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ValidityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParsingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}else {
 			System.out.println("Not authenticated");
