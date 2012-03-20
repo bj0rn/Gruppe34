@@ -35,7 +35,10 @@ public class DatabaseController {
 	public static void main(String[] args) throws SQLException {
 		DatabaseController dbCtrl = new DatabaseController();
 		
-		System.out.println(dbCtrl.authenticate("havard", "test"));
+		List<User> users = dbCtrl.getListOfUsers();
+		for (User user : users) {
+			System.out.println(user);
+		}
 	}
 	
 	public DatabaseController() {
@@ -199,7 +202,7 @@ public class DatabaseController {
 		
 		DbConnection db = getConnection();
 		
-		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM USER";
+		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM User";
 		
 		ResultSet rs = db.query(sql);
 	

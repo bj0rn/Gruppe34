@@ -112,4 +112,12 @@ public class User {
 		return email;
 	}
 
+	public String toString() {
+		return 	"Username: " + username + "\n" 
+		+ 		"Name: " + name + "\n" 
+		+ 		"Age: " + age + "\n" 
+		+ 		"PhoneNumber: " + phoneNumber + "\n"
+		+		"Email: " + email;
+	}
+	
 }
