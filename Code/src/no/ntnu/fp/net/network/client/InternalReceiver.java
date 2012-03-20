@@ -25,7 +25,6 @@ public class InternalReceiver implements Runnable {
 		
 	}
 	//Methods
-
 	@Override
 	public void run() {
 		while(true){

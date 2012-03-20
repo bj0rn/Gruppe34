@@ -5,3 +5,12 @@
 		<message>not authenticated</message>
 	</header>
 </response>
+
+
+<request>
+	<header>
+		<method>login</method>
+		<status>401</status>
+		<message>not authanticated</message>
+	</header>
+</request>

@@ -1,3 +1,4 @@
+463754645
 <request>
 	<header>
 		<method>login</method>
@@ -7,3 +8,7 @@
 		</authenticate>
 	</header>
 </request>
+
+
+
+request><header><method>login</method><authenticate><user>havard</user><pass>test</pass></authenticate></header></request>

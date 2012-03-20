@@ -9,14 +9,13 @@ import java.util.concurrent.BlockingQueue;
 
 public class ClientHandler implements Runnable {
 	//Fields
+	private String clientID;
 	private int id;
 	private Socket mySocket;
 	private DataInputStream is;
 	private BlockingQueue<String> inQueue;
 	private DataOutputStream os;
 	private HashMap<String, Socket> clients;
-	String username;
-	String password = "123";
 	//Receive messages from the clients
 	//Need some request queue, blocked queue
 	public ClientHandler(Socket socket, int id, BlockingQueue<String> inQueue, HashMap<String, Socket> clients){
@@ -39,28 +38,17 @@ public class ClientHandler implements Runnable {
 	@Override
 	public void run() {
 		//The easyest place to authenticate is in the client handler
+		System.out.println("Hash" +mySocket.hashCode());
+		clientID = Integer.toString(mySocket.hashCode());
+		clients.put(clientID, mySocket);
 		
-		try {
-			os.writeUTF("Enter user name: ");
-			String username = is.readLine();
-			os.writeUTF("Enter password");
-			String tmpPass = is.readLine();
-			if(password.equals(tmpPass)){
-				os.writeUTF("Access granted");
-			}
-			System.out.println("User added");
-			clients.put(username, mySocket);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		while(true){
 			try {
 				String data = is.readLine();
 				//System.out.println("Got data from client: " + data);
 				System.out.println("Put in requestQueue");
-				inQueue.put(data);
+				inQueue.put(format(data));
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -73,17 +61,11 @@ public class ClientHandler implements Runnable {
 			
 		}
 	}
-	
-	
-	
-	public String FormatRequest(String data){
-		String modified = "";
-		modified += Integer.toString(id);
-		modified += ": ";
-		modified += data;
-		return modified;
-		
+	public String format(String data){
+		String tmp = clientID + " " + data;
+		return tmp;
 	}
+	
 	
 }
 

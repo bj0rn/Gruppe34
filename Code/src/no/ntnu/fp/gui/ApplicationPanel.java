@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import no.ntnu.fp.model.Calendar;
 import no.ntnu.fp.model.Notification;
+import no.ntnu.fp.model.User;
 
 public class ApplicationPanel extends JPanel {
 
@@ -25,8 +26,7 @@ public class ApplicationPanel extends JPanel {
 		frame.setVisible(true);
 	}
 	
-	private Calendar calendarModel;
-	private List<Notification> notificationsModel;
+	private User model;
 	
 	private CalendarPanel calendarPanel;
 	private NotificationPanel notificationPanel;
@@ -63,6 +63,14 @@ public class ApplicationPanel extends JPanel {
 		buttons.add(calendarButton);
 		
 		add(buttons, BorderLayout.SOUTH);
+	}
+	
+	public void setModel(User model) {
+		this.model = model;
+	}
+	
+	public User getModel() {
+		return model;
 	}
 	
 }

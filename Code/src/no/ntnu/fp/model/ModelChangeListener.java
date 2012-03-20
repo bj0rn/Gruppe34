@@ -5,8 +5,8 @@ public interface ModelChangeListener {
 	
 	public int newModel(String type);
 	
-	public boolean propertyChange(Model source, String key);
+	public boolean propertyChange(Object source, String key);
 	
-	public void distribute(Model source);
+	public void distribute(Object source);
 
 }

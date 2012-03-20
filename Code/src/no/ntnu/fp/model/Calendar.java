@@ -19,7 +19,9 @@ public class Calendar {
 /*	public Meeting modifyMeeting(Meeting meeting){
 		
 	}*/
-	
+	public Meeting modifyMeeting(Meeting meeting){
+		return null;
+	}
 	public void addAppointment(Appointment appointment){
 		entries.add(appointment);
 	}
@@ -27,9 +29,11 @@ public class Calendar {
 	public boolean removeAppointment(Appointment appointment){
 		return entries.remove(appointment);
 	}
-	
 	/*public Appointment modifyAppointment(Appointment appointment){
 		
 	}*/
+	public Appointment modifyAppointment(Appointment appointment){
+		return null;
+	}
 
 }

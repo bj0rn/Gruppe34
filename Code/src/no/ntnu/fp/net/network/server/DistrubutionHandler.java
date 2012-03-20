@@ -6,13 +6,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import no.ntnu.fp.model.XmlHandler;
 
 
 
 public class DistrubutionHandler {
 	//Fields
-	private XmlHandler xmlhandler;
+	//private XmlHandler xmlhandler;
 	private ArrayList <String> participants;
 	private HashMap<String, Socket> connectedClients;
 	// K = clientID, V = socket
