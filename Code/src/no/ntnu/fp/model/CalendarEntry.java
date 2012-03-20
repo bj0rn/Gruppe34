@@ -1,11 +1,8 @@
 package no.ntnu.fp.model;
 
-<<<<<<< HEAD
 import java.util.Date;
 
 
-=======
->>>>>>> branch 'master' of https://havardh@github.com/bj0rn/Gruppe34.git
 import java.beans.PropertyChangeSupport;
 
 
