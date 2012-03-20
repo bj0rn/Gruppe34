@@ -1,6 +1,6 @@
 package no.ntnu.fp.model;
 
-import java.awt.List;
+import java.util.List;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -30,12 +30,23 @@ public class GenericXmlSerializer {
 
 
 	public static void main(String[] args) throws ValidityException, ParsingException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		String mockmodel1 = "<no.ntnu.fp.model.MockModel id=\"1\" type=\"object\"><Name type=\"field\">Navn</Name><Age type=\"field\">13</Age></no.ntnu.fp.model.MockModel>";
-		String mockmodel2 = "<no.ntnu.fp.model.MockModel type=\"object\"><Name type=\"field\">Navn</Name><Age type=\"field\">13</Age><no.ntnu.fp.model.MockModel type=\"ref\" id =\"1\" /></no.ntnu.fp.model.MockModel>";
-
-		String xml = "<no.ntnu.fp.model.MockListModel type=\"object\">" + mockmodel1 + mockmodel2 + "</no.ntnu.fp.model.MockListModel>" ;
-
-		System.out.println(fromXml(xml));	
+		User u1 = new User("Bjorn", "test", 20, 124124, "test@test.com");
+		User u2 = new User("Bjorn", "test", 20, 124124, "test@test.com");
+		User u3 = new User("Bjorn", "test", 20, 124124, "test@test.com");
+		User u4 = new User("Bjorn", "test", 20, 124124, "test@test.com");
+		
+		List<User> users = new ArrayList<User>();
+		users.add(u1);
+		users.add(u2);
+		users.add(u3);
+		users.add(u4);
+		
+		
+		
+		String test = toXmlSimple(users);
+		System.out.println(test);
+		
+		
 	}
 
 	 public static boolean isWrapperType(Class<?> clazz){
@@ -54,24 +65,25 @@ public class GenericXmlSerializer {
         ret.add(Double.class);
         ret.add(Void.class);
         ret.add(String.class);
+        ret.add(ArrayList.class);
         return ret;
 	}
 
 
 	/**
-	   * @param type the type to check.
+	   * @param obj the type to check.
 	   *
 	   * @return Returns <code>true</code> if <code>type</code> is a iterable type, <code>false</code> otherwise.
 	   */
-	  public static boolean isIterable(Type type) {
-	    if ( type instanceof Class && isIterableClass( ( Class ) type ) ) {
+	  public static boolean isIterable(Object obj) {
+	    if ( obj instanceof Class && isIterableClass( ( Class ) obj ) ) {
 	      return true;
 	    }
-	    if ( type instanceof ParameterizedType ) {
-	      return isIterable( ( ( ParameterizedType ) type ).getRawType() );
+	    if ( obj instanceof ParameterizedType ) {
+	      return isIterable( ( ( ParameterizedType ) obj ).getRawType() );
 	    }
-	    if ( type instanceof WildcardType ) {
-	      Type[] upperBounds = ( ( WildcardType ) type ).getUpperBounds();
+	    if ( obj instanceof WildcardType ) {
+	      Type[] upperBounds = ( ( WildcardType ) obj ).getUpperBounds();
 	      return upperBounds.length != 0 && isIterable( upperBounds[0] );
 	    }
 	    return false;
@@ -111,44 +123,65 @@ public class GenericXmlSerializer {
 
 	  public static String toXmlSimple(Object obj) throws IllegalArgumentException, IllegalAccessException{
 		  Class <? extends Object> clazz = obj.getClass();
+		  
+		  
+		  
 		  return toXmlSimple(obj, true).toXML();
 	  }
 
 
 	  public static Element toXmlSimple(Object obj, boolean signature) throws IllegalArgumentException, IllegalAccessException{
 		  Class <? extends Object> clazz = obj.getClass();
+		  System.out.println("Clazz: "+clazz.getName());
 		  Element root = new Element(clazz.getName());
 		  Attribute attr = new Attribute("type", "object");
-		  root.addAttribute(attr);
-		  Field[] fields = clazz.getDeclaredFields();
-		  for(Field field: fields){
-			  //Get value
-			  field.setAccessible(true);
-			  Object value = field.get(obj);
-			  field.setAccessible(false);
-			  Element tmp = null;
-
-
-			 if(isIterable(field.getGenericType())){
-				  //New objects
-				  for(Object t : (Iterable)value){
-					  System.out.println("Hei");
-					  tmp = toXmlSimple(t, true);
+		  root.addAttribute(attr); 
+		 
+		  if (isIterable(obj)) {
+			  
+			  for (Object o : (Iterable) obj) {
+				  root.appendChild(toXmlSimple(o, true));
+			  }
+			  
+		  } else {
+			
+		 
+			  Field[] fields = clazz.getDeclaredFields();
+			  for(Field field: fields){
+				  //Get value
+				  
+				  System.out.println("Field name: "+field.getName());
+				  field.setAccessible(true);
+				  Object value = field.get(obj);
+				  field.setAccessible(false);
+				  Element tmp = null;
+	
+				 System.out.println(field.getGenericType());
+				 if(isIterable(field.getGenericType())){
+					 tmp = toXmlSimple(value, true);
+					 
+//						 System.out.println("Hei"); 
+//						 //New objects
+//						  for(Object t : (Iterable)value){
+//							  System.out.println("Hei");
+//							  tmp = toXmlSimple(t, true);
+//							  root.appendChild(tmp);
+//						  }
+				 } else if(!isWrapperType(value.getClass())){
+					 System.out.println("new Object: "+value .getClass().getName());
+					 System.out.println("Name: "+ value.getClass().getName());
+					 tmp = toXmlSimple(value, true);
+					 root.appendChild(tmp);
+	
+				 }else{
+					  //ordinary field
+					  tmp = new Element(field.getName());
+					  tmp.addAttribute(new Attribute("type", "field"));
+					  //TODO: Handle null values 
+					  tmp.appendChild(value.toString());
 					  root.appendChild(tmp);
+					  //continue;
 				  }
-			 }else if(!isWrapperType(value.getClass())){
-				 System.out.println("new Object: "+value .getClass().getName());
-				  tmp = toXmlSimple(value, true);
-			  	  root.appendChild(tmp);
-
-			 }else{
-				  //ordinary field
-				  tmp = new Element(field.getName());
-				  tmp.addAttribute(new Attribute("type", "field"));
-				  //TODO: Handle null values 
-				  tmp.appendChild(value.toString());
-				  root.appendChild(tmp);
-				  //continue;
 			  }
 		  }
 		  return root;
