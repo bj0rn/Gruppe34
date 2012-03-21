@@ -1,30 +1,41 @@
 package no.ntnu.fp.net.network.client;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.net.network.TestCommunicationClient;
 
 
 /**/
-public class Client {
+public class Client implements Runnable {
 	//fields 
 	private Socket mySocket;
 	private int port;
-	private BlockingQueue<String > inQueue;
+	private String host;
+	private BlockingQueue<Object > inQueue;
+	private DataOutputStream os;
+	private ObjectOutputStream oos;
+	private CommunicationController communicationController;
+	private LinkedBlockingDeque<Object> testQueue;
 	
 	//Constructor 
-	public Client(){
-		//Do nothing
-	}
-	
-	public void connect(String host, int port){
-		
-		//TODO: Check if this actually work
+	public Client(String host, int port, LinkedBlockingDeque<Object> testQueue){
+		this.testQueue = testQueue;
 		try {
-			mySocket = new Socket(InetAddress.getByName(host), port);
+			this.mySocket = new Socket(InetAddress.getByName(host), port);
+			this.communicationController = new CommunicationController(mySocket, testQueue);
+			this.host = host;
+			this.port = port;
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -33,19 +44,18 @@ public class Client {
 			e.printStackTrace();
 		}
 		
-		//spawn new worker 
-		System.out.println("Spawn new worker");
-		(new Thread(new ClientWorker(mySocket, inQueue))).start();
-		//Spawn new receiver 
-		System.out.println("Spawn new receiver");
-		(new Thread(new InternalReceiver(mySocket, inQueue))).start();
-		//(new Thread(new ReceiveWorker(mySocket))).start();
-		System.out.println("Some test shit");
-		(new Thread(new TestCommunicationClient(mySocket))).start();
-		
+	}
+	public CommunicationController getCommunicationController(){
+		return communicationController;
 	}
 	
 	
+	@Override
+	public void run() {
+		(new Thread(new ClientWorker(mySocket, testQueue, communicationController))).start();
+		(new Thread(new InternalReceiver(mySocket, testQueue))).start();
+		
+	}
 	
 
 }

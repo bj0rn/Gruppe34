@@ -182,7 +182,7 @@ public class DatabaseController {
 	public boolean deleteCalendarEntry(int id) throws SQLException {
 		
 		DbConnection db = getConnection();
-		
+		System.out.println("Connected");
 		int count = db.executeUpdate("DELETE FROM CalendarEntry WHERE id = " + id);
 		
 		db.close();
