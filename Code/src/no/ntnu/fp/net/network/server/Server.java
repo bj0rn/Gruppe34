@@ -17,6 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import no.ntnu.fp.net.co.Connection;
 
 import no.ntnu.fp.net.network.TestCommunicationServer;
+import no.ntnu.fp.net.network.Tuple;
 import nu.xom.Attribute;
 
 
@@ -27,7 +28,7 @@ public class Server implements Runnable{
 	private String addressServer = "localhost";
 	private InetAddress localAddress;
 	private ArrayList<Socket> connectedHosts;
-	private BlockingQueue <String> inQueue;
+	private BlockingQueue <Tuple <Socket, Object>> inQueue;
 	private Socket newSockfd;
 	private ServerSocket sockfd;
 	private ArrayList<Socket>  connectedClients;
@@ -38,7 +39,7 @@ public class Server implements Runnable{
 	//Constructor
 	public Server(){
 		connectedClients = new ArrayList<Socket>();
-		inQueue = new LinkedBlockingQueue<String>();
+		inQueue = new LinkedBlockingQueue<Tuple<Socket, Object>>();
 		clients  = new HashMap<String, Socket>();
 	}
 	
@@ -71,7 +72,7 @@ public class Server implements Runnable{
 				//Spawn new clientHandler
 				(new Thread(new ClientHandler(newSockfd, connectedClients.size(), inQueue,clients ))).start();
 				//put(connectedClients.size(), newSockfd);
-				
+				System.out.println("test");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

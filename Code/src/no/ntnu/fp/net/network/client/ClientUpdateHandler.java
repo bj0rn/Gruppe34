@@ -4,12 +4,12 @@ package no.ntnu.fp.net.network.client;
 
 public class ClientUpdateHandler {
 	//Fields 
-	private Communication communication;
+	private CommunicationController communication;
 	//private XmlHandler xmlhandler;
 	
 	
 	//Constructor
-	public ClientUpdateHandler(Communication communication/*, XmlHandler xmlhandler*/){
+	public ClientUpdateHandler(CommunicationController communication/*, XmlHandler xmlhandler*/){
 		this.communication = communication;
 		//this.xmlhandler = xmlhandler;
 	}

@@ -13,17 +13,7 @@ import nu.xom.ValidityException;
 
 public class XmlHandler {
 	public static void main(String[] args) {
-		String test = loginToXml("bj¿rn", "123");
-		String res[] = loginFromXml(test);
-		System.out.println("Username " +res[0] );
-		System.out.println("Password "+res[1]);
 		
-		System.out.println(inspectMethod(test));
-		
-		System.out.println(loginSuccessful());
-		System.out.println(loginUnsucessful());
-		
-		System.out.println(inspectStatus(loginSuccessful()));
 	}
 	
 	//Fields
@@ -55,6 +45,27 @@ public class XmlHandler {
 		
 	}
 	
+	
+	public static String generateRequest(String username, String password, String func){
+		Element element = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(func);
+		Element auth = new Element("authenticate");
+		Element user = new Element(username);
+		user.appendChild(username);
+		Element pass = new Element(password);
+		auth.appendChild(user);
+		auth.appendChild(pass);
+		pass.appendChild(password);
+		
+		header.appendChild(method);
+		header.appendChild(auth);
+		element.appendChild(header);
+		//System.out.println(element.toXML());
+		return element.toXML();
+		
+	}
 	
 	public static String loginSuccessful(){
 		Element root = new Element("request");
@@ -135,4 +146,31 @@ public class XmlHandler {
 		
 		return "";
 	}
+
+
+
+	public static String formatResponseXml(String xml, String m) throws ValidityException, ParsingException, IOException{
+		Element root = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(m);
+		Element status = new Element("status");
+		status.appendChild("200");
+		header.appendChild(method);
+		header.appendChild(status);
+		
+		root.appendChild(header);
+		
+		Builder builder = new Builder();
+		Document doc = builder.build(xml, null);
+		Element xmlData = doc.getRootElement();
+		
+		Element data = new Element("data");
+		data.appendChild(xmlData);
+		root.appendChild(data);
+
+	
+	
+		return root.toXML();
+}
 }

@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import no.ntnu.fp.model.XmlHandler;
 
@@ -13,16 +14,17 @@ import no.ntnu.fp.model.XmlHandler;
 public class ClientWorker implements Runnable {
 	//fields
 	//private HashMap<String, Socket> clients;
-	private BlockingQueue<String> inQueue;
+	private BlockingQueue<Object> inQueue;
 	private Socket mySocket;
-	private Communication communication;
-	
+	private CommunicationController communication;
+	private LinkedBlockingDeque<Object> testQueue;
 	
 	//Constructor
-	public ClientWorker(Socket mySocket, BlockingQueue<String> inQueue){
+	public ClientWorker(Socket mySocket, LinkedBlockingDeque<Object>testQueue, CommunicationController communicationController){
 		this.mySocket = mySocket;
 		this.inQueue = inQueue;
-		communication = new Communication(mySocket);
+		this.testQueue = testQueue;
+		communication = communicationController;
 	}
 	
 	
@@ -31,24 +33,22 @@ public class ClientWorker implements Runnable {
 	public void run() {
 		while(true){
 			//Sleep
+			
 			try {
 				Thread.currentThread().sleep(500);
+				Object data = testQueue.takeFirst();
+				handle(data);
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//Pop from queue, if it contain any elements 
-			if(!inQueue.isEmpty()){
-				String xml = inQueue.poll();
-				handle(xml);
-			}
 		}
-		}
+	}
 	
 	
-	public void handle(String xml){
-		String inspect = XmlHandler.inspect(xml);
-		System.out.println("Inspect "+inspect);
+	public void handle(Object data){
+		
 		
 	}
 
