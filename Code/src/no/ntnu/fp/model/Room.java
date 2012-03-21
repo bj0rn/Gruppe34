@@ -5,9 +5,9 @@ public class Room extends Location{
 	private String description;
 	private int capacity;
 	
-	public Room(String name, String description, int capacity) {
+	public Room(int id, String name, String description, int capacity) {
+		super(id, description);
 		this.name = name;
-		this.description = description;
 		this.capacity = capacity;
 	}
 	public String getName() {
