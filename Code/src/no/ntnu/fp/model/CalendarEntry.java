@@ -2,9 +2,13 @@ package no.ntnu.fp.model;
 
 import java.util.Date;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.Calendar;
 
-public abstract class CalendarEntry {
+public abstract class CalendarEntry implements Serializable {
+	
+	private static final long serialVersionUID = -5666618955325756218L;
+	
 	public final static String MEETING = "Meeting";
 	public final static String APPOINTMENT = "Appointment";
 

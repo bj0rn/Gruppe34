@@ -1,6 +1,11 @@
 package no.ntnu.fp.model;
 
-public abstract class Location {
+import java.io.Serializable;
+
+public abstract class Location implements Serializable {
+	 
+	private static final long serialVersionUID = -993121530050779684L;
+	
 	private int id;
 	private String description;
 	

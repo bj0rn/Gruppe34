@@ -1,10 +1,14 @@
 package no.ntnu.fp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Calendar implements Iterable<CalendarEntry> {
+public class Calendar implements Iterable<CalendarEntry>, Serializable {
+	
+	private static final long serialVersionUID = 3084624718665667718L;
+	
 	private ModelChangeListener modelChangeListener;
 	private List<CalendarEntry> entries;
 	
@@ -44,6 +48,14 @@ public class Calendar implements Iterable<CalendarEntry> {
 	@Override
 	public Iterator<CalendarEntry> iterator() {
 		return entries.iterator();
+	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		for(CalendarEntry entry : entries) {
+			builder.append(entry.getDescription() + '\n');
+		}
+		return builder.toString();
 	}
 	
 }
