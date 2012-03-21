@@ -37,7 +37,7 @@ public class ClientHandler implements Runnable {
 		
 	@Override
 	public void run() {
-		//The easyest place to authenticate is in the client handler
+		//The easiest place to authenticate is in the client handler
 		System.out.println("Hash" +mySocket.hashCode());
 		clientID = Integer.toString(mySocket.hashCode());
 		clients.put(clientID, mySocket);
@@ -62,6 +62,8 @@ public class ClientHandler implements Runnable {
 		}
 	}
 	public String format(String data){
+		//the function used to generate clientID returns an integer
+		//using regex to match ([0-9]* ) we can extract the clientID
 		String tmp = clientID + " " + data;
 		return tmp;
 	}

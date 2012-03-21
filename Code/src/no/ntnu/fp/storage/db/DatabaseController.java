@@ -323,44 +323,83 @@ public class DatabaseController {
 	
 	/**
 	 * Gets a {@code List} of {@code Location} from the database.
+	 * Will a situation in which the system needs a list of all
+	 * rooms AND places?
 	 * 
 	 * @return the {@code List} of {@code Location}
+	 * 
+	 * @throws SQLException
 	 */
-	public List<Location> getListOfLocations() {
+	public List<Location> getListOfLocations() throws SQLException {
+		
+		List<Location> locs = new ArrayList<Location>();
+		DbConnection dbc = getConnection();
+		//hm so first get the rooms I assume, then the 'places'
+		String sqlR = "SELECT RoomName, Description, Capacity FROM Room";
+		ResultSet rs = dbc.query(sqlR);
+		rs.beforeFirst();
+		
+		while(rs.next()) {
+		}
+		
+		//String sqlP = "SELECT LocationID, Description FROM Place";
 		return null;
 	}
 	
 	/**
 	 * Gets a {@code List} of {@code Notification} for the {@code User}
 	 * from the database.
-	 * 
+	 * wait how does one do this
+	 *  
 	 * @param user
 	 * 		  the {@code User} to get the {@code List} of {@code Notification}s for. 
 	 * 
 	 * @return a {@code List} of {@code Notification}s for the {@code User}
 	 */
-	public List<Notification> getListOfNotifications(User user) {
+	public List<Notification> getListOfNotifications(User user) throws SQLException {
+		
+		List<Notification> res = new ArrayList<Notification>();
+		DbConnection dbc = getConnection();
+		String sql = "SELECT ";
+		
+		
 		return null;
 	}
 	
 	/**
 	 * Saves a {@code User} to the database.
 	 * A non-existing {@code User} will be created,
-	 * a existing will be updated
+	 * an existing will be updated
 	 * 
 	 * @param user
 	 * 		  the {@code User} to created/change
 	 * 
 	 * @return the {@code User}s database id
+	 * What? Users ids are their usernames!
 	 */
 	public int saveUser(User user) {
+		int res = -1;
+		DbConnection dbc = getConnection();
+		//code for saving a new user
+		String s = ", ";
+		String sql = "INSERT INTO User VALUES (" +
+			    user.getUsername() +s+ user.getPassword() +s+
+			    user.getName() +s+ user.getAge() +s+
+			    user.getPhoneNumber() +s+ user.getEmail() + ")";
+		
+		
+		
 		return 0;
 	}
+	
 	
 	/**
 	 * Saves a {@code Appointment} to the database.
 	 * A non-existing {@code Appointment} will be created,
-	 * a existing will be updated
+	 * an existing will be updated
+	 * it is _REALLY_ hard to check whether or not we need to update
+	 * an existing appointment or create a new one when we do not have
+	 * the argument Appointment's ID.
 	 * 
 	 * @param user
 	 * 		  the {@code Appointment} to created/change
@@ -368,7 +407,12 @@ public class DatabaseController {
 	 * @return the {@code Appointment}s database id
 	 */
 	public int saveAppointment(Appointment appointment) {
-		return 0;
+		DbConnection dbc = getConnection();
+		int res = -1;
+		`
+		
+		
+		return res;
 	}
 	
 	/**
