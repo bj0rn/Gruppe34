@@ -51,7 +51,10 @@ public class DatabaseController {
 		try {
 			props.load(new FileInputStream(new File("Properties.properties")));
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			
+			props = null;
+			
+			//e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
