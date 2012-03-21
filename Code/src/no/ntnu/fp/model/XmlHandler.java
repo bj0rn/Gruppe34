@@ -46,6 +46,27 @@ public class XmlHandler {
 	}
 	
 	
+	public static String generateRequest(String username, String password, String func){
+		Element element = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(func);
+		Element auth = new Element("authenticate");
+		Element user = new Element(username);
+		user.appendChild(username);
+		Element pass = new Element(password);
+		auth.appendChild(user);
+		auth.appendChild(pass);
+		pass.appendChild(password);
+		
+		header.appendChild(method);
+		header.appendChild(auth);
+		element.appendChild(header);
+		//System.out.println(element.toXML());
+		return element.toXML();
+		
+	}
+	
 	public static String loginSuccessful(){
 		Element root = new Element("request");
 		Element header = new Element("header");

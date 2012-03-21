@@ -1,4 +1,4 @@
-package no.ntnu.fp.model;
+ package no.ntnu.fp.model;
 
 import java.util.List;
 import java.io.IOException;

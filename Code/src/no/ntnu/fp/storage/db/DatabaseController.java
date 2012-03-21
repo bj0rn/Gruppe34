@@ -182,7 +182,7 @@ public class DatabaseController {
 	public boolean deleteCalendarEntry(int id) throws SQLException {
 		
 		DbConnection db = getConnection();
-		
+	
 		int count = db.executeUpdate("DELETE FROM CalendarEntry WHERE id = " + id);
 		
 		db.close();
@@ -409,7 +409,7 @@ public class DatabaseController {
 	public int saveAppointment(Appointment appointment) {
 		DbConnection dbc = getConnection();
 		int res = -1;
-		`
+		
 		
 		
 		return res;
