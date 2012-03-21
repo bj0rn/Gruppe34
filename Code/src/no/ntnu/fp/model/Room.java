@@ -13,6 +13,9 @@ public class Room extends Location{
 	public String getName() {
 		return name;
 	}
+	public int getLocationID() {
+		return getID();
+	}
 	public void setName(String name) {
 		this.name = name;
 	}
