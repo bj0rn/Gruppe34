@@ -13,7 +13,12 @@ import nu.xom.ValidityException;
 
 public class XmlHandler {
 	public static void main(String[] args) {
+		String test = XmlHandler.generateRequest("havard", "test", "getUsers");
+		System.out.println(test);
+		String t[] = XmlHandler.loginFromXml(test);
 		
+		System.out.println("Username: "+t[0]);
+		System.out.println("Password: "+t[1]);
 	}
 	
 	//Fields
@@ -52,12 +57,15 @@ public class XmlHandler {
 		Element method = new Element("method");
 		method.appendChild(func);
 		Element auth = new Element("authenticate");
-		Element user = new Element(username);
+		Element user = new Element("user");
 		user.appendChild(username);
-		Element pass = new Element(password);
+		Element pass = new Element("pass");
+		pass.appendChild(password);
+		
+		
 		auth.appendChild(user);
 		auth.appendChild(pass);
-		pass.appendChild(password);
+		
 		
 		header.appendChild(method);
 		header.appendChild(auth);

@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
@@ -14,11 +15,11 @@ public class ClientHandler implements Runnable {
 	//Fields
 	private Socket mySocket;
 	private BlockingQueue<Tuple <Socket, Object>> inQueue;
-	private DataOutputStream os;
+	//private DataOutputStream os;
 	private HashMap<String, Socket> clients;
 	
-	private DataInputStream is;
-	private ObjectInputStream ios;
+	//private DataInputStream is;
+	//private ObjectInputStream ios;
 	
 	
 	
@@ -29,16 +30,8 @@ public class ClientHandler implements Runnable {
 		this.inQueue = inQueue;
 		this.clients = clients;
 		//Create new streams
-		try {
-			is = new DataInputStream(mySocket.getInputStream());
-			ios = new ObjectInputStream(is);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		
-		
-	}
+	
 	
 	
 	/**
@@ -48,12 +41,13 @@ public class ClientHandler implements Runnable {
 	public void run() {
 		while(true){
 			try {
+				DataInputStream is = new DataInputStream(mySocket.getInputStream());
+				ObjectInputStream ios = new ObjectInputStream(is);
 				Object obj = ios.readObject();
-				if(obj instanceof String){
-					System.out.println("Message: "+(String)obj);
-				}
 				inQueue.put(new Tuple(mySocket, obj));
-				System.out.println("Put data in the queue");
+				System.out.println("Got data");
+				//is.close();
+				//ios.close();
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

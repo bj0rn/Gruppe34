@@ -134,34 +134,46 @@ public class CommunicationController {
 	 * **/
 	public List <User> getUsers(String username, String password){
 		try {
+			os = new DataOutputStream(mySocket.getOutputStream());
 			oos = new ObjectOutputStream(os);
 			oos.writeObject(new String(XmlHandler.generateRequest(username, password, "getUsers")));
 			int i = 0;
 			while(true){
 				System.out.println("Number of tries: "+i++);
 				Object obj = testQueue.takeFirst();
+				System.out.println("ObjectName: "+obj.getClass().getName());
 				if(obj instanceof List){
 					//I  know this a list, but what does it contain ? 
 					//Jada jada : P eg vett :P 
 					List tmp = (List)obj;
 					Object test = tmp.get(0);
-					if(test.getClass().getSimpleName() == USER){
+					System.out.println("Object name: "+test.getClass().getSimpleName());
+					if(test.getClass().getSimpleName().equals("User")){
+						System.out.println("heisan");
 						return (List <User>) obj;
-					}else {
-						//This should not happen
-						testQueue.putLast(obj);
 					}
+				}else if(obj instanceof String){
+					if(XmlHandler.inspectStatus((String)obj).equals("401")){
+						return null;
+					}
+				}else {
+					//This should not happen
+					System.out.println("W00t");
+					testQueue.putLast(obj);
 				}
 				
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		
 		return null;
 	}

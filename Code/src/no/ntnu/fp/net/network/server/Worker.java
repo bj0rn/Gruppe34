@@ -52,8 +52,7 @@ public class Worker implements Runnable {
 				Thread.currentThread().sleep(500);
 				if(!inQueue.isEmpty()){
 					Tuple<Socket, Object> data = inQueue.poll();
-					System.out.println("Got data from queue");
-					System.out.println("Type of data: "+data.y.getClass().getName());
+					//System.out.println("Type of data: "+data.y.getClass().getName());
 					
 					handleRequest(data);
 				}
