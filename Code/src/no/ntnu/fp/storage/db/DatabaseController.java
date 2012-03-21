@@ -8,7 +8,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import no.ntnu.fp.model.Appointment;
@@ -17,6 +19,7 @@ import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.CalendarEntry.CalendarEntryType;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
@@ -182,7 +185,7 @@ public class DatabaseController {
 	public boolean deleteCalendarEntry(int id) throws SQLException {
 		
 		DbConnection db = getConnection();
-		
+	
 		int count = db.executeUpdate("DELETE FROM CalendarEntry WHERE id = " + id);
 		
 		db.close();
@@ -286,13 +289,16 @@ public class DatabaseController {
 		
 		String sql = 
 			"SELECT " 
+		+		"CE.CalendarEntryID AS id"
 		+		"CE.EntryType AS type," 
 		+		"CE.TimeStart AS start," 
 		+		"CE.TimeEnd AS end," 
 		+		"CE.Description AS desc," 
+		+		"L.LocationID AS LocationID"
 		+	"FROM Calendar AS C"
-		+	"JOIN Contains AS CO ON CO.CalendarID = C.CalendarID"
-		+	"JOIN CalendarEntry AS CE ON CE.CalendarID = C.CalendarID"
+		+	"LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID"
+		+	"LEFT JOIN CalendarEntry AS CE ON CE.CalendarID = C.CalendarID"
+		+	"LEFT JOIN Location AS L ON CE.LocationID = L.LocationID"
 		+	"WHERE C.Username = " + username;
 
 		DbConnection db = getConnection();
@@ -301,66 +307,204 @@ public class DatabaseController {
 		
 		rs.beforeFirst();
 		while(rs.next()) {
+			int id = rs.getInt("id");
 			String type = rs.getString("type");
 			Date start = rs.getDate("start");
 			Date end = rs.getDate("end");
 			String desc = rs.getString("desc");
+			int locationID = rs.getInt("LocationID");
 			
 			CalendarEntry entry = null;
 			
 			if (type.equals(CalendarEntry.MEETING)) {
-				entry = new Meeting(start, end, desc);
+				Meeting meeting = new Meeting(start, end, desc);
+				
+				Map<User, State> participants = getParticipants(id);
+				meeting.addParticipants(participants);
+				
 			} else {
 				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
 				entry = new Appointment(start, end, desc);
 			}
 			
+			Location location = getLocation(locationID);
+			entry.setLocation(location);
+			
 			calendar.addCalendarEntry(entry);
 		}
 		
+		db.close();
+		rs.close();
+		
 		return calendar;
 	}
+
+	/**
+	 * Gets a {@code Location} from the database
+	 * 
+	 * @author Håvard
+	 * 
+	 * @param locationID
+	 * 		  the row id for the {@code Location}
+	 * 
+	 * @return the {@code Location} or {@code null} if it does not exists.
+	 * @throws SQLException 
+	 */
+	private Location getLocation(int locationID) throws SQLException {
+		
+		Location result = null;
+		
+		DbConnection db = getConnection();
+		
+		String sql = "SELECT RoomName, Description, Capacity FROM Room WHERE id = " + locationID;
+		
+		ResultSet rs = db.query(sql);
+		
+		if (rs.first()) {
+			
+			String name = rs.getString("RoomName");
+			String desc = rs.getString("Description");
+			int capacity = rs.getInt("Capacity");
+			
+			result = new Room(name, desc, capacity);
+			
+		} else  {
+			
+			sql = "SELECT Description FROM Place WHERE id = " + locationID;
+			rs = db.query(sql);
+			
+			if (rs.first()) {
+				
+				String desc = rs.getString("Description");
+				
+				result = new Place(desc);
+				
+			}
+			
+		}
+		
+		db.close();
+		rs.close();
+		
+		return result;
+		
+	}
 	
+	
+	
+	private Map<User, State> getParticipants(int meetingID) throws SQLException {
+		
+		Map<User, State> result = new HashMap<User, State>();
+		
+		DbConnection db = getConnection();
+		
+		String sql = 
+			"SELECT"
+		+		"U.Username AS user," 
+		+		"CO.State AS state"
+		+	"FROM Contains AS CO"
+		+	"LEFT JOIN Calendar AS CA ON CO.CalendarID = CA.CalendarID"
+		+	"LEFT JOIN User U ON CA.Username = U.Username"
+		+	"WHERE CO.Role = 'Participant'" 
+		+		"AND CO.CalendarEntryID = " + meetingID;
+		
+		ResultSet rs = db.query(sql);
+		
+		rs.beforeFirst();
+		while(rs.next()) {
+			
+			String uname = rs.getString("user");
+			
+			String state = rs.getString("state");
+			
+			
+		}
+		
+		db.close();
+		rs.close();
+		
+		return null;
+	}
+
 	/**
 	 * Gets a {@code List} of {@code Location} from the database.
+	 * Will a situation in which the system needs a list of all
+	 * rooms AND places?
 	 * 
 	 * @return the {@code List} of {@code Location}
+	 * 
+	 * @throws SQLException
 	 */
-	public List<Location> getListOfLocations() {
+	public List<Location> getListOfLocations() throws SQLException {
+		
+		List<Location> locs = new ArrayList<Location>();
+		DbConnection dbc = getConnection();
+		//hm so first get the rooms I assume, then the 'places'
+		String sqlR = "SELECT RoomName, Description, Capacity FROM Room";
+		ResultSet rs = dbc.query(sqlR);
+		rs.beforeFirst();
+		
+		while(rs.next()) {
+		}
+		
+		//String sqlP = "SELECT LocationID, Description FROM Place";
 		return null;
 	}
 	
 	/**
 	 * Gets a {@code List} of {@code Notification} for the {@code User}
 	 * from the database.
-	 * 
+	 * wait how does one do this
+	 *  
 	 * @param user
 	 * 		  the {@code User} to get the {@code List} of {@code Notification}s for. 
 	 * 
 	 * @return a {@code List} of {@code Notification}s for the {@code User}
 	 */
-	public List<Notification> getListOfNotifications(User user) {
+	public List<Notification> getListOfNotifications(User user) throws SQLException {
+		
+		List<Notification> res = new ArrayList<Notification>();
+		DbConnection dbc = getConnection();
+		String sql = "SELECT ";
+		
+		
 		return null;
 	}
 	
 	/**
 	 * Saves a {@code User} to the database.
 	 * A non-existing {@code User} will be created,
-	 * a existing will be updated
+	 * an existing will be updated
 	 * 
 	 * @param user
 	 * 		  the {@code User} to created/change
 	 * 
 	 * @return the {@code User}s database id
+	 * What? Users ids are their usernames!
 	 */
 	public int saveUser(User user) {
+		int res = -1;
+		DbConnection dbc = getConnection();
+		//code for saving a new user
+		String s = ", ";
+		String sql = "INSERT INTO User VALUES (" +
+			    user.getUsername() +s+ user.getPassword() +s+
+			    user.getName() +s+ user.getAge() +s+
+			    user.getPhoneNumber() +s+ user.getEmail() + ")";
+		
+		
+		
 		return 0;
 	}
+	
 	
 	/**
 	 * Saves a {@code Appointment} to the database.
 	 * A non-existing {@code Appointment} will be created,
-	 * a existing will be updated
+	 * an existing will be updated
+	 * it is _REALLY_ hard to check whether or not we need to update
+	 * an existing appointment or create a new one when we do not have
+	 * the argument Appointment's ID.
 	 * 
 	 * @param user
 	 * 		  the {@code Appointment} to created/change
@@ -368,7 +512,12 @@ public class DatabaseController {
 	 * @return the {@code Appointment}s database id
 	 */
 	public int saveAppointment(Appointment appointment) {
-		return 0;
+		DbConnection dbc = getConnection();
+		int res = -1;
+		
+		
+		
+		return res;
 	}
 	
 	/**

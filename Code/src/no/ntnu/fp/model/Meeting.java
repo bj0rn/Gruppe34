@@ -29,6 +29,15 @@ public class Meeting extends CalendarEntry{
 	public void addParticipant(User user, State state){
 		participants.put(user, state);
 	}
+	
+	public void addParticipants(Map<User, State> participants) {
+		
+		for(User key : participants.keySet()) {
+			State state = participants.get(key);
+			addParticipant(key, state);
+		}
+		
+	}
 
 	public boolean removeParticipant(User user){
 		if (participants.containsKey(user)) {
