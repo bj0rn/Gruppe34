@@ -14,6 +14,7 @@ public abstract class CalendarEntry {
 	private Location location;
 	private Date startDate;
 	private Date endDate;
+	private int id;
 
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	public final static String MODEL_PROPERTY = "Model";
@@ -26,7 +27,7 @@ public abstract class CalendarEntry {
 
 	}
 
-	public CalendarEntry(String description, Date startDate, Date endDate) {
+	public CalendarEntry(String description, Date startDate, Date endDate, int id) {
 		this(description);
 		setDate(startDate, endDate);
 	}
@@ -86,6 +87,10 @@ public abstract class CalendarEntry {
 
 	public User getOwner() {
 		return owner;
+	}
+	
+	public int getID() {
+		return this.id;
 	}
 
 	public void setModelCL(ModelChangeListener modelChangeListener) {
