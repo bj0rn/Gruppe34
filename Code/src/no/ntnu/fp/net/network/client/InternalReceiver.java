@@ -24,17 +24,25 @@ public class InternalReceiver implements Runnable {
 	//Methods
 	@Override
 	public void run() {
-		while(true){
+		boolean running = true;
+		while(running){
 			try {
 				DataInputStream is = new DataInputStream(mySocket.getInputStream());
 				ObjectInputStream ios = new ObjectInputStream(is);
 				Object obj = ios.readObject();
 				System.out.println("Got data");
 				testQueue.putFirst(obj);
-			} catch (Exception e) {
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				running = false;
+				//e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}		
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}

@@ -49,7 +49,7 @@ public class Client implements Runnable {
 		return communicationController;
 	}
 	
-	
+	//TODO: Stop these threads
 	@Override
 	public void run() {
 		(new Thread(new ClientWorker(mySocket, testQueue, communicationController))).start();

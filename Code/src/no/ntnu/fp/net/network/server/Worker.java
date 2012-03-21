@@ -46,6 +46,7 @@ public class Worker implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println("Created worker thread");
+		
 		while(true){
 			try {
 				//Sleep
@@ -53,7 +54,6 @@ public class Worker implements Runnable {
 				if(!inQueue.isEmpty()){
 					Tuple<Socket, Object> data = inQueue.poll();
 					//System.out.println("Type of data: "+data.y.getClass().getName());
-					
 					handleRequest(data);
 				}
 			} catch (InterruptedException e1) {

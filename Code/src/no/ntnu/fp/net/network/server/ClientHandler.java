@@ -39,19 +39,18 @@ public class ClientHandler implements Runnable {
 	 * **/
 	@Override
 	public void run() {
-		while(true){
+		boolean running = true;
+		while(running){
 			try {
 				DataInputStream is = new DataInputStream(mySocket.getInputStream());
 				ObjectInputStream ios = new ObjectInputStream(is);
 				Object obj = ios.readObject();
 				inQueue.put(new Tuple(mySocket, obj));
 				System.out.println("Got data");
-				//is.close();
-				//ios.close();
+				
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				running = false;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
