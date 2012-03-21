@@ -2,13 +2,8 @@ package no.ntnu.fp.model;
 
 public class Place extends Location {
 	private String description;
-
-	public String getDescription() {
-		return description;
+	
+	public Place(int id, String description) {
+		super(id, description);
 	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 }

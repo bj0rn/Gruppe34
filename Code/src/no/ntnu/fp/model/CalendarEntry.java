@@ -49,6 +49,14 @@ public abstract class CalendarEntry {
 			this.endDate = endDate;
 		}
 	}
+	
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public Date getEndDate() {
+		return endDate;
+	}
 
 	/**
 	 * Returns the duration of the entry
