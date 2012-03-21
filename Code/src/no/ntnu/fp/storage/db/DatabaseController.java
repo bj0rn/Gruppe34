@@ -248,7 +248,7 @@ public class DatabaseController {
 		
 		DbConnection db = getConnection();
 		
-		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM User WHERE Username = " + username;
+		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM User WHERE Username = '" + username + "'";
 		
 		ResultSet rs = db.query(sql);
 		
@@ -285,21 +285,21 @@ public class DatabaseController {
 		
 		Calendar calendar = new Calendar();
 		
-		String username = user.getName();
+		String username = user.getUsername();
 		
 		String sql = 
 			"SELECT " 
-		+		"CE.CalendarEntryID AS id"
-		+		"CE.EntryType AS type," 
-		+		"CE.TimeStart AS start," 
-		+		"CE.TimeEnd AS end," 
-		+		"CE.Description AS desc," 
-		+		"L.LocationID AS LocationID"
-		+	"FROM Calendar AS C"
-		+	"LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID"
-		+	"LEFT JOIN CalendarEntry AS CE ON CE.CalendarID = C.CalendarID"
-		+	"LEFT JOIN Location AS L ON CE.LocationID = L.LocationID"
-		+	"WHERE C.Username = " + username;
+		+		"CE.CalendarEntryID AS id, "
+		+		"CE.EntryType AS type, " 
+		+		"CE.TimeStart AS start, " 
+		+		"CE.TimeEnd AS end, " 
+		+		"CE.Description AS description, " 
+		+		"L.LocationID AS LocationID "
+		+	"FROM Calendar AS C "
+		+	"LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID "
+		+	"LEFT JOIN CalendarEntry AS CE ON CO.CalendarEntryID = CE.CalendarEntryID "
+		+	"LEFT JOIN Location AS L ON CE.LocationID = L.LocationID "
+		+	"WHERE C.Username = '" + username + "'";
 
 		DbConnection db = getConnection();
 		
@@ -311,20 +311,22 @@ public class DatabaseController {
 			String type = rs.getString("type");
 			Date start = rs.getDate("start");
 			Date end = rs.getDate("end");
-			String desc = rs.getString("desc");
+			String desc = rs.getString("description");
 			int locationID = rs.getInt("LocationID");
 			
 			CalendarEntry entry = null;
 			
 			if (type.equals(CalendarEntry.MEETING)) {
-				Meeting meeting = new Meeting(start, end, desc);
+				Meeting meeting = new Meeting(start, end, desc, id);
 				
 				Map<User, State> participants = getParticipants(id);
 				meeting.addParticipants(participants);
 				
+				entry = meeting;
+				
 			} else {
 				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
-				entry = new Appointment(start, end, desc);
+				entry = new Appointment(start, end, desc, id);
 			}
 			
 			Location location = getLocation(locationID);
@@ -356,31 +358,28 @@ public class DatabaseController {
 		
 		DbConnection db = getConnection();
 		
-		String sql = "SELECT RoomName, Description, Capacity FROM Room WHERE id = " + locationID;
+		String sql = "SELECT RoomName, Description, Capacity FROM Room WHERE LocationID = " + locationID;
 		
 		ResultSet rs = db.query(sql);
 		
 		if (rs.first()) {
-			
 			String name = rs.getString("RoomName");
 			String desc = rs.getString("Description");
 			int capacity = rs.getInt("Capacity");
 			
-			result = new Room(name, desc, capacity);
+			result = new Room(locationID, name, desc, capacity);
 			
 		} else  {
 			
-			sql = "SELECT Description FROM Place WHERE id = " + locationID;
+			sql = "SELECT LocationID, Description FROM Place WHERE LocationID = " + locationID;
 			rs = db.query(sql);
 			
 			if (rs.first()) {
 				
 				String desc = rs.getString("Description");
 				
-				result = new Place(desc);
-				
-			}
-			
+				result = new Place(locationID, desc);	
+			}	
 		}
 		
 		db.close();
@@ -398,14 +397,19 @@ public class DatabaseController {
 		
 		DbConnection db = getConnection();
 		
+		
 		String sql = 
-			"SELECT"
-		+		"U.Username AS user," 
-		+		"CO.State AS state"
-		+	"FROM Contains AS CO"
-		+	"LEFT JOIN Calendar AS CA ON CO.CalendarID = CA.CalendarID"
-		+	"LEFT JOIN User U ON CA.Username = U.Username"
-		+	"WHERE CO.Role = 'Participant'" 
+			"SELECT "
+		+		"U.Username AS user, " 
+		+		"U.Name AS name, "
+		+		"U.Age AS age, "
+		+		"U.PhoneNumber AS number, "
+		+		"U.Email AS email, "
+		+		"CO.State AS state "
+		+	"FROM Contains AS CO "
+		+	"LEFT JOIN Calendar AS CA ON CO.CalendarID = CA.CalendarID "
+		+	"LEFT JOIN User U ON CA.Username = U.Username "
+		+	"WHERE CO.Role = 'Participant' " 
 		+		"AND CO.CalendarEntryID = " + meetingID;
 		
 		ResultSet rs = db.query(sql);
@@ -414,16 +418,25 @@ public class DatabaseController {
 		while(rs.next()) {
 			
 			String uname = rs.getString("user");
+			String name = rs.getString("name");
+			int age = rs.getInt("age");
+			int phoneNumber = rs.getInt("number");
+			String email = rs.getString("email");
 			
 			String state = rs.getString("state");
 			
+			User user = new User(uname, name, age, phoneNumber, email);
+			
+			State s = State.getState(state);
+		
+			result.put(user, s);
 			
 		}
 		
 		db.close();
 		rs.close();
 		
-		return null;
+		return result;
 	}
 
 	/**
