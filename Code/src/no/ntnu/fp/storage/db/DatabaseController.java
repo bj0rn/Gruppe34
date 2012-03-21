@@ -380,9 +380,38 @@ public class DatabaseController {
 	public int saveUser(User user) {
 		int res = -1;
 		DbConnection dbc = getConnection();
+		
+		String s = ""
+			+ "IF EXISTS( SELECT * FROM USER WHERE Username="
+			+ user.getUsername() + ") BEGIN UPDATE User"
+			+ "SET Password=" + user.getPassword()
+			+ ", Name=" + user.getName()
+			+ ", Age=" + user.getAge()
+			+ ", PhoneNumber=" + user.getPhoneNumber()
+			+ ", Email=" + user.getEmail()
+			+ " END"
+			+"";
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("IF EXISTS( SELECT * FROM User WHERE Username=");
+		sb.append(user.getUsername());
+		sb.append(") BEGIN UPDATE User SET ");
+		sb.append("Username=");
+		sb.append(user.getName());
+		sb.append("")
+		//user.getUsername()+") BEGIN " +// do update here
+		String d = "";
+		
+		
+		String sql = "IF EXISTS( SELECT * FROM User WHERE Username = " +
+		user.getUsername()+") BEGIN " +
+										// do update here
+		"END ELSE BEGIN" + 				
+										//do insert here
+		"END";
 		//code for saving a new user
 		String s = ", ";
-		String sql = "INSERT INTO User VALUES (" +
+		sql = "INSERT INTO User VALUES (" +
 			    user.getUsername() +s+ user.getPassword() +s+
 			    user.getName() +s+ user.getAge() +s+
 			    user.getPhoneNumber() +s+ user.getEmail() + ")";
