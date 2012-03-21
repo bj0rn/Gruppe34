@@ -17,13 +17,11 @@ import nu.xom.ValidityException;
 //TODO: Communicate with the db
 public class ServerController {
 	//fields
-	private ArrayList <String> users;
-	private ArrayList<String> locations;
 	private HashMap<String, Socket> connectedClients;
 	private  ArrayList<String> participants;
 	private DatabaseController databaseController;
 	private XmlHandler xmlHandler;
-	
+	//Streams
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
 	
@@ -36,24 +34,21 @@ public class ServerController {
 	
 	//Constructor
 	public ServerController(HashMap<String, Socket> clients){
-		//Get users
-		//Get locations
-		//xmltosqlhandler = new XmlToSqlHandler();
 		databaseController = new DatabaseController();
 		connectedClients = clients;
-		//genericXml = new GenericXmlSerializer();
-				
 	}
 	
 	public void authenticate(Tuple<Socket, Object> data) throws SQLException{
 		Authenticate auth = (Authenticate) data.y;
 		String username = auth.getUsername();
 		String password = auth.getPassword();
+		System.out.println("Username: "+ username);
+		System.out.println("Password: "+password);
 		try {
 			os = new DataOutputStream(data.x.getOutputStream());
 			oos = new ObjectOutputStream(os);
-			//Check with the database
-			
+//			System.out.println("Heisann");
+//			//TODO: The database is removed for testing purposes
 			if(databaseController.authenticate(username, password)){
 				connectedClients.put(username, data.x);
 				oos.writeObject(new String(XmlHandler.loginSuccessful()));
@@ -62,11 +57,11 @@ public class ServerController {
 				oos.writeObject(new String(XmlHandler.loginUnsucessful()));
 				System.out.println("Login failed");
 			}
-			os.close();
-			oos.close();
+			//os.close();
+			//oos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+	}
 		
 	}
 	
@@ -78,9 +73,9 @@ public class ServerController {
 			String userData[] = XmlHandler.loginFromXml(xml);
 			if(connectedClients.containsKey(userData[0])){
 				//send successfull login
-				List <User> users = databaseController.getListOfUsers();
+				//List <User> users = databaseController.getListOfUsers();
 				//send the data to the client
-				oos.writeObject(users);
+				//oos.writeObject(users);
 				
 			}else {
 				oos.writeObject(new String(XmlHandler.loginUnsucessful()));
@@ -93,9 +88,6 @@ public class ServerController {
 			
 			//The request is XML ? The Object should in some cases be a tuple :) 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -135,26 +127,26 @@ public class ServerController {
 		System.out.println("ObjectName: "+objectName);
 		if(objectName.equals("Authenticate")){
 			try {
-				
+				System.out.println("Test");
 				authenticate(data);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		//Standard xml
-		else if(data.y instanceof String){
-			String method = XmlHandler.inspectMethod((String)data.y);
-			if(method == GET_USERS){
-				getUsers(data);
-			}
-			else if(method == GET_CALENDAR){
-				//Call get calendar
-			}
-		}
-		//TODO: CalendarEntry
-		
-		//TODO: 
+//		//Standard xml
+//		else if(data.y instanceof String){
+//			String method = XmlHandler.inspectMethod((String)data.y);
+//			if(method == GET_USERS){
+//				getUsers(data);
+//			}
+//			else if(method == GET_CALENDAR){
+//				//Call get calendar
+//			}
+//		}
+//		//TODO: CalendarEntry
+//		
+//		//TODO: 
 		
 		
 	}

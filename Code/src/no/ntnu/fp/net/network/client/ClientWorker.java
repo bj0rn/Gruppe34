@@ -35,9 +35,9 @@ public class ClientWorker implements Runnable {
 			//Sleep
 			
 			try {
-				Thread.currentThread().sleep(500);
-				Object data = testQueue.takeFirst();
-				handle(data);
+				Thread.currentThread().sleep(5000);
+				//Object data = testQueue.takeFirst();
+				//handle(data);
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

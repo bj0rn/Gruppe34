@@ -83,7 +83,7 @@ public class CommunicationController {
 	
 	public void inspect(){
 		//When notifications arrive we need to be ready
-		//How can we hande them ?
+		//How can we handle them ?
 	}
 	
 	

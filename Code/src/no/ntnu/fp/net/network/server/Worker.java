@@ -38,6 +38,7 @@ public class Worker implements Runnable {
 		this.clients = clients;
 		input = new Scanner(System.in);
 		serverController = new ServerController(clients);
+		System.out.println("ServerControllercreated");
 	}
 	
 	//Methods

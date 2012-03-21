@@ -25,6 +25,7 @@ public class TestClient {
 		//Spawn threads
 		System.out.println("Send data");
 		communicationController.authenticate("bjorn", "lol");
+		//communicationController.getUsers("bjorn", "lol");
 		System.out.println("Data sent");
 		
 	}

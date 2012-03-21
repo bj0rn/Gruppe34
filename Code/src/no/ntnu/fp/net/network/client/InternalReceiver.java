@@ -36,7 +36,6 @@ public class InternalReceiver implements Runnable {
 				Object obj = ios.readObject();
 				System.out.println("Got data");
 				testQueue.putFirst(obj);
-				//testQueue.putFirst(obj);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
