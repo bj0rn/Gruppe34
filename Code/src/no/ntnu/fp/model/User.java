@@ -1,10 +1,15 @@
 package no.ntnu.fp.model;
 
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.List;
 
 
-public class User extends Model {
+public class User extends Model implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;
 	private String name;

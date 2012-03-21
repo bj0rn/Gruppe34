@@ -2,10 +2,14 @@ package no.ntnu.fp.net.network.server;
 
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
+
+import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.net.network.Tuple;
 
 /**
  *Handle request from the clients 
@@ -17,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class Worker implements Runnable {
 	//Fields
-	private BlockingQueue<String> inQueue;
+	private BlockingQueue<Tuple <Socket, Object>> inQueue;
 	private HashMap<String, Socket> clients;
 	private Scanner input;
 	private DataOutputStream os;
@@ -26,7 +30,7 @@ public class Worker implements Runnable {
 	
 	
 	//Constructor
-	public Worker(BlockingQueue<String> inQueue, HashMap<String, Socket> clients){
+	public Worker(BlockingQueue<Tuple<Socket, Object>> inQueue, HashMap<String, Socket> clients){
 		//Setup connection to db
 		//super();
 		System.out.println("The connection is made...");
@@ -34,6 +38,7 @@ public class Worker implements Runnable {
 		this.clients = clients;
 		input = new Scanner(System.in);
 		serverController = new ServerController(clients);
+		System.out.println("ServerControllercreated");
 	}
 	
 	//Methods
@@ -41,13 +46,14 @@ public class Worker implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println("Created worker thread");
+		
 		while(true){
 			try {
 				//Sleep
 				Thread.currentThread().sleep(500);
 				if(!inQueue.isEmpty()){
-					String data = inQueue.poll();
-					System.out.println("Data: "+data);
+					Tuple<Socket, Object> data = inQueue.poll();
+					//System.out.println("Type of data: "+data.y.getClass().getName());
 					handleRequest(data);
 				}
 			} catch (InterruptedException e1) {
@@ -59,10 +65,10 @@ public class Worker implements Runnable {
 		}
 	}
 	
-	public void handleRequest(String data){
+	public void handleRequest(Tuple<Socket, Object> data){
 		serverController.inspectRequest(data);
 		
-		
+	
 	}
 	
 	

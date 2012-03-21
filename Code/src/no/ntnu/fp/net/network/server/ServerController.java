@@ -1,7 +1,9 @@
 package no.ntnu.fp.net.network.server;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,109 +12,150 @@ import java.util.List;
 
 import no.ntnu.fp.storage.db.DatabaseController;
 import no.ntnu.fp.model.*;
+import no.ntnu.fp.net.network.Tuple;
+import nu.xom.ParsingException;
+import nu.xom.ValidityException;
 //TODO: Communicate with the db
 public class ServerController {
 	//fields
-	private ArrayList <String> users;
-	private ArrayList<String> locations;
 	private HashMap<String, Socket> connectedClients;
 	private  ArrayList<String> participants;
 	private DatabaseController databaseController;
-	private DataOutputStream os;
 	private XmlHandler xmlHandler;
+	//Streams
+	//private DataOutputStream os;
+	//private ObjectOutputStream oos;
 	
 	//Test Protocoll
-	private static String INSERT = "INSERT";
-	private static String DELETE = "DELETE";
-	private static String DISTRUBUTE = "DISTRUBUTE";
-	private static String GET= "GET";
-	private static String UPDATE = "UPDATE";
-	private static String AUTH = "AUTH";
-	private DistrubutionHandler distrubuteHandler;
-	private XmlToSqlHandler xmltosqlhandler;
-	GenericXmlSerializer genericXml;
+	private final static String AUTHENTICATE = "Authenticate";
+	private final static String GET_USERS = "getUsers";
+	private final static String GET_CALENDAR = "getCalendar";
+	//GenericXmlSerializer genericXml;
 	
 	
 	//Constructor
 	public ServerController(HashMap<String, Socket> clients){
-		//Get users
-		//Get locations
-		xmltosqlhandler = new XmlToSqlHandler();
 		databaseController = new DatabaseController();
 		connectedClients = clients;
-		genericXml = new GenericXmlSerializer();
+	}
+	
+	public void authenticate(Tuple<Socket, Object> data) throws SQLException{
+		Authenticate auth = (Authenticate) data.y;
+		String username = auth.getUsername();
+		String password = auth.getPassword();
+		System.out.println("Username: "+ username);
+		System.out.println("Password: "+password);
+		try {
+			DataOutputStream os = new DataOutputStream(data.x.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			//Check username and password againts the database 
+			if(databaseController.authenticate(username, password)){
+				connectedClients.put(username, data.x);
+				oos.writeObject(new String(XmlHandler.loginSuccessful()));
+				System.out.println("Login completed");
+			}else {
+				oos.writeObject(new String(XmlHandler.loginUnsucessful()));
+				System.out.println("Login failed");
+			}
+			//os.close();
+			//oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+	}
+		
+	}
+	
+	public void getUsers(Tuple <Socket, Object> data){
+		try {
+			DataOutputStream os = new DataOutputStream(data.x.getOutputStream());
+			 ObjectOutputStream oos = new ObjectOutputStream(os);
+			String xml = (String) data.y;
+			String userData[] = XmlHandler.loginFromXml(xml);
+			
+			System.out.println("GetUser user: "+userData[0]);
+			if(connectedClients.containsKey(userData[0])){
+				//send successfull login
+				System.out.println("Ka skjer");
+				List <User> users = databaseController.getListOfUsers();
+				//send the data to the client
+				oos.writeObject(users);
 				
-	}
-	
-	public void authenticate(String clientID, String xml) throws SQLException, IOException{
-		String userData[] = XmlHandler.loginFromXml(xml);
-		Socket sockfd = connectedClients.get(clientID);
-		os = new DataOutputStream(sockfd.getOutputStream());
-		if(databaseController.authenticate(userData[0], userData[1])){
-			connectedClients.remove(clientID);
-			connectedClients.put(userData[0], sockfd);
-			os.writeUTF(XmlHandler.loginSuccessful());
-		}else {
-			os.writeUTF(xmlHandler.loginUnsucessful());
-		}
-	}
-	
-	public void getUsers(String clientID, String xml) throws IOException, SQLException{
-		List <User> users;
-		String userData[] = XmlHandler.loginFromXml(xml);
-		DataOutputStream os;
-		System.out.println("User data: "+userData[0]);
-		if(connectedClients.containsKey(userData[0])){
-			Socket sockfd = connectedClients.get(userData[0]);
-			os = new DataOutputStream(sockfd.getOutputStream());
-			users = databaseController.getListOfUsers();
-			System.out.println("Got the users");
-			
-			
-		}else {
-			System.out.println("Not authenticated");
-		}
-		
-	}
-	
-	
-	public void saveMeeting(String xml){
-		
-	}
-	
-	
-	public void update(String xml){
-		
-	}
-	
-	
-	
-	public void inspectRequest(String xml){
-		String res[] = xml.split(" ",2);
-		System.out.println("Xml: "+res[1]);
-		String test = XmlHandler.inspectMethod(res[1]);
-		System.out.println("Test: "+test);
-		if(test.equals("login")){
-			try {
-				authenticate(res[0], res[1]);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}else {
+				oos.writeObject(new String(XmlHandler.loginUnsucessful()));
+				
 			}
-		}else if(test.equals("getUsers")){
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	//TODO: Implements
+	public void getFullUser(Tuple <Socket, Object> data){
+		try{
+			DataOutputStream os = new DataOutputStream(data.x.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			String xml = (String)data.y;
+			String userData[] = XmlHandler.loginFromXml(xml);
+			System.out.println("Username: "+userData[0]);
+			System.out.println("Password: "+userData[1]);
+			if(connectedClients.containsKey(userData[0])){
+				//auth okey...send data
+				System.out.println("Ok");
+				User user = databaseController.getFullUser(userData[0]);
+				oos.writeObject(user);
+			}else {
+				//Auth not okey...send error message
+				oos.writeObject(new String("Error"));
+			}
+			os.close();
+			oos.close();
+			
+		}catch(IOException e){
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}	
+	
+	public void inspectRequest(Tuple <Socket, Object> data){
+		Class <? extends Object> clazz = data.y.getClass();
+		String objectName = clazz.getSimpleName();
+		System.out.println("ObjectName: "+objectName);
+		
+		
+		if(objectName.equals("Authenticate")){
 			try {
-				getUsers(res[0], res[1]);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Test");
+				authenticate(data);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		//Standard xml
+		else if(data.y instanceof String){
+			//System.out.println("Enter tha shit");
+			String method = XmlHandler.inspectMethod((String)data.y);
+			System.out.println("METHOD: "+method);
+			if(method.equals("getUsers")){
+				System.out.println("Ready");
+				getUsers(data);
+			}
+			else if(method == GET_CALENDAR){
+				//Call get calendar
+			}
+		}
+		//TODO: CalendarEntry
+		
+		//TODO: 
+		
 		
 	}
 	

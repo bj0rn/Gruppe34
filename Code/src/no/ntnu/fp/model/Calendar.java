@@ -1,10 +1,16 @@
 package no.ntnu.fp.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class Calendar {
+public class Calendar implements Iterable<CalendarEntry> {
 	private ModelChangeListener modelChangeListener;
 	private List<CalendarEntry> entries;
+	
+	public Calendar() {
+		entries = new ArrayList<CalendarEntry>();
+	}
 	
 	public void addMeeting(Meeting meeting){
 		entries.add(meeting);
@@ -27,4 +33,17 @@ public class Calendar {
 		entries.add(entry);
 	}
 
+	public int getNumEntries() {
+		return entries.size();
+	}
+	
+	public CalendarEntry get(int i) {
+		return entries.get(i);
+	}
+
+	@Override
+	public Iterator<CalendarEntry> iterator() {
+		return entries.iterator();
+	}
+	
 }
