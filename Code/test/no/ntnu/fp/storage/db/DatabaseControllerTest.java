@@ -4,9 +4,12 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Set;
 
+import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Calendar;
 import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Place;
+import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.User;
 
 import junit.framework.TestCase;
@@ -71,6 +74,27 @@ public class DatabaseControllerTest extends TestCase {
 			e.printStackTrace();
 		}
 		
-	}
+	}//testGetFullUser()
+	
+	public void testSaveAppointment() throws SQLException {
+		
+		String description = "butts!";
+		Place pl = new Place(39, "it's where the butts go!" );
+		Date start = new Date();
+		Date end = start;
+		end.setHours(start.getHours() + 2);
+		Appointment app = new Appointment(start, end, description, -1);
+		app.setLocation(pl);
+		System.out.println(app.getID());
+		ctrl = new DatabaseController();
+		try {
+		ctrl.saveAppointment(app);
+		
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}//testSaveAppointment()
 	
 }
