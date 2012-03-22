@@ -1,6 +1,7 @@
 package no.ntnu.fp.model;
 
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +11,10 @@ import java.util.Set;
 import javax.jws.soap.SOAPBinding.ParameterStyle;
 
 
-public class Meeting extends CalendarEntry{
+public class Meeting extends CalendarEntry implements Serializable{
 	
+	private static final long serialVersionUID = 3423853302160071085L;
+
 	public enum State {
 		
 		Accepted, Rejected, Pending;
@@ -30,9 +33,11 @@ public class Meeting extends CalendarEntry{
 	
 	private ModelChangeListener modelChangeListener;
 	
-	private PropertyChangeSupport pcs;
-	
 	private Map<User, State> participants;
+	
+	public Meeting(int id) {
+		super(id);
+	}
 	
 	public Meeting(String description){
 		super(description);

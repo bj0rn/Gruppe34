@@ -1,6 +1,11 @@
 package no.ntnu.fp.model;
 
-public class Room extends Location{
+import java.io.Serializable;
+
+public class Room extends Location implements Serializable{
+	
+	private static final long serialVersionUID = -63886587424231393L;
+	
 	private String name; //id/pk
 	private String description;
 	private int capacity;

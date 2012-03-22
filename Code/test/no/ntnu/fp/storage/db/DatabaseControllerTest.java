@@ -2,6 +2,7 @@ package no.ntnu.fp.storage.db;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import no.ntnu.fp.model.Appointment;
@@ -9,6 +10,7 @@ import no.ntnu.fp.model.Calendar;
 import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Place;
+import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.User;
 
@@ -96,5 +98,95 @@ public class DatabaseControllerTest extends TestCase {
 		
 		
 	}//testSaveAppointment()
+	
+	public void testNotifications() {
+		
+		String username = "bjorn";
+		
+		ctrl = new DatabaseController();
+		
+		try {
+			
+			List<Notification> notifications = ctrl.getListOfNotifications(username);
+			
+			System.out.println(notifications.size());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void testNotifications() {
+		
+		String username = "bjorn";
+		
+		ctrl = new DatabaseController();
+		
+		try {
+			
+			List<Notification> notifications = ctrl.getListOfNotifications(username);
+			
+			System.out.println(notifications.size());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void testNotifications() {
+		
+		String username = "bjorn";
+		
+		ctrl = new DatabaseController();
+		
+		try {
+			
+			List<Notification> notifications = ctrl.getListOfNotifications(username);
+			
+			System.out.println(notifications.size());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void testNotifications() {
+		
+		String username = "bjorn";
+		
+		ctrl = new DatabaseController();
+		
+		try {
+			
+			List<Notification> notifications = ctrl.getListOfNotifications(username);
+			
+			System.out.println(notifications.size());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void testNotifications() {
+		
+		String username = "bjorn";
+		
+		ctrl = new DatabaseController();
+		
+		try {
+			
+			List<Notification> notifications = ctrl.getListOfNotifications(username);
+			
+			System.out.println(notifications.size());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

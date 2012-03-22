@@ -1,5 +1,9 @@
 package no.ntnu.fp.model;
 
-public class MeetingInviteNotification extends MeetingNotification{
+import java.io.Serializable;
+
+public class MeetingInviteNotification extends MeetingNotification implements Serializable{
+
+	private static final long serialVersionUID = 5567053784773832883L;
 
 }
