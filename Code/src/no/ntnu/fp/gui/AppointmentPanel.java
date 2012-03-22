@@ -92,13 +92,13 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setStartDate(startComp.getStartDate());
+				model.setStartDate(new Date(startComp.getText()));
 			}
 		});
 		
 		endComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setEndDate(endComp.getEndDate());
+				model.setEndDate(new Date(endComp.getText()));
 			}
 		}); 
 		

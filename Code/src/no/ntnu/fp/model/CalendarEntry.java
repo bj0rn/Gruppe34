@@ -26,7 +26,10 @@ public abstract class CalendarEntry implements Serializable {
 	public final static String DESC_PROPERTY = "Description";
 	public final static String OWNER_PROPERTY = "Owner";
 	public final static String LOC_PROPERTY = "Location";
+	public final static String START_PROPERTY ="Start time";
+	public final static String END_PROPERTY ="End time";
 
+	
 	public CalendarEntry(int id) {
 		this.id = id;
 	}
@@ -61,10 +64,15 @@ public abstract class CalendarEntry implements Serializable {
 	}
 	
 	public void setStartDate(Date startDate){
+		Date oldValue = startDate;
 		this.startDate = startDate;
+		pcs.firePropertyChange(START_PROPERTY, oldValue, startDate);
+		
 	}
-	public void seteEndDate(Date endDate){
+	public void setEndDate(Date endDate){
+		Date oldValue = endDate
 		this.endDate = endDate;
+		pcs.firePropertyChange(END_PROPERTY, oldValue, endDate);
 	}
 	
 	
