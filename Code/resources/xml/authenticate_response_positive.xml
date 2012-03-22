@@ -5,3 +5,12 @@
 		<message>authenticated</message>
 	</header>
 </response>
+
+
+<request>
+	<header>
+		<method>login</method>
+		<status>200</status>
+		<message>authenticated</message>
+	</header>
+</request>

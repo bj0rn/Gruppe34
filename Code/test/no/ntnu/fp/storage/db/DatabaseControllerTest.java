@@ -1,6 +1,15 @@
 package no.ntnu.fp.storage.db;
 
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import no.ntnu.fp.model.Calendar;
+import no.ntnu.fp.model.CalendarEntry;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Notification;
+import no.ntnu.fp.model.User;
 
 import junit.framework.TestCase;
 
@@ -22,6 +31,66 @@ public class DatabaseControllerTest extends TestCase {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void testGetFullUser() {
+		
+		String username = "havard";
+		
+		ctrl = new DatabaseController();
+		
+		try {
+			User user = ctrl.getFullUser(username);
+			
+			assertEquals("havard", user.getUsername());
+			assertEquals("Håvard Wormdal Høiby", user.getName());
+			assertEquals(24, user.getAge());
+			assertEquals(95933245, user.getPhoneNumber());
+			assertEquals("havardwhoiby@gmail.com", user.getEmail());
+			
+			Calendar calendar = user.getCalendar();
+			
+			assertEquals(1, calendar.getNumEntries());
+			
+			Meeting meeting = (Meeting) calendar.get(0);
+			
+			//assertEquals(new Date(2012, 2, 21, 12, 0, 0), meeting.getStartDate());
+			//assertEquals(new Date(2012, 2, 21, 13, 0, 0), meeting.getEndDate());
+			//assertEquals("TestMøte", meeting.getDescription());
+			
+			assertEquals(1, meeting.getNumParticipants());
+
+			Set<User> participants = meeting.getParticipants();
+			User participant = participants.toArray(new User[] {})[0];
+			
+			assertEquals("bjorn", participant.getUsername());
+			assertEquals("bjorninator", participant.getName());
+			assertEquals(23, participant.getAge());
+			assertEquals(6565656, participant.getPhoneNumber());
+			assertEquals("test@test.com", participant.getEmail());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void testNotifications() {
+		
+		String username = "bjorn";
+		
+		ctrl = new DatabaseController();
+		
+		try {
+			
+			List<Notification> notifications = ctrl.getListOfNotifications(username);
+			
+			System.out.println(notifications.size());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

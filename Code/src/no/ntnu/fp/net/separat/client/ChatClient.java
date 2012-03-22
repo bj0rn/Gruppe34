@@ -40,7 +40,7 @@ public class ChatClient {
 
     private Connection connection;
 
-    private static boolean SIMPLE_CONNECTION = true;
+    private static boolean SIMPLE_CONNECTION = false;
 
     public ChatClient(String address, int port) {
         port_to_server = port;
@@ -53,8 +53,19 @@ public class ChatClient {
         //	  this.username = JOptionPane.showInputDialog(gui,"Skriv inn
         // navn:");
         gui = new Gui("Chat klient laget av Geir", this);
-        this.login(username);
-
+        //this.login(username);
+        try {
+            connection.connect(InetAddress.getByName(addressServer),
+                    port_to_server);
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+       
+        
         gui.setDefaultCloseOperation(Gui.EXIT_ON_CLOSE);
     }
 

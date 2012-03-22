@@ -1,0 +1,68 @@
+<request>
+	<header>
+		<method>insert</method>
+		<authenticate>
+			<user> username </user>
+			<pass> password </pass>
+		</authenticate>
+	</header>
+	<payload type="event" id="122342">
+		<field>
+			<key>foo</key> 
+			<value>bar</value>
+		</field>
+		<field>
+			<key>bar</key> 
+			<value>foo</value>
+		</field>
+	</payload>
+	
+//CalendarEntry
+	
+<request> 
+	<header>
+		<method> saveMeeting </method>
+		<authenticate>
+			<user> username </user>
+			<pass> password </pass>
+		</authenticate>
+		
+	</header>
+	 <data>
+	 	<timestart> start </timeatart>
+	 	<timeend> end </timeend>
+	 	<timecreated> created </timecreated>
+	 	<description> description </description>
+	 	<EntryType> Meeting </entryType>
+	 	<LocationID> foreign </locationID>
+	 	<users>
+	 		<user>
+	 			<username..
+	 		</user>
+	 		<user>
+	 		</user>
+	 		...
+	 	</users>
+	 </data> 
+</request> 
+
+
+<request> 
+	<header>
+		<method> SaveMeeting </method>
+		<authentication>
+			<user> username </user> 
+			<pass> password </pass>
+		</authentication>
+	</header>
+	<data>
+		<role> P/O </role>
+		<state>pending, rejected, accepted </state>
+		<calendarID> calendar id </CalendarID>
+		<calendarEntryID> calendar entry id </calendarEntryId>
+	</data> 
+</request>
+
+
+
+<request><header><method>getUsers</method><authenticate><user>havard</user><pass>test</pass></authenticate></header></request>	
