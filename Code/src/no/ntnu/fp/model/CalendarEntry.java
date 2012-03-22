@@ -1,11 +1,15 @@
 package no.ntnu.fp.model;
 
 import java.util.Date;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.Calendar;
 
-public abstract class CalendarEntry {
-
+public abstract class CalendarEntry implements Serializable {
+	
+	private static final long serialVersionUID = -5666618955325756218L;
+	
 	public final static String MEETING = "Meeting";
 	public final static String APPOINTMENT = "Appointment";
 
@@ -15,21 +19,29 @@ public abstract class CalendarEntry {
 	private Location location;
 	private Date startDate;
 	private Date endDate;
+	private int id;
 
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	public final static String MODEL_PROPERTY = "Model";
 	public final static String DESC_PROPERTY = "Description";
 	public final static String OWNER_PROPERTY = "Owner";
 	public final static String LOC_PROPERTY = "Location";
-	private Calendar cal = Calendar.getInstance();
+	public final static String START_PROPERTY ="Start time";
+	public final static String END_PROPERTY ="End time";
 
+	
+	public CalendarEntry(int id) {
+		this.id = id;
+	}
+	
 	public CalendarEntry(String description) {
 		this.description = description;
 
 	}
 
-	public CalendarEntry(String description, Date startDate, Date endDate) {
+	public CalendarEntry(String description, Date startDate, Date endDate, int id) {
 		this(description);
+		this.id = id;
 		setDate(startDate, endDate);
 	}
 
@@ -50,32 +62,35 @@ public abstract class CalendarEntry {
 			this.endDate = endDate;
 		}
 	}
-
-	/**
-	 * 
-	 * @return day of week according to {@code static int Calendar.<DAY>}
-	 */
-	public int getDayOfWeek() {
-		cal.setTime(startDate);
-		return cal.get(Calendar.DAY_OF_WEEK);
+	
+	public void setStartDate(Date startDate){
+		Date oldValue = startDate;
+		this.startDate = startDate;
+		pcs.firePropertyChange(START_PROPERTY, oldValue, startDate);
+		
 	}
-
-	/**
-	 * 
-	 * @return time of day in minutes since 00:00
-	 */
-	public int getTimeOfDay() {
-		cal.setTime(startDate);
-		return cal.get(Calendar.HOUR)*60 + cal.get(Calendar.MINUTE);
+	public void setEndDate(Date endDate){
+		Date oldValue = endDate;
+		this.endDate = endDate;
+		pcs.firePropertyChange(END_PROPERTY, oldValue, endDate);
+	}
+	
+	
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public Date getEndDate() {
+		return endDate;
 	}
 
 	/**
 	 * Returns the duration of the entry
 	 * 
-	 * @return the duration of this entry in minutes
+	 * @return the duration of this entry in milliseconds
 	 */
 	public long getDuration() {
-		return (endDate.getTime() - startDate.getTime())/60000;
+		return endDate.getTime() - startDate.getTime();
 	}
 
 	public void setLocation(Location location) {
@@ -107,6 +122,10 @@ public abstract class CalendarEntry {
 	public User getOwner() {
 		return owner;
 	}
+	
+	public int getID() {
+		return this.id;
+	}
 
 	public void setModelCL(ModelChangeListener modelChangeListener) {
 		ModelChangeListener oldValue = this.modelChangeListener;
@@ -116,6 +135,22 @@ public abstract class CalendarEntry {
 
 	public ModelChangeListener getModelCL() {
 		return modelChangeListener;
+	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(id);
+		
+		return builder.toString();
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		pcs.addPropertyChangeListener(l);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		pcs.removePropertyChangeListener(l);
 	}
 
 	public enum CalendarEntryType {
@@ -132,5 +167,4 @@ public abstract class CalendarEntry {
 			}
 		}
 	}
-
 }

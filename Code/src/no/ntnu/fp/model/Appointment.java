@@ -8,8 +8,8 @@ public class Appointment extends CalendarEntry{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Appointment(String desc, Date start, Date end) {
-		super(desc, start, end);
+	public Appointment(Date start, Date end, String desc, int id) {
+		super(desc, start, end, id);
 	}
 
 

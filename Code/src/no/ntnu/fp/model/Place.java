@@ -1,14 +1,16 @@
 package no.ntnu.fp.model;
 
-public class Place extends Location {
-	private String description;
+import java.io.Serializable;
 
-	public String getDescription() {
-		return description;
+public class Place extends Location implements Serializable {
+	
+	private static final long serialVersionUID = 1141523656955680552L;
+	
+	public Place(int id, String description) {
+		super(id, description);
 	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	
+	public String toString() {
+		return "Sted: " + description;
 	}
-
 }

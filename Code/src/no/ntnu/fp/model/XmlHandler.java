@@ -13,17 +13,11 @@ import nu.xom.ValidityException;
 
 public class XmlHandler {
 	public static void main(String[] args) {
-		String test = loginToXml("bj¿rn", "123");
-		String res[] = loginFromXml(test);
-		System.out.println("Username " +res[0] );
-		System.out.println("Password "+res[1]);
+		String test = XmlHandler.getFullUserToXMl("test", "password", "havard", "getFullUsers");
+		System.out.println(test);
+		String res = new XmlHandler().inspectKey(test);
+		System.out.println(res);
 		
-		System.out.println(inspectMethod(test));
-		
-		System.out.println(loginSuccessful());
-		System.out.println(loginUnsucessful());
-		
-		System.out.println(inspectStatus(loginSuccessful()));
 	}
 	
 	//Fields
@@ -54,7 +48,61 @@ public class XmlHandler {
 		return element.toXML();
 		
 	}
+	//Just some hack : need to reqwrite this
+	public static String getFullUserToXMl(String myUsername, String myPassword, String key, String func){
+		Element request = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(func);
+		Element auth = new Element("Authenticate");
+		Element user = new Element("user");
+		user.appendChild(myUsername);
+		Element pass = new Element("pass");
+		pass.appendChild(myPassword);
+		auth.appendChild(user);
+		auth.appendChild(pass);
+		
+		header.appendChild(method);
+		header.appendChild(auth);
+		//Data field
+		Element data = new Element("data");
+		Element keyField = new Element("key");
+		keyField.appendChild(key);
+		data.appendChild(keyField);
+		
+		request.appendChild(header);
+		request.appendChild(data);
+		
+		
+		return request.toXML();
+	}
 	
+	
+	
+	
+	public static String generateRequest(String username, String password, String func){
+		Element element = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(func);
+		Element auth = new Element("authenticate");
+		Element user = new Element("user");
+		user.appendChild(username);
+		Element pass = new Element("pass");
+		pass.appendChild(password);
+		
+		
+		auth.appendChild(user);
+		auth.appendChild(pass);
+		
+		
+		header.appendChild(method);
+		header.appendChild(auth);
+		element.appendChild(header);
+		//System.out.println(element.toXML());
+		return element.toXML();
+		
+	}
 	
 	public static String loginSuccessful(){
 		Element root = new Element("request");
@@ -107,6 +155,16 @@ public class XmlHandler {
 		
 	}
 	
+	public static String inspectKey(String xml){
+		String res = null;
+		Pattern p = Pattern.compile("<key>([^<]+)</");
+		Matcher m = p.matcher(xml);
+		while(m.find()){
+			res = m.group(1);
+		}
+		return res;
+	}
+	
 	
 	public static String inspectMethod(String xml){
 		String res = null;
@@ -135,4 +193,31 @@ public class XmlHandler {
 		
 		return "";
 	}
+
+
+
+	public static String formatResponseXml(String xml, String m) throws ValidityException, ParsingException, IOException{
+		Element root = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(m);
+		Element status = new Element("status");
+		status.appendChild("200");
+		header.appendChild(method);
+		header.appendChild(status);
+		
+		root.appendChild(header);
+		
+		Builder builder = new Builder();
+		Document doc = builder.build(xml, null);
+		Element xmlData = doc.getRootElement();
+		
+		Element data = new Element("data");
+		data.appendChild(xmlData);
+		root.appendChild(data);
+
+	
+	
+		return root.toXML();
+}
 }

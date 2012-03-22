@@ -8,7 +8,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import no.ntnu.fp.model.Appointment;
@@ -17,10 +19,14 @@ import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.CalendarEntry.CalendarEntryType;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Meeting.State;
+import no.ntnu.fp.model.MeetingInviteNotification;
+import no.ntnu.fp.model.MeetingReplyNotification;
 import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
+import no.ntnu.fp.util.TimeLord;
 
 /**
  * The {@code DatabaseController} serves as an interface between
@@ -48,7 +54,10 @@ public class DatabaseController {
 		try {
 			props.load(new FileInputStream(new File("Properties.properties")));
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			
+			props = null;
+			
+			//e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -182,7 +191,7 @@ public class DatabaseController {
 	public boolean deleteCalendarEntry(int id) throws SQLException {
 		
 		DbConnection db = getConnection();
-		
+	
 		int count = db.executeUpdate("DELETE FROM CalendarEntry WHERE id = " + id);
 		
 		db.close();
@@ -245,7 +254,7 @@ public class DatabaseController {
 		
 		DbConnection db = getConnection();
 		
-		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM User WHERE Username = " + username;
+		String sql = "SELECT Username, Name, Age, PhoneNumber, Email FROM User WHERE Username = '" + username + "'";
 		
 		ResultSet rs = db.query(sql);
 		
@@ -258,7 +267,7 @@ public class DatabaseController {
 			
 			user = new User(uname, name, age, phoneNumber, email);
 			
-			user.setCalendar(getCalendar(user));
+			user.setCalendar(getCalendar(uname));
 		}
 		
 		return user;
@@ -278,22 +287,23 @@ public class DatabaseController {
 	 * @throws SQLException 
 	 */
 	
-	public Calendar getCalendar(User user) throws SQLException {
+	public Calendar getCalendar(String username) throws SQLException {
 		
 		Calendar calendar = new Calendar();
 		
-		String username = user.getName();
-		
 		String sql = 
 			"SELECT " 
-		+		"CE.EntryType AS type," 
-		+		"CE.TimeStart AS start," 
-		+		"CE.TimeEnd AS end," 
-		+		"CE.Description AS desc," 
-		+	"FROM Calendar AS C"
-		+	"JOIN Contains AS CO ON CO.CalendarID = C.CalendarID"
-		+	"JOIN CalendarEntry AS CE ON CE.CalendarID = C.CalendarID"
-		+	"WHERE C.Username = " + username;
+		+	"	CE.CalendarEntryID AS id, "
+		+	"	CE.EntryType AS type, " 
+		+	"	CE.TimeStart AS start, " 
+		+	"	CE.TimeEnd AS end, " 
+		+	"	CE.Description AS description, " 
+		+	"	L.LocationID AS LocationID "
+		+	"FROM Calendar AS C "
+		+	"	LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID "
+		+	"	LEFT JOIN CalendarEntry AS CE ON CO.CalendarEntryID = CE.CalendarEntryID "
+		+	"	LEFT JOIN Location AS L ON CE.LocationID = L.LocationID "
+		+	"WHERE C.Username = '" + username + "'";
 
 		DbConnection db = getConnection();
 		
@@ -301,74 +311,362 @@ public class DatabaseController {
 		
 		rs.beforeFirst();
 		while(rs.next()) {
+			int id = rs.getInt("id");
 			String type = rs.getString("type");
 			Date start = rs.getDate("start");
 			Date end = rs.getDate("end");
-			String desc = rs.getString("desc");
+			String desc = rs.getString("description");
+			int locationID = rs.getInt("LocationID");
 			
 			CalendarEntry entry = null;
-			
+			System.out.println(type == null);
 			if (type.equals(CalendarEntry.MEETING)) {
-				entry = new Meeting(start, end, desc);
+				Meeting meeting = new Meeting(start, end, desc, id);
+				
+				Map<User, State> participants = getParticipants(id);
+				meeting.addParticipants(participants);
+				
+				entry = meeting;
+				
 			} else {
 				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
-				entry = new Appointment(start, end, desc);
+				entry = new Appointment(start, end, desc, id);
 			}
+			
+			Location location = getLocation(locationID);
+			entry.setLocation(location);
 			
 			calendar.addCalendarEntry(entry);
 		}
 		
+		db.close();
+		rs.close();
+		
 		return calendar;
+	}
+
+	/**
+	 * Gets a {@code Location} from the database
+	 * 
+	 * @author Håvard
+	 * 
+	 * @param locationID
+	 * 		  the row id for the {@code Location}
+	 * 
+	 * @return the {@code Location} or {@code null} if it does not exists.
+	 * @throws SQLException 
+	 */
+	private Location getLocation(int locationID) throws SQLException {
+		
+		Location result = null;
+		
+		DbConnection db = getConnection();
+		
+		String sql = "SELECT RoomName, Description, Capacity FROM Room WHERE LocationID = " + locationID;
+		
+		ResultSet rs = db.query(sql);
+		
+		if (rs.first()) {
+			String name = rs.getString("RoomName");
+			String desc = rs.getString("Description");
+			int capacity = rs.getInt("Capacity");
+			
+			result = new Room(locationID, name, desc, capacity);
+			
+		} else  {
+			
+			sql = "SELECT LocationID, Description FROM Place WHERE LocationID = " + locationID;
+			rs = db.query(sql);
+			
+			if (rs.first()) {
+				
+				String desc = rs.getString("Description");
+				
+				result = new Place(locationID, desc);	
+			}	
+		}
+		
+		db.close();
+		rs.close();
+		
+		return result;
+		
 	}
 	
 	/**
+	 * Gets a {@code Map} with all the participants to the {@code Meeting}
+	 * The {@code Map} is from {@code User} to {@code State}. 
+	 * 
+	 * @param meetingID
+	 * @return
+	 * @throws SQLException
+	 */
+	
+	private Map<User, State> getParticipants(int meetingID) throws SQLException {
+		
+		Map<User, State> result = new HashMap<User, State>();
+		
+		DbConnection db = getConnection();
+		
+		
+		String sql = 
+			"SELECT "
+		+	"	U.Username AS user, " 
+		+	"	U.Name AS name, "
+		+	"	U.Age AS age, "
+		+	"	U.PhoneNumber AS number, "
+		+	"	U.Email AS email, "
+		+	"	CO.State AS state "
+		+	"FROM Contains AS CO "
+		+	"	LEFT JOIN Calendar AS CA ON CO.CalendarID = CA.CalendarID "
+		+	"	LEFT JOIN User U ON CA.Username = U.Username "
+		+	"WHERE CO.Role = 'Participant' " 
+		+	"	AND CO.CalendarEntryID = " + meetingID;
+		
+		ResultSet rs = db.query(sql);
+		
+		rs.beforeFirst();
+		while(rs.next()) {
+			
+			String uname = rs.getString("user");
+			String name = rs.getString("name");
+			int age = rs.getInt("age");
+			int phoneNumber = rs.getInt("number");
+			String email = rs.getString("email");
+			
+			String state = rs.getString("state");
+			
+			User user = new User(uname, name, age, phoneNumber, email);
+			
+			State s = State.getState(state);
+		
+			result.put(user, s);
+			
+		}
+		
+		db.close();
+		rs.close();
+		
+		return result;
+	}
+
+	/**
 	 * Gets a {@code List} of {@code Location} from the database.
+	 * Will a situation in which the system needs a list of all
+	 * rooms AND places?
 	 * 
 	 * @return the {@code List} of {@code Location}
+	 * 
+	 * @throws SQLException
 	 */
-	public List<Location> getListOfLocations() {
+	public List<Location> getListOfLocations() throws SQLException {
+		
+		List<Location> locs = new ArrayList<Location>();
+		DbConnection dbc = getConnection();
+		//hm so first get the rooms I assume, then the 'places'
+		String sqlR = "SELECT RoomName, Description, Capacity FROM Room";
+		ResultSet rs = dbc.query(sqlR);
+		rs.beforeFirst();
+		
+		while(rs.next()) {
+		}
+		
+		//String sqlP = "SELECT LocationID, Description FROM Place";
 		return null;
 	}
 	
 	/**
 	 * Gets a {@code List} of {@code Notification} for the {@code User}
 	 * from the database.
-	 * 
+	 * wait how does one do this
+	 *  
 	 * @param user
 	 * 		  the {@code User} to get the {@code List} of {@code Notification}s for. 
 	 * 
 	 * @return a {@code List} of {@code Notification}s for the {@code User}
 	 */
-	public List<Notification> getListOfNotifications(User user) {
-		return null;
+	public List<Notification> getListOfNotifications(String username) throws SQLException {
+		
+		List<Notification> res = new ArrayList<Notification>();
+			
+		List<MeetingInviteNotification> invites = getListOfMeetingInviteNotifications(username);
+		List<MeetingReplyNotification> replies = getListOfMeetingReplyNotifications(username);
+		
+		res.addAll(invites);
+		res.addAll(replies);
+		
+		return res;
 	}
 	
+	private List<MeetingInviteNotification> getListOfMeetingInviteNotifications(String username) throws SQLException {
+		
+		List<MeetingInviteNotification> invites = new ArrayList<MeetingInviteNotification>();
+		
+		DbConnection db = getConnection();
+		
+		String sql = 
+			"SELECT"
+		+	"	U.Username AS user, "
+		+	"	CO.State AS state, "
+		+	"	CE.CalendarEntryID meeting "
+		+	"FROM User U "
+		+	"	JOIN Calendar AS CA ON U.Username = CA.Username "
+		+	"	LEFT JOIN Contains AS CO ON CA.CalendarID = CO.CalendarID "
+		+	"	LEFT JOIN CalendarEntry AS CE ON CO.CalendarEntryID = CE.CalendarEntryID "
+		+	"WHERE U.Username = '"+ username+"' "
+		+	"	AND CO.State = 'Pending' "
+		+	"	AND CO.Role = 'Participant'";
+		
+		ResultSet rs = db.query(sql);
+		
+		rs.beforeFirst();
+		while(rs.next()) {
+			
+			String uname = rs.getString("user");
+			//String state = rs.getString("state");
+			int mid = rs.getInt("meeting");
+			
+			MeetingInviteNotification notification = new MeetingInviteNotification();
+			notification.setMeeting(new Meeting(mid));
+			notification.setUser(new User(uname));
+		
+			invites.add(notification);
+		}
+		
+		return invites;
+	}
+
+	private List<MeetingReplyNotification> getListOfMeetingReplyNotifications(String username) throws SQLException {
+		
+		List<MeetingReplyNotification> replies = new ArrayList<MeetingReplyNotification>();
+		
+		DbConnection db = getConnection();
+		
+		String sql = 
+			"SELECT "
+		+	"	AU.Username AS user, "
+		+	"	BCO.State state, "
+		+	"	ACE.CalendarEntryID meeting "
+		
+		+	"FROM User AU "
+		+	"JOIN Calendar ACA ON AU.Username = ACA.Username "
+		+	"LEFT JOIN Contains ACO ON ACA.CalendarID = ACO.CalendarID "
+		+	"LEFT JOIN CalendarEntry AS ACE ON ACO.CalendarEntryID = ACE.CalendarEntryID "
+
+		+	"LEFT JOIN Contains BCO ON ACE.CalendarEntryID = BCO.CalendarEntryID "
+		+	"LEFT JOIN Calendar BCA ON BCO.CalendarID = BCA.CalendarID "
+		+	"LEFT JOIN User BU ON BCA.Username = BU.Username "
+
+		+	"WHERE AU.Username = '" + username + "' "
+		+	"AND ACO.Role = 'Owner' "
+		+	"AND BCO.Role = 'Participant' "
+		+	"AND BCO.State = 'Rejected'";
+		
+		ResultSet rs = db.query(sql);
+		
+		rs.beforeFirst();
+		while (rs.next()) {
+			String uname = rs.getString("user");
+			//String state = rs.getString("state");
+			int mid = rs.getInt("meeting");
+			
+			MeetingReplyNotification notification = new MeetingReplyNotification();
+			notification.setMeeting(new Meeting(mid));
+			notification.setUser(new User(uname));
+			
+			replies.add(notification);
+		}
+		
+		return replies;
+	}
+
 	/**
 	 * Saves a {@code User} to the database.
 	 * A non-existing {@code User} will be created,
-	 * a existing will be updated
+	 * an existing will be updated
+	 * hmm, where should we be creating the salt? 
+	 *
 	 * 
 	 * @param user
 	 * 		  the {@code User} to created/change
 	 * 
 	 * @return the {@code User}s database id
+	 * What? Users ids are their usernames!
 	 */
-	public int saveUser(User user) {
-		return 0;
+	public String saveUser(User user) throws SQLException {
+		DbConnection dbc = getConnection();
+		
+		String s = ""
+			+ "IF EXISTS( SELECT * FROM User WHERE Username="
+			+ user.getUsername() + ") BEGIN UPDATE User"
+			+ "SET Password=" + user.getPassword()
+			+ ", Name=" + user.getName()
+			+ ", Age=" + user.getAge()
+			+ ", PhoneNumber=" + user.getPhoneNumber()
+			+ ", Email=" + user.getEmail()
+			+ " WHERE Username=" + user.getUsername()
+			+ "END ELSE "
+			//Below a new user is created.
+			+ "BEGIN INSERT INTO User (Username, Password, Name, " +
+			"Age, PhoneNumber, Email) VALUES("
+			+ user.getUsername() + ", "
+			+ user.getPassword() + ", "
+			+ user.getName() + ", "
+			+ user.getAge() + ", " 
+			+ user.getPhoneNumber() + ", "
+			+ user.getEmail() + ")"
+			+" END";
+		
+		
+		dbc.query(s); //Since we're just updating/inserting there's no need for the result set, right?
+		return user.getUsername();
 	}
+	
 	
 	/**
 	 * Saves a {@code Appointment} to the database.
 	 * A non-existing {@code Appointment} will be created,
-	 * a existing will be updated
+	 * an existing will be updated
+	 * it is _REALLY_ hard to check whether or not we need to update
+	 * an existing appointment or create a new one when we do not have
+	 * the argument Appointment's ID.
 	 * 
 	 * @param user
 	 * 		  the {@code Appointment} to created/change
 	 * 
 	 * @return the {@code Appointment}s database id
 	 */
-	public int saveAppointment(Appointment appointment) {
-		return 0;
+	public int saveAppointment(Appointment appointment) throws SQLException {
+		DbConnection dbc = getConnection();
+		String sql = "";
+		if (appointment.getID() == -1) { //need to create a new appointment k
+			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
+		", Description, EntryType, LocationID) VALUES ('" 					  +
+		TimeLord.changeDateToSQL(appointment.getStartDate()) +"', '"+
+		TimeLord.changeDateToSQL(appointment.getEndDate()) +"', "+
+		"NOW(), '" + appointment.getDescription() + "', '" +
+		CalendarEntryType.APPOINTMENT + "', " + 
+		appointment.getLocation().getID() + ")";
+		dbc.executeUpdate(sql);
+		System.out.println(sql);
+		String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
+		ResultSet rs = dbc.query(s);
+		System.out.println("herp");
+		if(rs.first())
+			return rs.getInt("ID");
+		}
+		
+		
+		//ok so the thing exists in the database.
+		sql = "UPDATE CalendarEntry SET TimeStart='" +
+				TimeLord.changeDateToSQL(appointment.getStartDate())+"', "+
+				"TimeEnd='"+TimeLord.changeDateToSQL(appointment.getEndDate())+
+				"', Description='"+appointment.getDescription()+"', "+
+				"LocationID="+appointment.getLocation().getID()+
+				" WHERE CalendarEntryID="+appointment.getID();
+		dbc.executeUpdate(sql);
+		System.out.println("derp");
+		return appointment.getID();
 	}
 	
 	/**
@@ -381,7 +679,7 @@ public class DatabaseController {
 	 * 
 	 * @return the {@code Meeting}s database id
 	 */
-	public int saveMeeting(Meeting meeting) {
+	public int saveMeeting(Meeting meeting) throws SQLException {
 		return 0;
 	}
 	
@@ -410,11 +708,6 @@ public class DatabaseController {
 	 * @return the {@code Place}s database id
 	 */
 	public int savePlace(Place place) {
-		
-		DbConnection db = getConnection();
-		
-		String sql = "";
-		
 		return 0;
 		
 	}

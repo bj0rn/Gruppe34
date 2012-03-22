@@ -1,10 +1,15 @@
 package no.ntnu.fp.model;
 
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.List;
 
 
-public class User {
+public class User extends Model implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;
 	private String name;
@@ -25,6 +30,14 @@ public class User {
  	public final static String EMAIL_PROPERT ="Email";
  	public final static String CAL_PROPERT ="Calendar";
 
+ 	public User() {
+ 		
+ 	}
+ 	
+ 	public User(String username) {
+ 		this.username = username;
+ 	}
+ 	
 	public User(String username, String password){
 		this.username = username;
 		this.password = password;
@@ -36,6 +49,10 @@ public class User {
 		this.age = age;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
+	}
+	
+	public String getId() {
+		return username;
 	}
 
 	public void setUsername(String username){
@@ -85,6 +102,10 @@ public class User {
 		return name;
 	}
 	
+	public void setAge(String age) {
+		setAge(Integer.parseInt(age));
+	}
+	
 	public void setAge(int age){
 		int oldValue = this.age;
 		this.age = age;
@@ -92,6 +113,10 @@ public class User {
 	}
 	public int getAge(){
 		return age;
+	}
+	
+	public void setPhoneNumber(String phoneNumber) {
+		setPhoneNumber(Integer.parseInt(phoneNumber));
 	}
 	
 	public void setPhoneNumber(int phoneNumber){
@@ -108,6 +133,7 @@ public class User {
 		this.email = email;
 		pcs.firePropertyChange(EMAIL_PROPERT, oldValue, email);
 	}
+	
 	public String getEmail(){
 		return email;
 	}
@@ -118,6 +144,15 @@ public class User {
 		+ 		"Age: " + age + "\n" 
 		+ 		"PhoneNumber: " + phoneNumber + "\n"
 		+		"Email: " + email;
+	}
+	
+	public static void main(String[] args) {
+		
+	}
+	
+	@Override
+	public int hashCode() {
+		return username.hashCode();
 	}
 	
 }
