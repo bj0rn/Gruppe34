@@ -2,6 +2,9 @@ package no.ntnu.fp.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,7 +16,7 @@ import javax.swing.JTextField;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Person;
 
-public class AppointmentPanel extends JPanel{
+public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	private JLabel appointment, description, startTime, endTime, location;
 	private JTextField descComp, startComp, endComp;
 	private JComboBox locComp;
@@ -80,11 +83,14 @@ public class AppointmentPanel extends JPanel{
 		
 	}
 	
+	 private void updatePanel() {
+	       
+	    }
 	   public void setModel(Appointment app) {
    		if (app != null) {
    			if (model != null)
    				model.removePropertyChangeListener(this);
-   			model = p;
+   			model = app;
    			model.addPropertyChangeListener(this);
    			updatePanel(null);
    		}
@@ -101,6 +107,12 @@ public class AppointmentPanel extends JPanel{
 		frame.setVisible(true); //display the frame
 		
 		frame.pack();
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
