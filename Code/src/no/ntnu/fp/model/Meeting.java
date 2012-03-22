@@ -82,5 +82,6 @@ public class Meeting extends CalendarEntry implements Serializable{
 			return false;
 		}
 	}
+	
 
 }

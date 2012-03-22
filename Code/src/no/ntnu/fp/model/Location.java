@@ -7,7 +7,7 @@ public abstract class Location implements Serializable {
 	private static final long serialVersionUID = -993121530050779684L;
 	
 	private int id;
-	private String description;
+	protected String description;
 	
 	public Location(int id, String description) {
 		this.id = id;
@@ -25,5 +25,5 @@ public abstract class Location implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
+	
 }
