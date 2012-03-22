@@ -2,6 +2,7 @@ package no.ntnu.fp.net.network.client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.net.Socket;
@@ -175,6 +176,46 @@ public class CommunicationController {
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	
+	public void send(Socket socket, Object obj){
+		DataOutputStream os;
+		try {
+			os = new DataOutputStream(socket.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(obj);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public User getFullUser(String myUsername, String myPassword, String user){
+		try {
+			send(mySocket, XmlHandler.getFullUserToXMl(myUsername, myPassword, user, "getFullUser"));
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries: "+i++);
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof User) {
+					return (User)obj;
+				}
+				else if(obj instanceof String){
+					if(XmlHandler.inspectStatus((String)obj).equals("401")){
+						//Not authenticated
+						return null;
+					}
+				}
+				//Not the message we were looking for
+				testQueue.putLast(obj);
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
