@@ -22,7 +22,7 @@ public abstract class CalendarEntry implements Serializable {
 	private int id;
 	private Calendar cal;
 
-	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	public final static String MODEL_PROPERTY = "Model";
 	public final static String DESC_PROPERTY = "Description";
 	public final static String OWNER_PROPERTY = "Owner";
