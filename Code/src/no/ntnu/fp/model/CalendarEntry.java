@@ -59,6 +59,14 @@ public abstract class CalendarEntry implements Serializable {
 		}
 	}
 	
+	public void setStartDate(Date startDate){
+		this.startDate = startDate;
+	}
+	public void seteEndDate(Date endDate){
+		this.endDate = endDate;
+	}
+	
+	
 	public Date getStartDate() {
 		return startDate;
 	}

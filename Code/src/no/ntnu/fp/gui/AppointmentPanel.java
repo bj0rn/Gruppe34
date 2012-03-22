@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Person;
 
 public class AppointmentPanel extends JPanel implements PropertyChangeListener {
@@ -89,17 +90,17 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 			}
 		});
 		
-		/*startComp.addKeyListener(new KeyAdapter(){
+		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setDate(startComp.getText().toString());
+				model.setStartDate(startComp.getStartDate());
 			}
 		});
 		
 		endComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setDate(endComp.getText());
+				model.setEndDate(endComp.getEndDate());
 			}
-		}); */
+		}); 
 		
 	}
 	
