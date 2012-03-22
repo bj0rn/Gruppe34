@@ -73,6 +73,10 @@ public class Meeting extends CalendarEntry implements Serializable{
 	public State getState(User user) {
 		return participants.get(user);
 	}
+	
+	public void setState(User user, State state) {
+		
+	}
 
 	public boolean removeParticipant(User user){
 		if (participants.containsKey(user)) {
@@ -82,5 +86,4 @@ public class Meeting extends CalendarEntry implements Serializable{
 			return false;
 		}
 	}
-
 }
