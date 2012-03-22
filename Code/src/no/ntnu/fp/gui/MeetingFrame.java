@@ -21,7 +21,7 @@ import javax.swing.event.ListSelectionListener;
 
 
 public class MeetingFrame extends JPanel implements PropertyChangeListener, ListSelectionListener{
-
+	
 	private static final long serialVersionUID = 1L;
     private static final int SPACING = 5;
     private static final Dimension LABEL_SIZE = new Dimension(100, 20);
