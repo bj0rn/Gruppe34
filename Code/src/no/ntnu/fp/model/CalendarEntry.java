@@ -70,7 +70,7 @@ public abstract class CalendarEntry implements Serializable {
 		
 	}
 	public void setEndDate(Date endDate){
-		Date oldValue = endDate
+		Date oldValue = endDate;
 		this.endDate = endDate;
 		pcs.firePropertyChange(END_PROPERTY, oldValue, endDate);
 	}
