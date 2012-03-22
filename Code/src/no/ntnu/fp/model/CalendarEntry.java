@@ -26,6 +26,10 @@ public abstract class CalendarEntry implements Serializable {
 	public final static String OWNER_PROPERTY = "Owner";
 	public final static String LOC_PROPERTY = "Location";
 
+	public CalendarEntry(int id) {
+		this.id = id;
+	}
+	
 	public CalendarEntry(String description) {
 		this.description = description;
 
@@ -113,6 +117,14 @@ public abstract class CalendarEntry implements Serializable {
 
 	public ModelChangeListener getModelCL() {
 		return modelChangeListener;
+	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(id);
+		
+		return builder.toString();
 	}
 
 	public enum CalendarEntryType {

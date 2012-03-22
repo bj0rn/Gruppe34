@@ -37,6 +37,10 @@ public class Meeting extends CalendarEntry implements Serializable{
 	
 	private Map<User, State> participants;
 	
+	public Meeting(int id) {
+		super(id);
+	}
+	
 	public Meeting(String description){
 		super(description);
 		participants = new HashMap<User, State>();
