@@ -583,6 +583,8 @@ public class DatabaseController {
 	 * Saves a {@code User} to the database.
 	 * A non-existing {@code User} will be created,
 	 * an existing will be updated
+	 * hmm, where should we be creating the salt? 
+	 *
 	 * 
 	 * @param user
 	 * 		  the {@code User} to created/change
@@ -590,19 +592,33 @@ public class DatabaseController {
 	 * @return the {@code User}s database id
 	 * What? Users ids are their usernames!
 	 */
-	public int saveUser(User user) {
-		int res = -1;
+	public String saveUser(User user) throws SQLException {
 		DbConnection dbc = getConnection();
-		//code for saving a new user
-		String s = ", ";
-		String sql = "INSERT INTO User VALUES (" +
-			    user.getUsername() +s+ user.getPassword() +s+
-			    user.getName() +s+ user.getAge() +s+
-			    user.getPhoneNumber() +s+ user.getEmail() + ")";
+		
+		String s = ""
+			+ "IF EXISTS( SELECT * FROM User WHERE Username="
+			+ user.getUsername() + ") BEGIN UPDATE User"
+			+ "SET Password=" + user.getPassword()
+			+ ", Name=" + user.getName()
+			+ ", Age=" + user.getAge()
+			+ ", PhoneNumber=" + user.getPhoneNumber()
+			+ ", Email=" + user.getEmail()
+			+ " WHERE Username=" + user.getUsername()
+			+ "END ELSE "
+			//Below a new user is created.
+			+ "BEGIN INSERT INTO User (Username, Password, Name, " +
+			"Age, PhoneNumber, Email) VALUES("
+			+ user.getUsername() + ", "
+			+ user.getPassword() + ", "
+			+ user.getName() + ", "
+			+ user.getAge() + ", " 
+			+ user.getPhoneNumber() + ", "
+			+ user.getEmail() + ")"
+			+" END";
 		
 		
-		
-		return 0;
+		dbc.query(s); //Since we're just updating/inserting there's no need for the result set, right?
+		return user.getUsername();
 	}
 	
 	
@@ -619,13 +635,58 @@ public class DatabaseController {
 	 * 
 	 * @return the {@code Appointment}s database id
 	 */
-	public int saveAppointment(Appointment appointment) {
+	public int saveAppointment(Appointment appointment) throws SQLException {
 		DbConnection dbc = getConnection();
-		int res = -1;
+		String sql = "";
+		if (appointment.getID() == -1) { //need to create a new appointment k
+			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
+		", Description, EntryType, LocationID) VALUES ('" 					  +
+		appointment.getStartDate() +"', '"+ appointment.getEndDate() +"', "+
+		"NOW(), '" + appointment.getDescription() + "', '" +
+		CalendarEntryType.APPOINTMENT + "', " + 
+		appointment.getLocation().getID() + ")";
+		dbc.executeUpdate(sql);
+		System.out.println(sql);
+		String s = "SELECT DISTINCT LAST_INSERTED_ID() AS ID FROM CalendarEntry";
+		ResultSet rs = dbc.query(s);
+		if(rs.first())
+			return rs.getInt("ID");
 		
-		
-		
-		return res;
+		return 0;
+		} else {
+			return appointment.getID();
+		}
+		/*
+		sql = "IF EXISTS(SELECT * FROM CalendarEntry " 		+ 
+				"WHERE EntryType='" + CalendarEntryType.APPOINTMENT +
+				"' AND CalendarEntryID=" + appointment.getID() 		+
+				") BEGIN UPDATE CalendarEntry SET " 				+
+				"TimeStart=" + appointment.getStartDate() 			+ ", " +
+				"TimeEnd=" + appointment.getEndDate() 				+ ", " +
+				"Description=" + appointment.getDescription() 		+ ", " +
+				"LocationID=" + appointment.getLocation().getID() 	+
+				" WHERE EntryType=" + CalendarEntryType.APPOINTMENT +
+				" AND CalendarEntryID=" + appointment.getID() 		+
+				" END ELSE BEGIN INSERT INTO CalendarEntry (" 		+
+				"TimeStart, TimeEnd, TimeCreated, Description, "	+
+				"EntryType, LocationID) VALUES(" 					+
+				appointment.getStartDate() 							+ ", " +
+				appointment.getEndDate() 							+ ", " +
+				"NOW()"												+ ", " +
+				appointment.getDescription() 						+ ", " +
+				CalendarEntryType.APPOINTMENT						+ ", " +
+				appointment.getID()									+
+				") END ";
+		System.out.println(sql);
+		dbc.query(sql);
+		if (appointment.getID() != -1) {
+			String s = "SELECT DISTINCT LAST_INSERTED_ID() AS ID FROM CalendarEntry";
+			ResultSet rs = dbc.query(s);
+			if(rs.first())
+				return rs.getInt("ID");
+		}
+		return appointment.getID();
+		*/
 	}
 	
 	/**
@@ -638,7 +699,7 @@ public class DatabaseController {
 	 * 
 	 * @return the {@code Meeting}s database id
 	 */
-	public int saveMeeting(Meeting meeting) {
+	public int saveMeeting(Meeting meeting) throws SQLException {
 		return 0;
 	}
 	
