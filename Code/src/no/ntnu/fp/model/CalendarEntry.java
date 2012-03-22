@@ -1,6 +1,7 @@
 package no.ntnu.fp.model;
 
 import java.util.Date;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -26,6 +27,10 @@ public abstract class CalendarEntry implements Serializable {
 	public final static String OWNER_PROPERTY = "Owner";
 	public final static String LOC_PROPERTY = "Location";
 
+	public CalendarEntry(int id) {
+		this.id = id;
+	}
+	
 	public CalendarEntry(String description) {
 		this.description = description;
 
@@ -113,6 +118,22 @@ public abstract class CalendarEntry implements Serializable {
 
 	public ModelChangeListener getModelCL() {
 		return modelChangeListener;
+	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(id);
+		
+		return builder.toString();
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		pcs.addPropertyChangeListener(l);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		pcs.removePropertyChangeListener(l);
 	}
 
 	public enum CalendarEntryType {
