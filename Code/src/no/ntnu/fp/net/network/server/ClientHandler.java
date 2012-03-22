@@ -3,57 +3,58 @@ package no.ntnu.fp.net.network.server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 
+import no.ntnu.fp.net.network.Tuple;
+
 public class ClientHandler implements Runnable {
 	//Fields
-	private String clientID;
-	private int id;
 	private Socket mySocket;
-	private DataInputStream is;
-	private BlockingQueue<String> inQueue;
-	private DataOutputStream os;
+	private BlockingQueue<Tuple <Socket, Object>> inQueue;
+	//private DataOutputStream os;
 	private HashMap<String, Socket> clients;
+	
+	//private DataInputStream is;
+	//private ObjectInputStream ios;
+	
+	
+	
 	//Receive messages from the clients
 	//Need some request queue, blocked queue
-	public ClientHandler(Socket socket, int id, BlockingQueue<String> inQueue, HashMap<String, Socket> clients){
+	public ClientHandler(Socket socket, BlockingQueue<Tuple <Socket, Object>> inQueue, HashMap<String, Socket> clients){
 		this.mySocket = socket;
-		this.id = id;
 		this.inQueue = inQueue;
 		this.clients = clients;
 		//Create new streams
-		try {
-			is = new DataInputStream(mySocket.getInputStream());
-			os = new DataOutputStream(mySocket.getOutputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		
-		
-	}
-		
+	
+	
+	
+	/**
+	 * Read objects and put them in the queue
+	 * **/
 	@Override
 	public void run() {
-		//The easyest place to authenticate is in the client handler
-		System.out.println("Hash" +mySocket.hashCode());
-		clientID = Integer.toString(mySocket.hashCode());
-		clients.put(clientID, mySocket);
-		
-		
-		while(true){
+		boolean running = true;
+		while(running){
 			try {
-				String data = is.readLine();
-				//System.out.println("Got data from client: " + data);
-				System.out.println("Put in requestQueue");
-				inQueue.put(format(data));
+				DataInputStream is = new DataInputStream(mySocket.getInputStream());
+				ObjectInputStream ios = new ObjectInputStream(is);
+				Object obj = ios.readObject();
+				inQueue.put(new Tuple(mySocket, obj));
+				System.out.println("Got data");
+				
 				
 			} catch (IOException e) {
+				running = false;
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (InterruptedException e) {
+			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -61,10 +62,8 @@ public class ClientHandler implements Runnable {
 			
 		}
 	}
-	public String format(String data){
-		String tmp = clientID + " " + data;
-		return tmp;
-	}
+	
+	
 	
 	
 }
