@@ -14,18 +14,22 @@ public abstract class CalendarEntry implements Serializable {
 	public final static String APPOINTMENT = "Appointment";
 
 	private ModelChangeListener modelChangeListener;
-	private String description;
-	private User owner;
-	private Location location;
-	private Date startDate;
-	private Date endDate;
+	protected String description;
+	protected User owner;
+	protected Location location;
+	protected Date startDate;
+	protected Date endDate;
 	private int id;
 
-	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	public final static String MODEL_PROPERTY = "Model";
 	public final static String DESC_PROPERTY = "Description";
 	public final static String OWNER_PROPERTY = "Owner";
 	public final static String LOC_PROPERTY = "Location";
+	public final static String START_PROPERTY = "Start";
+	public final static String END_PROPERTY = "End";
+	public final static String PARTICIPANTS_PROPERTY = "Participants";
+	
 
 	public CalendarEntry(int id) {
 		this.id = id;
@@ -50,12 +54,18 @@ public abstract class CalendarEntry implements Serializable {
 	 *            End {@code Date} of entry
 	 */
 	public void setDate(Date startDate, Date endDate) {
+		
 		if (startDate.compareTo(endDate) > 0) {
 			throw new IllegalArgumentException(
 					"Start date cannot be after end date!");
 		} else {
+			
+			Date oldValue = startDate;
 			this.startDate = startDate;
+			pcs.firePropertyChange(START_PROPERTY, oldValue, startDate );
+			Date oldValue2 = endDate;
 			this.endDate = endDate;
+			pcs.firePropertyChange(END_PROPERTY, oldValue2, endDate);
 		}
 	}
 	
