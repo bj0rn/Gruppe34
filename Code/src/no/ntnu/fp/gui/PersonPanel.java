@@ -36,6 +36,7 @@ import no.ntnu.fp.swingutil.EmailFormatter;
  * 
  * @version $Revision: 1.4 $ - $Date: 2005/02/22 07:54:45 $
  */
+@SuppressWarnings("serial")
 public class PersonPanel extends JPanel
     implements PropertyChangeListener, ActionListener, ItemListener, FocusListener
 {

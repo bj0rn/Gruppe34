@@ -82,45 +82,5 @@ public class Meeting extends CalendarEntry implements Serializable{
 			return false;
 		}
 	}
-	
-	public void setDescription(String description) {
-		String oldValue = this.description;
-		this.description = description;
-		pcs.firePropertyChange(DESC_PROPERTY, oldValue, description );
-	}
-	
-	public String getDescription() {
-		return this.description;
-	}
-	
-	public void setStartDate(Date start) {
-		Date oldValue = this.startDate;
-		this.startDate = start;
-		pcs.firePropertyChange(START_PROPERTY, oldValue, start );
-	}
-	
-	public Date getStartDate() {
-		return startDate;
-	}
-	
-	public void setEndDate(Date end) {
-		Date oldValue = this.endDate;
-		this.endDate = end;
-		pcs.firePropertyChange(END_PROPERTY, oldValue, end );
-	}
-	
-	public Date getEndDate() {
-		return endDate;
-	}
-	
-	public void setLocation(Location location) {
-		Location oldValue = this.location;
-		this.location = location;
-		pcs.firePropertyChange(LOC_PROPERTY, oldValue, location);
-	}
-	
-	public Location getLocation() {
-		return location;
-	}
 
 }
