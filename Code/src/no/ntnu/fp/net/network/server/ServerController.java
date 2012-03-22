@@ -95,33 +95,43 @@ public class ServerController {
 	}
 	
 	
-	//TODO: Implements
-	public void getFullUser(Tuple <Socket, Object> data){
-		try{
-			DataOutputStream os = new DataOutputStream(data.x.getOutputStream());
+	private void send(Socket socket, Object data){
+		try {
+			DataOutputStream os = new DataOutputStream(socket.getOutputStream());
 			ObjectOutputStream oos = new ObjectOutputStream(os);
-			String xml = (String)data.y;
-			String userData[] = XmlHandler.loginFromXml(xml);
-			System.out.println("Username: "+userData[0]);
-			System.out.println("Password: "+userData[1]);
-			if(connectedClients.containsKey(userData[0])){
-				//auth okey...send data
-				System.out.println("Ok");
-				User user = databaseController.getFullUser(userData[0]);
-				oos.writeObject(user);
-			}else {
-				//Auth not okey...send error message
-				oos.writeObject(new String("Error"));
-			}
-			os.close();
-			oos.close();
-			
-		}catch(IOException e){
-			e.printStackTrace();
-		} catch (SQLException e) {
+			oos.writeObject(data);
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+	//TODO: Implements
+	public void getFullUser(Tuple <Socket, Object> data){
+		//Data is received as xml
+//		try {
+			String userInfo[] = XmlHandler.loginFromXml((String)data.y);
+			String key = XmlHandler.inspectKey((String)data.y);
+			System.out.println("key: "+key);
+			if(connectedClients.containsKey(userInfo[0])){
+				System.out.println("The user is auth");
+				//User user = databaseController.getFullUser(key);
+				User user = new User("havard", "HŒvard", 20, 12313213, "test@test.com");
+				if(user == null){
+					System.out.println("NULL");
+				}
+				System.out.println("User "+user.getName());
+				send(data.x, user);
+			}else{
+				send(data.x, XmlHandler.loginUnsucessful());
+			}
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+			
+	
+		
 	}	
 	
 	public void inspectRequest(Tuple <Socket, Object> data){
@@ -150,6 +160,11 @@ public class ServerController {
 			}
 			else if(method == GET_CALENDAR){
 				//Call get calendar
+			}
+			else if(method.equals("getFullUser")){
+				
+				System.out.println("Ready for some testing");
+				getFullUser(data);
 			}
 		}
 		//TODO: CalendarEntry
