@@ -20,6 +20,7 @@ public abstract class CalendarEntry implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	private int id;
+	private Calendar cal;
 
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	public final static String MODEL_PROPERTY = "Model";
@@ -166,5 +167,25 @@ public abstract class CalendarEntry implements Serializable {
 				return null;
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @return weekday int corr to {@code Calendar.<DAY>}
+	 */
+	public int getDayOfWeek() {
+		cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		return cal.get(Calendar.DAY_OF_WEEK);
+	}
+
+	/**
+	 * 
+	 * @return minutes since 00:00
+	 */
+	public int getTimeOfDay() {
+		cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		return cal.get(Calendar.HOUR*60)+cal.get(Calendar.MINUTE);
 	}
 }
