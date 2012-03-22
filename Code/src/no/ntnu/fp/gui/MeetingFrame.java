@@ -19,6 +19,9 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import no.ntnu.fp.model.CalendarEntry;
+import no.ntnu.fp.model.Meeting;
+
 
 public class MeetingFrame extends JPanel implements PropertyChangeListener, ListSelectionListener{
 	
@@ -32,10 +35,12 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
     private JTextField endField = new JTextField(10);
     private JList participantList = new JList();
     private JButton addParticipantButton = new JButton(new addParticipantAction("Legg til Deltaker"));
-    private JTextField roomField = new JTextField(20);
+    private JTextField locationField = new JTextField(20);
     private JButton reserveRoomListButton = new JButton(new roomListAction("Rom"));
     private JButton saveButton = new JButton(new saveAction("Lagre"));
     private JButton cancelButton = new JButton(new cancelAction("Avbryt"));
+    
+    private Meeting model;
     
     public MeetingFrame() {
     	participantList = new JList();
@@ -59,7 +64,7 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
         add(participantList);
         add(addParticipantButton);
         add(labelPlace);
-        add(roomField);
+        add(locationField);
         add(reserveRoomListButton);
         add(saveButton);
         add(cancelButton);
@@ -104,10 +109,10 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
         
         layout.putConstraint(SpringLayout.WEST, labelPlace, SPACING, SpringLayout.WEST, this);
         layout.putConstraint(SpringLayout.NORTH, labelPlace, SPACING, SpringLayout.SOUTH, addParticipantButton);
-        layout.putConstraint(SpringLayout.WEST, roomField, SPACING, SpringLayout.EAST, labelPlace);
-        layout.putConstraint(SpringLayout.NORTH, roomField, SPACING, SpringLayout.NORTH, labelPlace);
-        layout.putConstraint(SpringLayout.WEST, reserveRoomListButton, SPACING, SpringLayout.EAST, roomField);
-        layout.putConstraint(SpringLayout.NORTH, reserveRoomListButton, -4, SpringLayout.NORTH, roomField);
+        layout.putConstraint(SpringLayout.WEST, locationField, SPACING, SpringLayout.EAST, labelPlace);
+        layout.putConstraint(SpringLayout.NORTH, locationField, SPACING, SpringLayout.NORTH, labelPlace);
+        layout.putConstraint(SpringLayout.WEST, reserveRoomListButton, SPACING, SpringLayout.EAST, locationField);
+        layout.putConstraint(SpringLayout.NORTH, reserveRoomListButton, -4, SpringLayout.NORTH, locationField);
 
         
         layout.putConstraint(SpringLayout.WEST, saveButton, 100, SpringLayout.WEST, this);
@@ -178,14 +183,51 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
         	System.out.println("Avbryt");
         }
     }
+
+    public void setModel(Meeting model)  {
+    	if (model != null) {
+    		if (this.model != null) {
+    			this.model.removePropertyChangeListener(this);
+    		}
+    		
+    		this.model = model;
+    		this.model.addPropertyChangeListener(this);
+    		updatePanel();
+    	}
+    }
     
+    @SuppressWarnings("deprecation")
+	public void updatePanel() {
+    	description.setText(model.getDescription());
+    	startField.setText(model.getStartDate().toGMTString());
+    	endField.setText(model.getEndDate().toGMTString());
+    	participantList.setListData(model.getParticipants());
+    	locationField.setText(model.getLocation().toString());
+    }
     
     
     
     @Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent event) {
 		// TODO Auto-generated method stub
-		
+    	System.out.println("Event!");
+        final String name = event.getPropertyName();
+        if (name == CalendarEntry.DESC_PROPERTY) {
+        	
+        }
+        else if (name == CalendarEntry.START_PROPERTY) {
+        	
+        }
+         
+        else if (name == CalendarEntry.END_PROPERTY) {
+            endField.setText((String) event.getNewValue());
+         }
+        else if (name == CalendarEntry.PARTICIPANTS_PROPERTY) {
+        	
+         }
+        else if (name == CalendarEntry.LOC_PROPERTY) {
+        	
+        }
 	}
     
 	@Override
@@ -200,7 +242,7 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(new MeetingFrame());
         try {
-            // 1.6+
+            // 1.06+
             frame.setLocationByPlatform(true);
             frame.setMinimumSize(frame.getSize());
         } catch(Throwable ignoreAndContinue) {
@@ -208,7 +250,4 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
         frame.pack();
         frame.setVisible(true);
     }
-
-
-	
 }

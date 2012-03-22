@@ -26,6 +26,7 @@ import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
+import no.ntnu.fp.util.TimeLord;
 
 /**
  * The {@code DatabaseController} serves as an interface between
@@ -641,52 +642,31 @@ public class DatabaseController {
 		if (appointment.getID() == -1) { //need to create a new appointment k
 			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
 		", Description, EntryType, LocationID) VALUES ('" 					  +
-		appointment.getStartDate() +"', '"+ appointment.getEndDate() +"', "+
+		TimeLord.changeDateToSQL(appointment.getStartDate()) +"', '"+
+		TimeLord.changeDateToSQL(appointment.getEndDate()) +"', "+
 		"NOW(), '" + appointment.getDescription() + "', '" +
 		CalendarEntryType.APPOINTMENT + "', " + 
 		appointment.getLocation().getID() + ")";
 		dbc.executeUpdate(sql);
 		System.out.println(sql);
-		String s = "SELECT DISTINCT LAST_INSERTED_ID() AS ID FROM CalendarEntry";
+		String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
 		ResultSet rs = dbc.query(s);
+		System.out.println("herp");
 		if(rs.first())
 			return rs.getInt("ID");
+		}
 		
-		return 0;
-		} else {
-			return appointment.getID();
-		}
-		/*
-		sql = "IF EXISTS(SELECT * FROM CalendarEntry " 		+ 
-				"WHERE EntryType='" + CalendarEntryType.APPOINTMENT +
-				"' AND CalendarEntryID=" + appointment.getID() 		+
-				") BEGIN UPDATE CalendarEntry SET " 				+
-				"TimeStart=" + appointment.getStartDate() 			+ ", " +
-				"TimeEnd=" + appointment.getEndDate() 				+ ", " +
-				"Description=" + appointment.getDescription() 		+ ", " +
-				"LocationID=" + appointment.getLocation().getID() 	+
-				" WHERE EntryType=" + CalendarEntryType.APPOINTMENT +
-				" AND CalendarEntryID=" + appointment.getID() 		+
-				" END ELSE BEGIN INSERT INTO CalendarEntry (" 		+
-				"TimeStart, TimeEnd, TimeCreated, Description, "	+
-				"EntryType, LocationID) VALUES(" 					+
-				appointment.getStartDate() 							+ ", " +
-				appointment.getEndDate() 							+ ", " +
-				"NOW()"												+ ", " +
-				appointment.getDescription() 						+ ", " +
-				CalendarEntryType.APPOINTMENT						+ ", " +
-				appointment.getID()									+
-				") END ";
-		System.out.println(sql);
-		dbc.query(sql);
-		if (appointment.getID() != -1) {
-			String s = "SELECT DISTINCT LAST_INSERTED_ID() AS ID FROM CalendarEntry";
-			ResultSet rs = dbc.query(s);
-			if(rs.first())
-				return rs.getInt("ID");
-		}
+		
+		//ok so the thing exists in the database.
+		sql = "UPDATE CalendarEntry SET TimeStart='" +
+				TimeLord.changeDateToSQL(appointment.getStartDate())+"', "+
+				"TimeEnd='"+TimeLord.changeDateToSQL(appointment.getEndDate())+
+				"', Description='"+appointment.getDescription()+"', "+
+				"LocationID="+appointment.getLocation().getID()+
+				" WHERE CalendarEntryID="+appointment.getID();
+		dbc.executeUpdate(sql);
+		System.out.println("derp");
 		return appointment.getID();
-		*/
 	}
 	
 	/**

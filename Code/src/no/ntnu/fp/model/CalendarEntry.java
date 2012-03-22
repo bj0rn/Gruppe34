@@ -38,6 +38,7 @@ public abstract class CalendarEntry implements Serializable {
 
 	public CalendarEntry(String description, Date startDate, Date endDate, int id) {
 		this(description);
+		this.id = id;
 		setDate(startDate, endDate);
 	}
 
