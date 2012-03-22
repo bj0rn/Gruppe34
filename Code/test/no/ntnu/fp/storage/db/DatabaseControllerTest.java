@@ -1,6 +1,7 @@
 package no.ntnu.fp.storage.db;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.User;
+import no.ntnu.fp.util.TimeLord;
 
 import junit.framework.TestCase;
 
@@ -79,18 +81,18 @@ public class DatabaseControllerTest extends TestCase {
 	}//testGetFullUser()
 	
 	public void testSaveAppointment() throws SQLException {
-		
-		String description = "butts!";
-		Place pl = new Place(39, "it's where the butts go!" );
+		String description = "AMAZING!";
+		Place pl = new Place(39, "it's where the butts go!");
 		Date start = new Date();
+		System.out.println(start);
+		System.out.println(TimeLord.changeDateToSQL(start));
 		Date end = start;
 		end.setHours(start.getHours() + 2);
-		Appointment app = new Appointment(start, end, description, -1);
+		Appointment app = new Appointment(start, end, description, 6);
 		app.setLocation(pl);
-		System.out.println(app.getID());
 		ctrl = new DatabaseController();
 		try {
-		ctrl.saveAppointment(app);
+		System.out.println(ctrl.saveAppointment(app));
 		
 		} catch(SQLException e) {
 			e.printStackTrace();
