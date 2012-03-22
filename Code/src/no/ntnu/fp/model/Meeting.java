@@ -33,8 +33,6 @@ public class Meeting extends CalendarEntry implements Serializable{
 	
 	private ModelChangeListener modelChangeListener;
 	
-	private PropertyChangeSupport pcs;
-	
 	private Map<User, State> participants;
 	
 	public Meeting(int id) {

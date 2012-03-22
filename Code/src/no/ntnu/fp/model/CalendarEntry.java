@@ -1,6 +1,7 @@
 package no.ntnu.fp.model;
 
 import java.util.Date;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -125,6 +126,14 @@ public abstract class CalendarEntry implements Serializable {
 		builder.append(id);
 		
 		return builder.toString();
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		pcs.addPropertyChangeListener(l);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		pcs.removePropertyChangeListener(l);
 	}
 
 	public enum CalendarEntryType {
