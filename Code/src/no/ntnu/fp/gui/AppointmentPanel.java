@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.Person;
 
 public class AppointmentPanel extends JPanel{
 	private JLabel appointment, description, startTime, endTime, location;
@@ -79,6 +80,15 @@ public class AppointmentPanel extends JPanel{
 		
 	}
 	
+	   public void setModel(Appointment app) {
+   		if (app != null) {
+   			if (model != null)
+   				model.removePropertyChangeListener(this);
+   			model = p;
+   			model.addPropertyChangeListener(this);
+   			updatePanel(null);
+   		}
+    }
 	
 	public static void main(String[] args){
 		JFrame frame = new JFrame("Frame"); //create a frame
