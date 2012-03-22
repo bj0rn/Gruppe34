@@ -13,7 +13,6 @@ public class Appointment extends CalendarEntry implements Serializable{
 	public Appointment(int id) {
 		super(id);
 	}
-	private PropertyChangeSupport pcs;
 	
 	public Appointment(String description) {
 		super(description);
