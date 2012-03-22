@@ -25,7 +25,7 @@ public class TestClient {
 		System.out.println("Send data");
 		communicationController.authenticate("havard", "test");
 		User user = communicationController.getFullUser("havard", "test", "havard");
-		
+		System.out.println("Got user: "+user.getName());
 //		List <User> users = communicationController.getUsers("havard", "test");
 //		for(User u: users){
 //			System.out.println(u.getName());

@@ -318,7 +318,7 @@ public class DatabaseController {
 			int locationID = rs.getInt("LocationID");
 			
 			CalendarEntry entry = null;
-			
+			System.out.println(type == null);
 			if (type.equals(CalendarEntry.MEETING)) {
 				Meeting meeting = new Meeting(start, end, desc, id);
 				
