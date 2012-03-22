@@ -24,12 +24,13 @@ public class TestClient {
 		//Spawn threads
 		System.out.println("Send data");
 		communicationController.authenticate("havard", "test");
+		User user = communicationController.getFullUser("havard", "test", "havard");
 		
-		List <User> users = communicationController.getUsers("havard", "test");
-		for(User u: users){
-			System.out.println(u.getName());
-			System.out.println(u.getEmail());
-		}
+//		List <User> users = communicationController.getUsers("havard", "test");
+//		for(User u: users){
+//			System.out.println(u.getName());
+//			System.out.println(u.getEmail());
+//		}
 		//communicationController.getUsers("bjorn", "lol");
 		System.out.println("Data sent");
 		

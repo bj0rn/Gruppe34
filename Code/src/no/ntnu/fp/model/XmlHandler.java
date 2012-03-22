@@ -13,12 +13,11 @@ import nu.xom.ValidityException;
 
 public class XmlHandler {
 	public static void main(String[] args) {
-		String test = XmlHandler.generateRequest("havard", "test", "getUsers");
+		String test = XmlHandler.getFullUserToXMl("test", "password", "havard", "getFullUsers");
 		System.out.println(test);
-		String t[] = XmlHandler.loginFromXml(test);
+		String res = new XmlHandler().inspectKey(test);
+		System.out.println(res);
 		
-		System.out.println("Username: "+t[0]);
-		System.out.println("Password: "+t[1]);
 	}
 	
 	//Fields
@@ -49,6 +48,36 @@ public class XmlHandler {
 		return element.toXML();
 		
 	}
+	//Just some hack : need to reqwrite this
+	public static String getFullUserToXMl(String myUsername, String myPassword, String key, String func){
+		Element request = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(func);
+		Element auth = new Element("Authenticate");
+		Element user = new Element("user");
+		user.appendChild(myUsername);
+		Element pass = new Element("pass");
+		pass.appendChild(myPassword);
+		auth.appendChild(user);
+		auth.appendChild(pass);
+		
+		header.appendChild(method);
+		header.appendChild(auth);
+		//Data field
+		Element data = new Element("data");
+		Element keyField = new Element("key");
+		keyField.appendChild(key);
+		data.appendChild(keyField);
+		
+		request.appendChild(header);
+		request.appendChild(data);
+		
+		
+		return request.toXML();
+	}
+	
+	
 	
 	
 	public static String generateRequest(String username, String password, String func){
@@ -124,6 +153,16 @@ public class XmlHandler {
 		
 		return res;
 		
+	}
+	
+	public static String inspectKey(String xml){
+		String res = null;
+		Pattern p = Pattern.compile("<key>([^<]+)</");
+		Matcher m = p.matcher(xml);
+		while(m.find()){
+			res = m.group(1);
+		}
+		return res;
 	}
 	
 	
