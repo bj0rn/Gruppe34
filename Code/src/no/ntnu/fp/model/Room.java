@@ -37,5 +37,8 @@ public class Room extends Location implements Serializable{
 		this.capacity = capacity;
 	}
 	
+	public String toString() {
+		return "Rom: " + name;
+	}
 
 }
