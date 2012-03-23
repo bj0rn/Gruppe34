@@ -741,9 +741,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteUser(int id) {
-		return false;
+	public boolean deleteUser(String username) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM User WHERE Username = '" + username + "'";
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 	
 	/**
@@ -754,9 +763,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteAppointment(int id) {
-		return false;
+	public boolean deleteAppointment(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM CalendarEntry WHERE CalendarEntryId = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -767,9 +785,19 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteMeeting(int id) {
-		return false;
+	public boolean deleteMeeting(int id) throws SQLException {
+		
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM CalendarEntry WHERE CalendarEntryId = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -780,9 +808,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteRoom(int id) {
-		return false;
+	public boolean deleteRoom(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM Location WHERE LocationID = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -793,9 +830,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deletePlace(int id) {
-		return false;
+	public boolean deletePlace(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM Location WHERE LocationID = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 	
 	/**
