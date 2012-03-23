@@ -743,10 +743,7 @@ public class DatabaseController {
 	 * 		   {@code false} if not.
 	 */
 	public boolean deleteUser(int id) {
-		
-		
-
-		
+		return false;
 	}
 	
 	/**
