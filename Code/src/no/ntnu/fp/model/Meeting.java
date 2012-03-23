@@ -15,6 +15,9 @@ public class Meeting extends CalendarEntry implements Serializable{
 	
 	private static final long serialVersionUID = 3423853302160071085L;
 
+	public static final String STATE_PROPERTY = "State";
+	public static final String PARTICIPANTS_PROPERTY = "Participants"; 
+	
 	public enum State {
 		
 		Accepted, Rejected, Pending;
@@ -33,9 +36,11 @@ public class Meeting extends CalendarEntry implements Serializable{
 	
 	private ModelChangeListener modelChangeListener;
 	
-	private PropertyChangeSupport pcs;
-	
 	private Map<User, State> participants;
+	
+	public Meeting(int id) {
+		super(id);
+	}
 	
 	public Meeting(String description){
 		super(description);
@@ -49,6 +54,7 @@ public class Meeting extends CalendarEntry implements Serializable{
 	
 	public void addParticipant(User user, State state){
 		participants.put(user, state);
+		pcs.firePropertyChange(PARTICIPANTS_PROPERTY, null, null);
 	}
 	
 	public void addParticipants(Map<User, State> participants) {
@@ -71,6 +77,15 @@ public class Meeting extends CalendarEntry implements Serializable{
 	public State getState(User user) {
 		return participants.get(user);
 	}
+	
+	public void setState(User user, State state) {
+		State oldValue = participants.get(user);
+		if (oldValue != state) {
+			participants.put(user, state);
+			pcs.firePropertyChange(STATE_PROPERTY, oldValue, state);
+			pcs.firePropertyChange(PARTICIPANTS_PROPERTY, null, null);
+		}
+	}
 
 	public boolean removeParticipant(User user){
 		if (participants.containsKey(user)) {
@@ -80,5 +95,22 @@ public class Meeting extends CalendarEntry implements Serializable{
 			return false;
 		}
 	}
-
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("Description: " + getDescription() + "\n");
+		builder.append("Start: " + getStartDate() + "\n");
+		builder.append("End: " + getEndDate() + "\n");
+		builder.append("Sted: " + getLocation() + "\n");
+		builder.append("Owner: " + getOwner().getName() + "\n");
+		
+		builder.append("Participants: \n");
+		for (User user : getParticipants()) {
+			builder.append("\t" + user.getName() + ": " + getState(user) + "\n");
+		}
+		
+		return builder.toString();
+	}
+	
 }

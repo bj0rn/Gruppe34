@@ -10,8 +10,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import no.ntnu.fp.net.co.Connection;
@@ -28,7 +31,7 @@ public class Server implements Runnable{
 	private String addressServer = "localhost";
 	private InetAddress localAddress;
 	private ArrayList<Socket> connectedHosts;
-	private BlockingQueue <Tuple <Socket, Object>> inQueue;
+	private Queue <Tuple <Socket, Object>> inQueue;
 	private Socket newSockfd;
 	private ServerSocket sockfd;
 	private Map<Object, Socket> mapClient;
@@ -37,7 +40,7 @@ public class Server implements Runnable{
 	private boolean run = true;
 	//Constructor
 	public Server(){
-		inQueue = new LinkedBlockingQueue<Tuple<Socket, Object>>();
+		inQueue = new LinkedBlockingDeque<Tuple<Socket, Object>>();
 		clients  = new HashMap<String, Socket>();
 	}
 	

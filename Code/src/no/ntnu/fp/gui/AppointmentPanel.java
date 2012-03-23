@@ -2,6 +2,11 @@ package no.ntnu.fp.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -11,11 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.CalendarEntry;
+import no.ntnu.fp.model.Person;
 
-public class AppointmentPanel extends JPanel{
+public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	private JLabel appointment, description, startTime, endTime, location;
 	private JTextField descComp, startComp, endComp;
-	private JComboBox locComp;
+	private JTextField locComp;
+	//private JComboBox locComp;
 	//private Room[] rooms =
 	
 	private JButton save, delete;
@@ -36,7 +44,8 @@ public class AppointmentPanel extends JPanel{
 		descComp = new JTextField(10);
 		startComp = new JTextField(10);
 		endComp = new JTextField(10);
-		//locComp = new JComboBox
+		locComp = new JTextField(10);
+		//locComp = new JComboBox();
 		
 		save = new JButton("Lagre");
 		delete = new JButton("Slett");
@@ -70,6 +79,9 @@ public class AppointmentPanel extends JPanel{
 		constraints.gridx = 1;
 		constraints.gridy = 3;
 		add(endComp, constraints);
+		constraints.gridx = 1;
+		constraints.gridy = 4;
+		add(locComp, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 5;
 		add(save, constraints);
@@ -77,8 +89,50 @@ public class AppointmentPanel extends JPanel{
 		constraints.gridy = 5;
 		add(delete, constraints);
 		
+		descComp.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e){
+				model.setDescription(descComp.getText());
+			}
+		});
+		
+		startComp.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e){
+				model.setStartDate(new Date(startComp.getText()));
+			}
+		});
+		
+		endComp.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e){
+				model.setEndDate(new Date(endComp.getText()));
+			}
+		}); 
+		
+	/*	LOCComp.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e){
+				model.setLocation(locComp.getText());
+			}
+		}); */
+		
 	}
 	
+	 private void updatePanel() {
+	       if (model != null) {
+	    	   descComp.setText(model.getDescription());
+	    	   startComp.setText(model.getStartDate().toGMTString());
+	    	   endComp.setText(model.getEndDate().toGMTString());
+	    	//   locComp.setText(model.getLocation());
+	       }
+	    }
+	 
+	   public void setModel(Appointment app) {
+   		if (app != null) {
+   			if (model != null)
+   				model.removePropertyChangeListener(this);
+   			model = app;
+   			model.addPropertyChangeListener(this);
+   			updatePanel();
+   		}
+    }
 	
 	public static void main(String[] args){
 		JFrame frame = new JFrame("Frame"); //create a frame
@@ -86,11 +140,34 @@ public class AppointmentPanel extends JPanel{
 		AppointmentPanel panel = new AppointmentPanel();
 		frame.add(panel); //adder alt i konstrukt¿ren
 		
+		Appointment app = new Appointment("test");
+		app.setDate(new Date(2012,2,1,12,0,0), new Date(2012,2,1,12,0,30));
+		
+		panel.setModel(app);
+		
+		app.setDescription("he");
+		
 		frame.setLocationRelativeTo(null); //center a frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true); //display the frame
 		
 		frame.pack();
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getPropertyName() == Appointment.DESC_PROPERTY) {
+			descComp.setText(model.getDescription());
+		}
+		if(evt.getPropertyName() == Appointment.END_PROPERTY){
+			endComp.setEndDate(model.getEndDate());
+		}
+		if(evt.getPropertyName() == Appointment.START_PROPERTY){
+			endComp.setStartDate(model.getStartDate());
+		}
+		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
+			endComp.setLocation(model.getLocation());
+		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package no.ntnu.fp.model;
 
 import java.util.Date;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -19,13 +20,21 @@ public abstract class CalendarEntry implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	private int id;
+	private Calendar cal;
 
-	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	public final static String MODEL_PROPERTY = "Model";
 	public final static String DESC_PROPERTY = "Description";
 	public final static String OWNER_PROPERTY = "Owner";
 	public final static String LOC_PROPERTY = "Location";
+	public final static String START_PROPERTY ="Start time";
+	public final static String END_PROPERTY ="End time";
 
+	
+	public CalendarEntry(int id) {
+		this.id = id;
+	}
+	
 	public CalendarEntry(String description) {
 		this.description = description;
 
@@ -33,6 +42,7 @@ public abstract class CalendarEntry implements Serializable {
 
 	public CalendarEntry(String description, Date startDate, Date endDate, int id) {
 		this(description);
+		this.id = id;
 		setDate(startDate, endDate);
 	}
 
@@ -53,6 +63,19 @@ public abstract class CalendarEntry implements Serializable {
 			this.endDate = endDate;
 		}
 	}
+	
+	public void setStartDate(Date startDate){
+		Date oldValue = startDate;
+		this.startDate = startDate;
+		pcs.firePropertyChange(START_PROPERTY, oldValue, startDate);
+		
+	}
+	public void setEndDate(Date endDate){
+		Date oldValue = endDate;
+		this.endDate = endDate;
+		pcs.firePropertyChange(END_PROPERTY, oldValue, endDate);
+	}
+	
 	
 	public Date getStartDate() {
 		return startDate;
@@ -114,6 +137,22 @@ public abstract class CalendarEntry implements Serializable {
 	public ModelChangeListener getModelCL() {
 		return modelChangeListener;
 	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(id);
+		
+		return builder.toString();
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		pcs.addPropertyChangeListener(l);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		pcs.removePropertyChangeListener(l);
+	}
 
 	public enum CalendarEntryType {
 		MEETING, APPOINTMENT;
@@ -130,4 +169,31 @@ public abstract class CalendarEntry implements Serializable {
 		}
 	}
 
+	/**
+	 * 
+	 * @return weekday int corr to {@code Calendar.<DAY>}
+	 */
+	public int getDayOfWeek() {
+		cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		return cal.get(Calendar.DAY_OF_WEEK);
+	}
+
+	/**
+	 * 
+	 * @return minutes since 00:00
+	 */
+	public int getTimeOfDay() {
+		cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		return cal.get(Calendar.HOUR*60)+cal.get(Calendar.MINUTE);
+	}
+	/**
+	 * Set the database id
+	 * @param id 
+	 * 
+	 * **/
+	public void setID(int id){
+		this.id = id;
+	}
 }
