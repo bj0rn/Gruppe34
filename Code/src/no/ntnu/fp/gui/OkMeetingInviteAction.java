@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
+import no.ntnu.fp.net.network.client.CommunicationController;
 
 public class OkMeetingInviteAction extends AbstractAction {
 
@@ -28,7 +29,8 @@ public class OkMeetingInviteAction extends AbstractAction {
 		State state = meeting.getState(user);
 		
 		if (state != orginalState) {
-			// Dispatch update
+			CommunicationController c = CommunicationController.getInstance();
+			c.dispatchMeetingReply(user, meeting, state);
 		}
 		
 		model.dispose();

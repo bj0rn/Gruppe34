@@ -12,14 +12,8 @@ import no.ntnu.fp.net.network.client.InternalReceiver;
 public class TestClient {
 	
 	public static void main(String[] args) {
-		String host = "127.0.0.1";
-		int port = 1337;
-		LinkedBlockingDeque<Object> testQueue = new LinkedBlockingDeque<Object>();
-		//CommunicationController communicationController = new CommunicationController(mySocket, testQueue)
-		Client c = new Client(host, port, testQueue);
-		CommunicationController communicationController = c.getCommunicationController();
-		//start client thread
-		new Thread(c).start();
+		
+		CommunicationController communicationController = CommunicationController.getInstance();
 		
 		//Spawn threads
 		System.out.println("Send data");

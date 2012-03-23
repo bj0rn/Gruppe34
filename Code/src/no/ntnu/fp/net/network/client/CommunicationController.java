@@ -13,6 +13,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
 
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 
@@ -35,12 +37,17 @@ import no.ntnu.fp.model.XmlHandler;
 
 
 public class CommunicationController {
+	
+	public final static String HOST = "127.0.0.1";
+	public final static int PORT = 1337;
+
+	private static CommunicationController instance;
 	//fields
 	private BlockingQueue<Object> inQueue;
 	private Socket mySocket;
 	private UpdateHandler updateHandler;
 	private LinkedBlockingDeque<Object> testQueue;
-	
+
 	
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
@@ -68,10 +75,15 @@ public class CommunicationController {
 	
 	
 	//constructor 
-	public CommunicationController(Socket mySocket, LinkedBlockingDeque<Object> testQueue){
+	private CommunicationController(){
+		
+		
+		LinkedBlockingDeque<Object> testQueue = new LinkedBlockingDeque<Object>();
+		//CommunicationController communicationController = new CommunicationController(mySocket, testQueue)
+		Client c = new Client(HOST, PORT, testQueue, this);
 		
 		try {
-			this.mySocket = mySocket;
+			this.mySocket = c.getSocket();
 			os = new DataOutputStream(mySocket.getOutputStream());
 			updateHandler = new UpdateHandler();
 			this.testQueue = testQueue;
@@ -79,7 +91,16 @@ public class CommunicationController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		new Thread(c).start();
+	}
 	
+	public static CommunicationController getInstance() {
+		if (instance == null) {
+			instance = new CommunicationController();
+		}
+		
+		return instance;
 	}
 	
 	public void inspect(){
@@ -219,5 +240,13 @@ public class CommunicationController {
 		return null;
 	}
 	
+	public void dispatchMeetingReply(User user, Meeting meeting, State state) {
+		
+		user.getId();
+		meeting.getID();
+		state.toString();
+		
+		
+	}
 	
 }
