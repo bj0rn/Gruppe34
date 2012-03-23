@@ -588,11 +588,11 @@ public class DatabaseController {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateMeetingState(int username, int meeting_id, State state) throws SQLException {
+	public boolean updateMeetingState(String username, String meeting_id, State state) throws SQLException {
 		
 		DbConnection db = getConnection();
 		
-		String sql = "UPDATE Contains SET State = " + state + " WHERE CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '"+username+"') AND CalendarEntryID = " + meeting_id;
+		String sql = "UPDATE Contains SET State = '" + state + "' WHERE CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '"+username+"') AND CalendarEntryID = " + meeting_id;
 		
 		int n = db.executeUpdate(sql);
 		
@@ -743,7 +743,10 @@ public class DatabaseController {
 	 * 		   {@code false} if not.
 	 */
 	public boolean deleteUser(int id) {
-		return false;
+		
+		
+
+		
 	}
 	
 	/**

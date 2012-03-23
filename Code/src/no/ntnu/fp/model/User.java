@@ -2,6 +2,7 @@ package no.ntnu.fp.model;
 
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,11 +37,13 @@ public class User extends Model implements Serializable {
  	
  	public User(String username) {
  		this.username = username;
+ 		notifications = new ArrayList<Notification>();
  	}
  	
 	public User(String username, String password){
 		this.username = username;
 		this.password = password;
+ 		notifications = new ArrayList<Notification>();
 	}
 	
 	public User(String username, String name, int age, int phoneNumber,	String email) {
@@ -49,6 +52,7 @@ public class User extends Model implements Serializable {
 		this.age = age;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
+ 		notifications = new ArrayList<Notification>();
 	}
 	
 	public String getId() {
@@ -81,6 +85,10 @@ public class User extends Model implements Serializable {
 	
 	public void removeNotification(Notification notification){
 		notifications.remove(notification);
+	}
+	
+	public List<Notification> getNotifications() {
+		return notifications;
 	}
 	
 	public void setCalendar(Calendar calendar){

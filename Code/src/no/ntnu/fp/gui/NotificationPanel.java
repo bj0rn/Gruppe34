@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.ScrollPane;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventObject;
@@ -20,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -51,6 +54,7 @@ public class NotificationPanel extends JPanel {
 	public static final String REJECT_BUTTON_LABEL = "Nei";
 	public static final String MEETING_REPLY_TITLE = "Svar";
 	public static final String MEETING_REPLY_EDIT_BUTTON_LABEL = "Endre Møte";
+	public static final String SHOW_BUTTON_LABEL = "Vis";
 
 	private User user;
 	
@@ -67,13 +71,18 @@ public class NotificationPanel extends JPanel {
 		
 		titleLabel = new JLabel("Meldinger");	
 		titleLabel.setFont(StylingDefinition.FRAME_TITLE_FONT);
+		titleLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(titleLabel, BorderLayout.NORTH);
 		
 		notificationListModel = new NotificationListModel();
+		setModel(user.getNotifications());
 		
 		notificationList = new JEditableList(notificationListModel, new NotificationCellRenderer());
+		notificationList.setMinimumSize(new Dimension(300, 800));
 		
-		add(notificationList, BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(notificationList);
+		
+		add(scrollPane, BorderLayout.CENTER);
 		
 		setMinimumSize(new Dimension(300, 500));
 		
@@ -114,13 +123,14 @@ public class NotificationPanel extends JPanel {
 					
 					JLabel title = new JLabel(MEETING_REPLY_TITLE);
 					title.setFont(StylingDefinition.NOTIFICATION_TITLE);
+					title.setBorder(new EmptyBorder(4, 4, 4, 4));
 					panel.add(title, BorderLayout.NORTH);
 					
 					
 					JTextArea textComp = new JTextArea();
 					textComp.setEditable(false);
 					textComp.setLineWrap(true);
-					
+					textComp.setMargin(new Insets(4,4,4,4));
 					
 					String text = user.getName() + " har " + state + " din møte innkalling";
 					textComp.setText(text);
@@ -140,6 +150,7 @@ public class NotificationPanel extends JPanel {
 					
 					JLabel title = new JLabel(MEETING_INVITATION_TITLE);
 					title.setFont(StylingDefinition.NOTIFICATION_TITLE);
+					title.setBorder(new EmptyBorder(4, 4, 4, 4));
 					panel.add(title, BorderLayout.NORTH);
 					
 					JPanel content = new JPanel();
@@ -168,12 +179,18 @@ public class NotificationPanel extends JPanel {
 					panel.add(content, BorderLayout.CENTER);
 
 					JPanel buttonPanel = new JPanel();
+					
 					JButton acceptButton = new JButton(ACCECT_BUTTON_LABEL);
 					acceptButton.addActionListener(new MeetingInviteAcceptButtonAction(meeting, user));
 					buttonPanel.add(acceptButton);
+					
 					JButton rejectButton = new JButton(REJECT_BUTTON_LABEL);
 					rejectButton.addActionListener(new MeetingInviteRejectButtonAction(meeting, user));
 					buttonPanel.add(rejectButton);
+					
+					JButton showButton = new JButton(SHOW_BUTTON_LABEL);
+					showButton.addActionListener(new MeetingInviteShowButtonAction(meeting, user));
+					buttonPanel.add(showButton);
 					
 					panel.add(buttonPanel, BorderLayout.SOUTH);
 					
@@ -255,6 +272,8 @@ public class NotificationPanel extends JPanel {
 		MeetingReplyNotification n2 = new MeetingReplyNotification();
 		n2.setUser(user);
 		n2.setMeeting(m2);
+		
+		
 		
 		List<Notification> model = new ArrayList<Notification>();
 		model.add(n1);

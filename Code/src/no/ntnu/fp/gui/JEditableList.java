@@ -2,6 +2,7 @@ package no.ntnu.fp.gui;
 
 import java.awt.Component;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
