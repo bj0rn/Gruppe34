@@ -2,6 +2,7 @@ package no.ntnu.fp.net.network.client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.net.Socket;
@@ -12,6 +13,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
 
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 
@@ -34,12 +37,17 @@ import no.ntnu.fp.model.XmlHandler;
 
 
 public class CommunicationController {
+	
+	public final static String HOST = "127.0.0.1";
+	public final static int PORT = 1337;
+
+	private static CommunicationController instance;
 	//fields
 	private BlockingQueue<Object> inQueue;
 	private Socket mySocket;
 	private UpdateHandler updateHandler;
 	private LinkedBlockingDeque<Object> testQueue;
-	
+
 	
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
@@ -67,10 +75,15 @@ public class CommunicationController {
 	
 	
 	//constructor 
-	public CommunicationController(Socket mySocket, LinkedBlockingDeque<Object> testQueue){
+	private CommunicationController(){
+		
+		
+		LinkedBlockingDeque<Object> testQueue = new LinkedBlockingDeque<Object>();
+		//CommunicationController communicationController = new CommunicationController(mySocket, testQueue)
+		Client c = new Client(HOST, PORT, testQueue, this);
 		
 		try {
-			this.mySocket = mySocket;
+			this.mySocket = c.getSocket();
 			os = new DataOutputStream(mySocket.getOutputStream());
 			updateHandler = new UpdateHandler();
 			this.testQueue = testQueue;
@@ -78,7 +91,16 @@ public class CommunicationController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		new Thread(c).start();
+	}
 	
+	public static CommunicationController getInstance() {
+		if (instance == null) {
+			instance = new CommunicationController();
+		}
+		
+		return instance;
 	}
 	
 	public void inspect(){
@@ -178,5 +200,53 @@ public class CommunicationController {
 		return null;
 	}
 	
+	
+	public void send(Socket socket, Object obj){
+		DataOutputStream os;
+		try {
+			os = new DataOutputStream(socket.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(obj);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public User getFullUser(String myUsername, String myPassword, String user){
+		try {
+			send(mySocket, XmlHandler.getFullUserToXMl(myUsername, myPassword, user, "getFullUser"));
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries: "+i++);
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof User) {
+					return (User)obj;
+				}
+				else if(obj instanceof String){
+					if(XmlHandler.inspectStatus((String)obj).equals("401")){
+						//Not authenticated
+						return null;
+					}
+				}
+				//Not the message we were looking for
+				testQueue.putLast(obj);
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void dispatchMeetingReply(User user, Meeting meeting, State state) {
+		
+		user.getId();
+		meeting.getID();
+		state.toString();
+		
+		
+	}
 	
 }
