@@ -245,10 +245,8 @@ public class CommunicationController {
 	
 	
 	
-	public void saveMeeting(Meeting meeting){
+	public boolean saveMeeting(Meeting meeting){
 		try{
-		//CreateEntry returns a key
-		//Need a way to set this in the meeting object
 		send(mySocket, meeting);
 			int i = 0;
 			while(true){
@@ -260,21 +258,21 @@ public class CommunicationController {
 					if(XmlHandler.inspectMethod((String)obj).equals("saveMeeting")){
 						//Correct  message
 						String key = XmlHandler.inspectKey((String)obj);
-						//Set key.....hmm... 
-						return;
+						meeting.setID(Integer.parseInt(key));
+						return true;
 					}
-				}else {
-					//Wrong put it back
-					testQueue.putLast(obj);
+				System.out.println("Put it back");
+				testQueue.putLast(obj);
 				}
-				
-			}
+			}		
 		}catch(InterruptedException e){
 			e.printStackTrace();
 		}
+		
+		return false;
 	}
 	
-	public void saveAppointment(Appointment appointment){
+	public boolean saveAppointment(Appointment appointment){
 		try{
 		//Does saveAppointment return a key
 			send(mySocket, appointment);
@@ -286,12 +284,15 @@ public class CommunicationController {
 				if(obj instanceof String){
 					String key = XmlHandler.inspectKey((String)obj);
 					if(key != null){
-						appointment.setID(Integer.parseInt(key)); 
+						appointment.setID(Integer.parseInt(key));
+						return true;
 					}
 					else if(XmlHandler.inspectStatus((String)obj).equals("401")){
 						System.out.println("Failed to authenticate");
+						return false;
 					}else{
 						System.out.println("You are really fucked up this time");
+						return false;
 					}
 				}else {
 					//Not the packet I«m waiting for
@@ -301,7 +302,11 @@ public class CommunicationController {
 		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
+	
+	
+	
 	
 	
 	
@@ -346,7 +351,19 @@ public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
 		}
 		
 }
+
+public boolean deleteMeeting(){
+	return true;
+}
 	
+public boolean deleteAppointment(){
+	return true;
+}
+
+
+public boolean deleteUser(){
+	return true;
+}
 	
 	
 }

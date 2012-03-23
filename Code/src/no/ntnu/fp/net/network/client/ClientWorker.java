@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.XmlHandler;
 
 
@@ -14,7 +15,7 @@ import no.ntnu.fp.model.XmlHandler;
 public class ClientWorker implements Runnable {
 	//fields
 	//private HashMap<String, Socket> clients;
-	private BlockingQueue<Object> inQueue;
+	private BlockingDeque<Object> inQueue;
 	private Socket mySocket;
 	private CommunicationController communication;
 	private LinkedBlockingDeque<Object> testQueue;
@@ -22,7 +23,7 @@ public class ClientWorker implements Runnable {
 	//Constructor
 	public ClientWorker(Socket mySocket, LinkedBlockingDeque<Object>testQueue, CommunicationController communicationController){
 		this.mySocket = mySocket;
-		this.inQueue = inQueue;
+		//this.inQueue = inQueue;
 		this.testQueue = testQueue;
 		communication = communicationController;
 	}
@@ -36,8 +37,15 @@ public class ClientWorker implements Runnable {
 			
 			try {
 				Thread.currentThread().sleep(5000);
-				//Object data = testQueue.takeFirst();
-				//handle(data);
+				if(!testQueue.isEmpty()){
+					Object obj = testQueue.peekLast();
+					System.out.println("I want my data");
+					if(handle(obj)){
+						obj = testQueue.takeLast();
+						System.out.println("Simply drop it :) ");
+					}
+					//Object data = testQueue.takeFirst();
+				}	//handle(data);
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -47,8 +55,12 @@ public class ClientWorker implements Runnable {
 	}
 	
 	
-	public void handle(Object data){
-		
+	public boolean handle(Object data){
+		if(data instanceof Meeting){
+			System.out.println("We have a meeting");
+			return true;
+		}
+		return false;
 		
 	}
 

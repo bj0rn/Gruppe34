@@ -11,12 +11,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.storage.db.DatabaseController;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 import no.ntnu.fp.model.Meeting.State;
@@ -142,7 +145,41 @@ public class ServerController {
 			
 	}	
 	
-	public void saveAppointment(Tuple<Socket, Object> data){
+	
+	public void saveMeeting(Tuple <Socket, Object> data){
+		Meeting meeting = (Meeting)data.y;
+		String username = meeting.getOwner().getUsername();
+		System.out.println("Owner: "+username);
+		if(connectedClients.containsKey(username)){
+			//Authenticated
+			//TODO: Store in the db
+			String key = "20";
+			String xml = XmlHandler.getFullUserToXMl(username, "none", key, "saveMeeting");
+			send(data.x, xml);
+			//also send message to available clients
+			System.out.println("Send data to connected clients");
+			Set <User> participants = meeting.getParticipants();
+			for(User u : participants){
+				String user = u.getUsername();
+				System.out.println("Participant: "+user);
+				if(connectedClients.containsKey(user)){
+					Socket sockfd = connectedClients.get(username);
+					send(sockfd, meeting);
+				}else{
+					//do some stuff in the db ?
+					System.out.println("Sorry the client is not connected");
+				}
+			}
+			
+		}else {
+			//Not authenticated
+			String xml = xmlHandler.loginUnsucessful();
+			send(data.x, xml);
+		}
+		
+	}
+	
+	 public void saveAppointment(Tuple<Socket, Object> data){
 		//Got an appointment object
 		try {
 			Appointment a= (Appointment)data.y;
@@ -215,6 +252,10 @@ public class ServerController {
 		else if(objectName.equals("Appointment")){
 			System.out.println("Exec saveAppointment");
 			saveAppointment(data);
+		}
+		else if(objectName.equals("Meeting")){
+			System.out.println("Ready to debug");
+			saveMeeting(data);
 		}
 		//Standard xml
 		else if(data.y instanceof String){
