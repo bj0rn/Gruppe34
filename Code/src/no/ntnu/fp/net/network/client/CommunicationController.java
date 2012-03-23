@@ -290,8 +290,8 @@ public class CommunicationController {
 			//This response should contain a key
 			Object obj = testQueue.takeFirst();
 		}
+	} catch(Exception e) {}
 	}
-	
 	
 	
 	
