@@ -3,6 +3,9 @@ package no.ntnu.fp.net.network;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.net.network.client.Client;
 import no.ntnu.fp.net.network.client.ClientWorker;
@@ -17,9 +20,16 @@ public class TestClient {
 		
 		//Spawn threads
 		System.out.println("Send data");
-		communicationController.authenticate("havard", "test");
-		User user = communicationController.getFullUser("havard", "test", "havard");
-		System.out.println("Got user: "+user.getName());
+		communicationController.authenticate("bjorn", "lol");
+		User user = new User("bjorn", "test");
+		Meeting meeting  =new Meeting(7);
+		State state = State.Pending;
+		
+		System.out.println(communicationController.dispatchMeetingReply(user, meeting, state));
+		
+		
+		//User user = communicationController.getFullUser("havard", "test", "havard");
+		//System.out.println("Got user: "+user.getName());
 //		List <User> users = communicationController.getUsers("havard", "test");
 //		for(User u: users){
 //			System.out.println(u.getName());
