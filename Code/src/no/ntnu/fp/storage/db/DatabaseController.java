@@ -579,6 +579,27 @@ public class DatabaseController {
 		
 		return replies;
 	}
+	
+	/**
+	 * 
+	 * @param username
+	 * @param meeting_id
+	 * @param state
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateMeetingState(int username, int meeting_id, State state) throws SQLException {
+		
+		DbConnection db = getConnection();
+		
+		String sql = "UPDATE Contains SET State = " + state + " WHERE CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '"+username+"') AND CalendarEntryID = " + meeting_id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
+	}
 
 	/**
 	 * Saves a {@code User} to the database.
