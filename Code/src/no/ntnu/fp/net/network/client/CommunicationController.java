@@ -305,14 +305,47 @@ public class CommunicationController {
 	
 	
 	
-public void dispatchMeetingReply(User user, Meeting meeting, State state) {
+public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
+		//Gather information 
+		String userInfo[] = {
+			user.getUsername(),
+			"",
+		};
 		
-		user.getId();
-		meeting.getID();
-		state.toString();
+		String dataValues[] = {
+			user.getId(),
+			String.valueOf(meeting.getID()),
+			state.toString()
+		};
+		//Pack and send
+		String xml = XmlHandler.dispatchMeetingReplyToXml(userInfo, dataValues, "dispatchMeetingReply");
+		send(mySocket, xml);
+		int i = 0;
+		//Wait for response
+		while(true){
+			try {
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof String){
+					String status = XmlHandler.inspectStatus((String)obj);
+					if(status != null){
+						if(status.equals("200")){
+							return true;
+						}
+						else {
+							return false;
+						}
+					}
+				}
+				//Put it back
+				testQueue.putLast(obj);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		
-		
-	}
+}
 	
 	
 	

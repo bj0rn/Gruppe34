@@ -9,21 +9,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.storage.db.DatabaseController;
-import no.ntnu.fp.model.*;
+import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.User;
+import no.ntnu.fp.model.XmlHandler;
+import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.net.network.Tuple;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 //TODO: Communicate with the db
 public class ServerController {
 	//fields
-	private HashMap<String, Socket> connectedClients;
+	private Map<String, Socket> connectedClients;
 	private  ArrayList<String> participants;
 	private DatabaseController databaseController;
 	private XmlHandler xmlHandler;
+	private Queue <Tuple <Socket, Object>> inQueue;
 	//Streams
 	//private DataOutputStream os;
 	//private ObjectOutputStream oos;
@@ -36,9 +43,10 @@ public class ServerController {
 	
 	
 	//Constructor
-	public ServerController(HashMap<String, Socket> clients){
+	public ServerController(Map<String, Socket> clients, Queue <Tuple <Socket, Object>> inQueue){
 		databaseController = new DatabaseController();
 		connectedClients = clients;
+		this.inQueue = inQueue;
 	}
 	
 	public void authenticate(Tuple<Socket, Object> data) throws SQLException{
@@ -160,6 +168,32 @@ public class ServerController {
 	}
 	
 	
+	public void dispatchMeetingReply(Tuple <Socket, Object> data){
+		String userInfo[] =  xmlHandler.loginFromXml((String)data.y);
+		if(connectedClients.containsKey(userInfo[0])){
+			ArrayList<String> dataValues = (ArrayList<String>) XmlHandler.dispatchMeetingReplyFromXml((String)data.y);
+			String username = dataValues.get(0);
+			System.out.println("Userid "+username);
+			String meetingId = dataValues.get(1);
+			System.out.println("MeetingId "+meetingId);
+			String state = dataValues.get(2);
+			System.out.println("State "+state);
+			//Check with db
+			try {
+				if(databaseController.updateMeetingState(username, meetingId, State.getState(state))){
+					//send success
+					send(data.x, xmlHandler.loginSuccessful());
+					return;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//Failed
+		send(data.x, xmlHandler.loginUnsucessful());
+	}
+	
 	
 	
 	
@@ -190,6 +224,10 @@ public class ServerController {
 			if(method.equals("getUsers")){
 				System.out.println("Ready");
 				getUsers(data);
+			}
+			else if(method.equals("dispatchMeetingReply")){
+				System.out.println("Ready to debug");
+				dispatchMeetingReply(data);
 			}
 			else if(method == GET_CALENDAR){
 				//Call get calendar
