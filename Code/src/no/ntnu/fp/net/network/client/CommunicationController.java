@@ -12,6 +12,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
 
+import org.jdom.adapters.XML4JDOMAdapter;
+
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.model.Meeting;
@@ -241,14 +243,6 @@ public class CommunicationController {
 		return null;
 	}
 	
-	public void dispatchMeetingReply(User user, Meeting meeting, State state) {
-		
-		user.getId();
-		meeting.getID();
-		state.toString();
-		
-		
-	}
 	
 	
 	public void saveMeeting(Meeting meeting){
@@ -283,16 +277,42 @@ public class CommunicationController {
 	public void saveAppointment(Appointment appointment){
 		try{
 		//Does saveAppointment return a key
-		send(mySocket, appointment);
-		int i = 0;
-		while(true){
-			System.out.println("Number of tries ");
-			//This response should contain a key
-			Object obj = testQueue.takeFirst();
+			send(mySocket, appointment);
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries ");
+				//This response should contain a key
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof String){
+					String key = XmlHandler.inspectKey((String)obj);
+					if(key != null){
+						appointment.setID(Integer.parseInt(key)); 
+					}
+					else if(XmlHandler.inspectStatus((String)obj).equals("401")){
+						System.out.println("Failed to authenticate");
+					}else{
+						System.out.println("You are really fucked up this time");
+					}
+				}else {
+					//Not the packet I«m waiting for
+					testQueue.putLast(obj);
+				}
+			}
+		} catch(InterruptedException e) {
+			e.printStackTrace();
 		}
-	} catch(Exception e) {}
 	}
 	
+	
+	
+public void dispatchMeetingReply(User user, Meeting meeting, State state) {
+		
+		user.getId();
+		meeting.getID();
+		state.toString();
+		
+		
+	}
 	
 	
 	

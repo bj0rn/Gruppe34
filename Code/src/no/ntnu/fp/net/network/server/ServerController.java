@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jdom.adapters.XML4JDOMAdapter;
+
 import no.ntnu.fp.storage.db.DatabaseController;
 import no.ntnu.fp.model.*;
 import no.ntnu.fp.net.network.Tuple;
@@ -132,6 +134,31 @@ public class ServerController {
 			
 	}	
 	
+	public void saveAppointment(Tuple<Socket, Object> data){
+		//Got an appointment object
+		try {
+			Appointment a= (Appointment)data.y;
+			String user = a.getOwner().getUsername();
+			System.out.println("user: "+user);
+			if(connectedClients.containsKey(user)){
+				//Is authenticated
+				int key = databaseController.saveAppointment(a);
+				//TODO: change name of this method
+				String xml = XmlHandler.getFullUserToXMl(user, "none", String.valueOf(key), "saveAppointment");
+				send(data.x, xml);
+				
+			}else {
+				//Not authenticated
+				String xml = XmlHandler.loginUnsucessful();
+				send(data.x, xml);
+			}
+			
+			
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	}
+	
 	
 	
 	
@@ -150,6 +177,10 @@ public class ServerController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		else if(objectName.equals("Appointment")){
+			System.out.println("Exec saveAppointment");
+			saveAppointment(data);
 		}
 		//Standard xml
 		else if(data.y instanceof String){

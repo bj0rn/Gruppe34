@@ -188,4 +188,12 @@ public abstract class CalendarEntry implements Serializable {
 		cal.setTime(startDate);
 		return cal.get(Calendar.HOUR*60)+cal.get(Calendar.MINUTE);
 	}
+	/**
+	 * Set the database id
+	 * @param id 
+	 * 
+	 * **/
+	public void setID(int id){
+		this.id = id;
+	}
 }
