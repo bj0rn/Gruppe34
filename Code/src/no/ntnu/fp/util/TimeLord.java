@@ -1,9 +1,11 @@
 package no.ntnu.fp.util;
 
 
+import java.awt.datatransfer.DataFlavor;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class TimeLord {
 	//sql format:  2012-03-22 14:04:35 
@@ -27,6 +29,11 @@ public class TimeLord {
 				Integer.parseInt(s.substring(17,19))
 				);
 		return d;
+	}
+	
+	public static String formatDate(Date date) {
+		DateFormat f = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.FRENCH);
+		return f.format(date);
 	}
 
 }
