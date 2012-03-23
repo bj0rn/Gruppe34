@@ -130,9 +130,11 @@ public class ServerController {
 //			e.printStackTrace();
 //		}
 			
-	
-		
 	}	
+	
+	
+	
+	
 	
 	public void inspectRequest(Tuple <Socket, Object> data){
 		Class <? extends Object> clazz = data.y.getClass();

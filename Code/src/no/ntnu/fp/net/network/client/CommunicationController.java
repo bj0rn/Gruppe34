@@ -12,7 +12,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
 
+import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 
@@ -35,12 +38,17 @@ import no.ntnu.fp.model.XmlHandler;
 
 
 public class CommunicationController {
+	
+	public final static String HOST = "127.0.0.1";
+	public final static int PORT = 1337;
+
+	private static CommunicationController instance;
 	//fields
 	private BlockingQueue<Object> inQueue;
 	private Socket mySocket;
 	private UpdateHandler updateHandler;
 	private LinkedBlockingDeque<Object> testQueue;
-	
+
 	
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
@@ -68,10 +76,15 @@ public class CommunicationController {
 	
 	
 	//constructor 
-	public CommunicationController(Socket mySocket, LinkedBlockingDeque<Object> testQueue){
+	private CommunicationController(){
+		
+		
+		LinkedBlockingDeque<Object> testQueue = new LinkedBlockingDeque<Object>();
+		//CommunicationController communicationController = new CommunicationController(mySocket, testQueue)
+		Client c = new Client(HOST, PORT, testQueue, this);
 		
 		try {
-			this.mySocket = mySocket;
+			this.mySocket = c.getSocket();
 			os = new DataOutputStream(mySocket.getOutputStream());
 			updateHandler = new UpdateHandler();
 			this.testQueue = testQueue;
@@ -79,7 +92,16 @@ public class CommunicationController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		new Thread(c).start();
+	}
 	
+	public static CommunicationController getInstance() {
+		if (instance == null) {
+			instance = new CommunicationController();
+		}
+		
+		return instance;
 	}
 	
 	public void inspect(){
@@ -218,6 +240,60 @@ public class CommunicationController {
 		}
 		return null;
 	}
+	
+	public void dispatchMeetingReply(User user, Meeting meeting, State state) {
+		
+		user.getId();
+		meeting.getID();
+		state.toString();
+		
+		
+	}
+	
+	
+	public void saveMeeting(Meeting meeting){
+		try{
+		//CreateEntry returns a key
+		//Need a way to set this in the meeting object
+		send(mySocket, meeting);
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries: "+i++);
+				//This should be a response containing the key
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof String){
+					//Check if this is the correct one; the method field should be saveUser
+					if(XmlHandler.inspectMethod((String)obj).equals("saveMeeting")){
+						//Correct  message
+						String key = XmlHandler.inspectKey((String)obj);
+						//Set key.....hmm... 
+						return;
+					}
+				}else {
+					//Wrong put it back
+					testQueue.putLast(obj);
+				}
+				
+			}
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveAppointment(Appointment appointment){
+		try{
+		//Does saveAppointment return a key
+		send(mySocket, appointment);
+		int i = 0;
+		while(true){
+			System.out.println("Number of tries ");
+			//This response should contain a key
+			Object obj = testQueue.takeFirst();
+		}
+	}
+	
+	
+	
 	
 	
 }
