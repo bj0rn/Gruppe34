@@ -1,6 +1,9 @@
 package no.ntnu.fp.model;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,19 +16,44 @@ import nu.xom.ValidityException;
 
 public class XmlHandler {
 	public static void main(String[] args) {
-		String test = XmlHandler.getFullUserToXMl("test", "password", "havard", "getFullUsers");
+		
+		String userInfo[] = {
+				"havard",
+				"test"
+		};
+		
+		String dataValues[] = {
+			"19", 
+			"offda",
+			"auda"
+		};
+		
+		String test = XmlHandler.dispatchMeetingReplyToXml(userInfo, dataValues, "test");
 		System.out.println(test);
-		String res = new XmlHandler().inspectKey(test);
-		System.out.println(res);
+		List <String> listRes = XmlHandler.dispatchMeetingReplyFromXml(test);
 		
 	}
 	
-	//Fields
-	
-	
-	//Constructor
-	
-	//Methods
+	public static List <String> dispatchMeetingReplyFromXml(String xml){
+		
+		ArrayList<String> resList = new ArrayList<String>();
+		Pattern p = Pattern.compile("<var[0-9]>([^<]+)");
+		Matcher m = p.matcher(xml);
+		int i = 0;
+		while (m.find()) {
+			//System.out.println(i + ": " + m.group(1) + "=" + m.group(2));
+			resList.add(m.group(1));
+			i++;
+		}
+		System.out.println("Number of variables: "+i);
+		
+		for(String s: resList){
+			System.out.println(s);
+		}
+		
+		return resList;
+		
+	}
 	
 	public static String loginToXml(String username, String password){
 		Element element = new Element("request");
@@ -77,6 +105,36 @@ public class XmlHandler {
 		return request.toXML();
 	}
 	
+	
+	public static String dispatchMeetingReplyToXml(String userInfo[], String dataValues[], String func){
+		Element request = new Element("request");
+		Element header = new Element("header");
+		Element method = new Element("method");
+		method.appendChild(func);
+		Element auth = new Element("authenticate");
+		Element user = new Element("user");
+		user.appendChild(userInfo[0]);
+		Element pass = new Element("pass");
+		pass.appendChild(userInfo[1]);
+		auth.appendChild(user);
+		auth.appendChild(pass);
+		//Append to header
+		header.appendChild(method);
+		header.appendChild(auth);
+		//data
+		String name = "var";
+		Element data = new Element("data");
+		for(int i = 0; i < dataValues.length; i++){
+			String value = dataValues[i];
+			Element tmp = new Element((name+String.valueOf(i)));
+			tmp.appendChild(value);
+			data.appendChild(tmp);
+		}
+		request.appendChild(header);
+		request.appendChild(data);
+		
+		return request.toXML();
+	}
 	
 	
 	

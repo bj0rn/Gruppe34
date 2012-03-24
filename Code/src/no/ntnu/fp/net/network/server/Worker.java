@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
@@ -21,8 +22,8 @@ import no.ntnu.fp.net.network.Tuple;
 
 public class Worker implements Runnable {
 	//Fields
-	private BlockingQueue<Tuple <Socket, Object>> inQueue;
-	private HashMap<String, Socket> clients;
+	private Queue<Tuple <Socket, Object>> inQueue;
+	private Map<String, Socket> clients;
 	private Scanner input;
 	private DataOutputStream os;
 	
@@ -30,14 +31,14 @@ public class Worker implements Runnable {
 	
 	
 	//Constructor
-	public Worker(BlockingQueue<Tuple<Socket, Object>> inQueue, HashMap<String, Socket> clients){
+	public Worker(Queue<Tuple<Socket, Object>> inQueue, Map<String, Socket> clients){
 		//Setup connection to db
 		//super();
 		System.out.println("The connection is made...");
 		this.inQueue = inQueue;
 		this.clients = clients;
 		input = new Scanner(System.in);
-		serverController = new ServerController(clients);
+		serverController = new ServerController(clients, inQueue);
 		System.out.println("ServerControllercreated");
 	}
 	

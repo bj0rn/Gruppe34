@@ -22,7 +22,7 @@ public class Client implements Runnable {
 	private Socket mySocket;
 	private int port;
 	private String host;
-	private BlockingQueue<Object > inQueue;
+	//private BlockingQueue<Object > inQueue;
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
 	private CommunicationController communicationController;

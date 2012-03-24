@@ -17,7 +17,6 @@ public class CancelMeetingInviteAction extends AbstractAction {
 		this.model = model;
 		User user = model.getUser();
 		orginalState = model.getModel().getState(user);
-		System.out.println(orginalState);
 	}
 
 	@Override
@@ -32,7 +31,6 @@ public class CancelMeetingInviteAction extends AbstractAction {
 			meeting.setState(user, orginalState);
 		}
 		
-		System.out.println(meeting);
 		
 		model.dispose();
 	}
