@@ -267,7 +267,7 @@ public class DatabaseController {
 			
 			user = new User(uname, name, age, phoneNumber, email);
 			
-			user.setCalendar(getCalendar(uname));
+			user.setCalendar(getCalendar(user));
 		}
 		
 		return user;
@@ -287,12 +287,15 @@ public class DatabaseController {
 	 * @throws SQLException 
 	 */
 	
-	public Calendar getCalendar(String username) throws SQLException {
+	public Calendar getCalendar(User user) throws SQLException {
 		
-		Calendar calendar = new Calendar();
+		Calendar calendar = new Calendar(user);
+		
+		String username = user.getUsername();
 		
 		String sql = 
 			"SELECT " 
+		+	"	OWNCA.Username as owner, "
 		+	"	CE.CalendarEntryID AS id, "
 		+	"	CE.EntryType AS type, " 
 		+	"	CE.TimeStart AS start, " 
@@ -303,14 +306,20 @@ public class DatabaseController {
 		+	"	LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID "
 		+	"	LEFT JOIN CalendarEntry AS CE ON CO.CalendarEntryID = CE.CalendarEntryID "
 		+	"	LEFT JOIN Location AS L ON CE.LocationID = L.LocationID "
+		+	"	LEFT JOIN Contains AS OWNCO ON CE.CalendarEntryID = OWNCO.CalendarEntryID " 
+		+	"		AND OWNCO.Role = 'Owner' "
+		+	"	LEFT JOIN Calendar AS OWNCA ON OWNCO.CalendarID = OWNCA.CalendarID "
 		+	"WHERE C.Username = '" + username + "'";
 
+		System.out.println(sql);
+		
 		DbConnection db = getConnection();
 		
 		ResultSet rs = db.query(sql);
 		
 		rs.beforeFirst();
 		while(rs.next()) {
+			String owner = rs.getString("owner");
 			int id = rs.getInt("id");
 			String type = rs.getString("type");
 			Date start = rs.getDate("start");
@@ -332,6 +341,8 @@ public class DatabaseController {
 				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
 				entry = new Appointment(start, end, desc, id);
 			}
+			
+			entry.setOwner(new User(owner));
 			
 			Location location = getLocation(locationID);
 			entry.setLocation(location);
@@ -526,9 +537,7 @@ public class DatabaseController {
 			//String state = rs.getString("state");
 			int mid = rs.getInt("meeting");
 			
-			MeetingInviteNotification notification = new MeetingInviteNotification();
-			notification.setMeeting(new Meeting(mid));
-			notification.setUser(new User(uname));
+			MeetingInviteNotification notification = new MeetingInviteNotification(new User(uname), new Meeting(mid));
 		
 			invites.add(notification);
 		}
@@ -570,9 +579,7 @@ public class DatabaseController {
 			//String state = rs.getString("state");
 			int mid = rs.getInt("meeting");
 			
-			MeetingReplyNotification notification = new MeetingReplyNotification();
-			notification.setMeeting(new Meeting(mid));
-			notification.setUser(new User(uname));
+			MeetingReplyNotification notification = new MeetingReplyNotification(new User(uname), new Meeting(mid));
 			
 			replies.add(notification);
 		}

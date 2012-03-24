@@ -258,29 +258,17 @@ public class NotificationPanel extends JPanel {
 		m1.addParticipant(p3, State.Pending);
 		m1.addParticipant(p4, State.Accepted);
 		m1.addParticipant(p5, State.Rejected);
+		p2.getCalendar().addMeeting(m1);
 		
 		Meeting m2 = new Meeting("Møte 2");
 		m2.setDate(new Date(112, 2, 1, 12, 0, 0), new Date(112, 2, 1, 13, 0, 0));
 		m2.setLocation(new Room(1, "414", "P15", 30));
 		m2.setOwner(p2);
 		m2.addParticipant(user, State.Rejected);
-		
-		MeetingInviteNotification n1 = new MeetingInviteNotification();
-		n1.setUser(p2);
-		n1.setMeeting(m1);
-		
-		MeetingReplyNotification n2 = new MeetingReplyNotification();
-		n2.setUser(user);
-		n2.setMeeting(m2);
-		
-		
-		
-		List<Notification> model = new ArrayList<Notification>();
-		model.add(n1);
-		model.add(n2);
-		
+		p2.getCalendar().addMeeting(m2);
+
 		NotificationPanel panel = new NotificationPanel(p2);
-		panel.setModel(model);
+		panel.setModel(user.getNotifications());
 		
 		frame.setContentPane(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

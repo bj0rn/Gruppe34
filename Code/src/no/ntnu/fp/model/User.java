@@ -19,8 +19,8 @@ public class User extends Model implements Serializable {
 	private String email;
 	
 	private ModelChangeListener modelChangeListener;
-	private Calendar calendar;
-	private List<Notification> notifications;
+	private Calendar calendar = new Calendar(this);
+	private List<Notification> notifications = new ArrayList<Notification>();
 	
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
  	public final static String UNAME_PROPERT ="Username";
@@ -31,19 +31,15 @@ public class User extends Model implements Serializable {
  	public final static String EMAIL_PROPERT ="Email";
  	public final static String CAL_PROPERT ="Calendar";
 
- 	public User() {
- 		
- 	}
+ 	public User() {}
  	
  	public User(String username) {
  		this.username = username;
- 		notifications = new ArrayList<Notification>();
  	}
  	
 	public User(String username, String password){
 		this.username = username;
 		this.password = password;
- 		notifications = new ArrayList<Notification>();
 	}
 	
 	public User(String username, String name, int age, int phoneNumber,	String email) {
@@ -52,7 +48,6 @@ public class User extends Model implements Serializable {
 		this.age = age;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
- 		notifications = new ArrayList<Notification>();
 	}
 	
 	public String getId() {
@@ -88,7 +83,7 @@ public class User extends Model implements Serializable {
 	}
 	
 	public List<Notification> getNotifications() {
-		return notifications;
+		return calendar.getMeetingNotifications();
 	}
 	
 	public void setCalendar(Calendar calendar){
@@ -156,6 +151,15 @@ public class User extends Model implements Serializable {
 	
 	public static void main(String[] args) {
 		
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof User) {
+			User user = (User)obj;
+			return username.equals(user.username);
+		}
+		return false;
 	}
 	
 	@Override

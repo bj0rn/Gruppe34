@@ -122,14 +122,14 @@ public class ServerController {
 	//TODO: Implements
 	public void getFullUser(Tuple <Socket, Object> data){
 		//Data is received as xml
-//		try {
+		try {
 			String userInfo[] = XmlHandler.loginFromXml((String)data.y);
 			String key = XmlHandler.inspectKey((String)data.y);
 			System.out.println("key: "+key);
 			if(connectedClients.containsKey(userInfo[0])){
 				System.out.println("The user is auth");
-				//User user = databaseController.getFullUser(key);
-				User user = new User("havard", "HŒvard", 20, 12313213, "test@test.com");
+				User user = databaseController.getFullUser(key);
+				//User user = new User("havard", "Hï¿½vard", 20, 12313213, "test@test.com");
 				if(user == null){
 					System.out.println("NULL");
 				}
@@ -138,10 +138,10 @@ public class ServerController {
 			}else{
 				send(data.x, XmlHandler.loginUnsucessful());
 			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			
 	}	
 	

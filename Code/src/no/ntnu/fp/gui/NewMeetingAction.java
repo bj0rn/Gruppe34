@@ -6,9 +6,9 @@ import javax.swing.AbstractAction;
 
 public class NewMeetingAction extends AbstractAction {
 
-	private ApplicationPanel panel;
+	private ApplicationFrame panel;
 	
-	public NewMeetingAction(ApplicationPanel panel) {
+	public NewMeetingAction(ApplicationFrame panel) {
 		this.panel = panel;
 	}
 	

@@ -10,10 +10,11 @@ public class Calendar implements Iterable<CalendarEntry>, Serializable {
 	private static final long serialVersionUID = 3084624718665667718L;
 	
 	private ModelChangeListener modelChangeListener;
-	private List<CalendarEntry> entries;
+	private List<CalendarEntry> entries = new ArrayList<CalendarEntry>();
+	private User user;
 	
-	public Calendar() {
-		entries = new ArrayList<CalendarEntry>();
+	public Calendar(User user) {
+		this.user = user;
 	}
 	
 	public void addMeeting(Meeting meeting){
@@ -43,6 +44,42 @@ public class Calendar implements Iterable<CalendarEntry>, Serializable {
 	
 	public CalendarEntry get(int i) {
 		return entries.get(i);
+	}
+	
+	public List<Notification> getMeetingNotifications() {
+		
+		List<Notification> notifications = new ArrayList<Notification>();
+		
+		for(CalendarEntry entry : entries) {
+			
+			if (entry instanceof Meeting) {
+				Meeting meeting = (Meeting)entry;
+				
+				if (meeting.getOwner().equals(user)) {
+					
+					for (User user : meeting.getParticipants()) {
+						
+						no.ntnu.fp.model.Meeting.State state = meeting.getState(user);
+						
+						if (state == no.ntnu.fp.model.Meeting.State.Rejected) {
+							notifications.add(new MeetingReplyNotification(user, meeting));
+						}
+						
+					}
+					
+				} else {
+					
+					no.ntnu.fp.model.Meeting.State state = meeting.getState(user);
+					
+					if (state == 	no.ntnu.fp.model.Meeting.State.Pending) {
+						notifications.add(new MeetingInviteNotification(user, meeting));
+					}
+				}
+			}
+		}
+		
+		return notifications;
+		
 	}
 
 	@Override

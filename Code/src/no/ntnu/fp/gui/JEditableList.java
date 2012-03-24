@@ -50,7 +50,7 @@ public class JEditableList extends JPanel implements ListDataListener {
 		}
 		
 		for (;i<n; i++) {
-			remove(i);
+			//remove(i);
 		}
 	}
 	

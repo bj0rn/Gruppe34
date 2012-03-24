@@ -6,4 +6,8 @@ public class MeetingReplyNotification extends MeetingNotification implements Ser
 
 	private static final long serialVersionUID = 7300644625481024863L;
 
+	public MeetingReplyNotification(User user, Meeting meeting) {
+		super(user, meeting);
+	}
+	
 }

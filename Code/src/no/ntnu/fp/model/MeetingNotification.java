@@ -10,6 +10,11 @@ public class MeetingNotification extends Notification implements Serializable {
 	private Meeting meeting;
 	private User user;
 	
+	public MeetingNotification(User user, Meeting meeting) {
+		setUser(user);
+		setMeeting(meeting);
+	}
+	
 	public void setMeeting(Meeting meeting) {
 		this.meeting = meeting;
 	}
