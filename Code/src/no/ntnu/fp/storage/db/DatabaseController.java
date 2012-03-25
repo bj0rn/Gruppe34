@@ -665,6 +665,7 @@ public class DatabaseController {
 			System.out.println("herp");
 		if(rs.first())
 			return rs.getInt("ID");
+		}
 		
 		
 		
