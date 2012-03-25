@@ -81,6 +81,9 @@ public class DatabaseControllerTest extends TestCase {
 	}//testGetFullUser()
 	
 	public void testSaveAppointment() throws SQLException {
+		if (true) {
+			return;
+		}
 		String description = "AMAZING!";
 		Place pl = new Place(39, "it's where the butts go!");
 		Date start = new Date();
@@ -97,9 +100,24 @@ public class DatabaseControllerTest extends TestCase {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}//testSaveAppointment()
+	
+	public void testSaveMeeting() throws SQLException {
+		String desc = "BRILLIANT!";
+		Place pl = new Place(43, "It's where I want to be");
+		Date start = new Date();
+		Date end = start;
+		end.setHours(start.getHours() + 3);
+		Meeting m = new Meeting(start, end, desc, -1);
+		m.setLocation(pl);
+		ctrl = new DatabaseController();
+		try {
+			System.out.println(ctrl.saveMeeting(m));
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}//testSaveMeeting()
 	
 	public void testNotifications() {
 		

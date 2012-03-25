@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -595,7 +596,17 @@ public class DatabaseController {
 	 */
 	public String saveUser(User user) throws SQLException {
 		DbConnection dbc = getConnection();
+		String sql = "SELECT count(*) AS ROW FROM User WHERE Username='"+user.getUsername()+"'";
+		ResultSet rs = dbc.query(sql);
 		
+		//find out if we've gotten more than one username from this
+		if(rs.first()) {
+			while (rs.next()) {
+				
+			}
+		}
+		
+		//IF EXISTS doesn't work for us.
 		String s = ""
 			+ "IF EXISTS( SELECT * FROM User WHERE Username="
 			+ user.getUsername() + ") BEGIN UPDATE User"
@@ -641,20 +652,20 @@ public class DatabaseController {
 		String sql = "";
 		if (appointment.getID() == -1) { //need to create a new appointment k
 			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
-		", Description, EntryType, LocationID) VALUES ('" 					  +
-		TimeLord.changeDateToSQL(appointment.getStartDate()) +"', '"+
-		TimeLord.changeDateToSQL(appointment.getEndDate()) +"', "+
-		"NOW(), '" + appointment.getDescription() + "', '" +
-		CalendarEntryType.APPOINTMENT + "', " + 
-		appointment.getLocation().getID() + ")";
-		dbc.executeUpdate(sql);
-		System.out.println(sql);
-		String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
-		ResultSet rs = dbc.query(s);
-		System.out.println("herp");
+				", Description, EntryType, LocationID) VALUES ('" +
+				TimeLord.changeDateToSQL(appointment.getStartDate()) +"', '"+
+				TimeLord.changeDateToSQL(appointment.getEndDate()) +"', "+
+				"NOW(), '" + appointment.getDescription() + "', '" +
+				CalendarEntryType.APPOINTMENT + "', " + 
+				appointment.getLocation().getID() + ")";
+			dbc.executeUpdate(sql);
+			System.out.println(sql);
+			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
+			ResultSet rs = dbc.query(s);
+			System.out.println("herp");
 		if(rs.first())
 			return rs.getInt("ID");
-		}
+		
 		
 		
 		//ok so the thing exists in the database.
@@ -680,7 +691,34 @@ public class DatabaseController {
 	 * @return the {@code Meeting}s database id
 	 */
 	public int saveMeeting(Meeting meeting) throws SQLException {
-		return 0;
+		DbConnection dbc = getConnection();
+		String sql = "";
+		if (meeting.getID() == -1) { //it's a brand new meeting.
+			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
+				", Description, EntryType, LocationID) VALUES('"+
+				TimeLord.changeDateToSQL(meeting.getStartDate())+"', '"+
+				TimeLord.changeDateToSQL(meeting.getEndDate())+"', "+
+				"NOW(), '"+meeting.getDescription()+"', '"+
+				CalendarEntryType.MEETING+"', "+
+				meeting.getLocation().getID()+")";
+			dbc.executeUpdate(sql);
+			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
+			ResultSet rs = dbc.query(s);
+			dbc.close();
+			if (rs.first())
+				return rs.getInt("ID");
+		}//end new meeting
+		
+		//did we get here? okay, we need to update an existing meeting.
+		sql = "UPDATE CalendarEntry SET TimeStart='" +
+				TimeLord.changeDateToSQL(meeting.getStartDate())+"', "+
+				"TimeEnd='"+TimeLord.changeDateToSQL(meeting.getEndDate())+
+				"', Description='"+meeting.getDescription()+"', "+
+				"LocationID="+meeting.getLocation().getID()+
+				" WHERE CalendarEntryID="+meeting.getID();
+		dbc.executeUpdate(sql);
+		dbc.close();
+		return meeting.getID();
 	}
 	
 	/**
@@ -692,11 +730,53 @@ public class DatabaseController {
 	 * 		  the {@code Room} to created/change
 	 * 
 	 * @return the {@code Room}s database id
+	 * 
 	 */	
-	public int saveRoom(Room room) {
-		return 0;
+	public int saveRoom(Room room) throws SQLException {
+		//the primary key of a room is its name
+		//it also has a location ID
+		DbConnection dbc = getConnection();
+		String sql = "";
+		String sqlCreateLoc = "INSERT INTO Location VALUES ()";
+		String sqlGetLastLocID = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM Location";
+		
+		if (room.getName() == null || room.getID() == -1) {
+			//okay, create a new room/location yayyy.
+			
+			dbc.executeUpdate(sqlCreateLoc);
+			int locID = Integer.parseInt(getLastInsertedID("Location"));
+			sql = "INSERT INTO Room (RoomName, Description, Capacity, LocationID) "
+				 +" VALUES('" + room.getName() + "', '" + room.getDescription() +"', '"
+				 +room.getCapacity() + "', " + locID + ")";
+			dbc.executeUpdate(sql);
+			return locID;
+		}//end new room
+		
+		//update existing room
+		sql = "UPDATE Room SET "
+			 +"Description='"+room.getDescription()+"', "
+			 +"Capacity="+room.getCapacity()
+			 +"WHERE LocationID="+room.getID()+" AND RoomName='"+room.getName()+"'";
+		return room.getID();
 	}
-	
+	/**
+	 * Gets the ID of the last inserted element in the given table.
+	 * @param table
+	 * 		  the name of the table to get the last inserted ID from
+	 * @return
+	 * 		  the last inserted ID in the given table
+	 */
+	public String getLastInsertedID(String table) throws SQLException {
+		String result = "-1";
+		String sql = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM " + table +";";
+		DbConnection dbc = getConnection();
+		ResultSet rs = dbc.query(sql);
+		if (rs.first()) {
+			result = rs.getString("ID");
+		}
+		dbc.close();
+		return result;
+	}
 	/**
 	 * Saves a {@code Place} to the database.
 	 * A non-existing {@code Place} will be created,
