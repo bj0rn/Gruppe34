@@ -22,18 +22,18 @@ public class Client implements Runnable {
 	private Socket mySocket;
 	private int port;
 	private String host;
-	private BlockingQueue<Object > inQueue;
+	//private BlockingQueue<Object > inQueue;
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
 	private CommunicationController communicationController;
 	private LinkedBlockingDeque<Object> testQueue;
 	
 	//Constructor 
-	public Client(String host, int port, LinkedBlockingDeque<Object> testQueue){
+	public Client(String host, int port, LinkedBlockingDeque<Object> testQueue, CommunicationController communicationController){
 		this.testQueue = testQueue;
 		try {
 			this.mySocket = new Socket(InetAddress.getByName(host), port);
-			this.communicationController = new CommunicationController(mySocket, testQueue);
+			this.communicationController = communicationController;
 			this.host = host;
 			this.port = port;
 		} catch (UnknownHostException e) {
@@ -45,8 +45,9 @@ public class Client implements Runnable {
 		}
 		
 	}
-	public CommunicationController getCommunicationController(){
-		return communicationController;
+	
+	public Socket getSocket() {
+		return mySocket;
 	}
 	
 	//TODO: Stop these threads

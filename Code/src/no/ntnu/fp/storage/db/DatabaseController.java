@@ -268,7 +268,7 @@ public class DatabaseController {
 			
 			user = new User(uname, name, age, phoneNumber, email);
 			
-			user.setCalendar(getCalendar(uname));
+			user.setCalendar(getCalendar(user));
 		}
 		
 		return user;
@@ -288,12 +288,15 @@ public class DatabaseController {
 	 * @throws SQLException 
 	 */
 	
-	public Calendar getCalendar(String username) throws SQLException {
+	public Calendar getCalendar(User user) throws SQLException {
 		
-		Calendar calendar = new Calendar();
+		Calendar calendar = new Calendar(user);
+		
+		String username = user.getUsername();
 		
 		String sql = 
 			"SELECT " 
+		+	"	OWNCA.Username as owner, "
 		+	"	CE.CalendarEntryID AS id, "
 		+	"	CE.EntryType AS type, " 
 		+	"	CE.TimeStart AS start, " 
@@ -304,14 +307,20 @@ public class DatabaseController {
 		+	"	LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID "
 		+	"	LEFT JOIN CalendarEntry AS CE ON CO.CalendarEntryID = CE.CalendarEntryID "
 		+	"	LEFT JOIN Location AS L ON CE.LocationID = L.LocationID "
+		+	"	LEFT JOIN Contains AS OWNCO ON CE.CalendarEntryID = OWNCO.CalendarEntryID " 
+		+	"		AND OWNCO.Role = 'Owner' "
+		+	"	LEFT JOIN Calendar AS OWNCA ON OWNCO.CalendarID = OWNCA.CalendarID "
 		+	"WHERE C.Username = '" + username + "'";
 
+		System.out.println(sql);
+		
 		DbConnection db = getConnection();
 		
 		ResultSet rs = db.query(sql);
 		
 		rs.beforeFirst();
 		while(rs.next()) {
+			String owner = rs.getString("owner");
 			int id = rs.getInt("id");
 			String type = rs.getString("type");
 			Date start = rs.getDate("start");
@@ -320,7 +329,7 @@ public class DatabaseController {
 			int locationID = rs.getInt("LocationID");
 			
 			CalendarEntry entry = null;
-			
+			System.out.println(type == null);
 			if (type.equals(CalendarEntry.MEETING)) {
 				Meeting meeting = new Meeting(start, end, desc, id);
 				
@@ -333,6 +342,8 @@ public class DatabaseController {
 				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
 				entry = new Appointment(start, end, desc, id);
 			}
+			
+			entry.setOwner(new User(owner));
 			
 			Location location = getLocation(locationID);
 			entry.setLocation(location);
@@ -527,9 +538,7 @@ public class DatabaseController {
 			//String state = rs.getString("state");
 			int mid = rs.getInt("meeting");
 			
-			MeetingInviteNotification notification = new MeetingInviteNotification();
-			notification.setMeeting(new Meeting(mid));
-			notification.setUser(new User(uname));
+			MeetingInviteNotification notification = new MeetingInviteNotification(new User(uname), new Meeting(mid));
 		
 			invites.add(notification);
 		}
@@ -571,14 +580,33 @@ public class DatabaseController {
 			//String state = rs.getString("state");
 			int mid = rs.getInt("meeting");
 			
-			MeetingReplyNotification notification = new MeetingReplyNotification();
-			notification.setMeeting(new Meeting(mid));
-			notification.setUser(new User(uname));
+			MeetingReplyNotification notification = new MeetingReplyNotification(new User(uname), new Meeting(mid));
 			
 			replies.add(notification);
 		}
 		
 		return replies;
+	}
+	
+	/**
+	 * 
+	 * @param username
+	 * @param meeting_id
+	 * @param state
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateMeetingState(String username, String meeting_id, State state) throws SQLException {
+		
+		DbConnection db = getConnection();
+		
+		String sql = "UPDATE Contains SET State = '" + state + "' WHERE CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '"+username+"') AND CalendarEntryID = " + meeting_id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -801,9 +829,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteUser(int id) {
-		return false;
+	public boolean deleteUser(String username) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM User WHERE Username = '" + username + "'";
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 	
 	/**
@@ -814,9 +851,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteAppointment(int id) {
-		return false;
+	public boolean deleteAppointment(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM CalendarEntry WHERE CalendarEntryId = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -827,9 +873,19 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteMeeting(int id) {
-		return false;
+	public boolean deleteMeeting(int id) throws SQLException {
+		
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM CalendarEntry WHERE CalendarEntryId = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -840,9 +896,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteRoom(int id) {
-		return false;
+	public boolean deleteRoom(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM Location WHERE LocationID = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -853,9 +918,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deletePlace(int id) {
-		return false;
+	public boolean deletePlace(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM Location WHERE LocationID = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 	
 	/**

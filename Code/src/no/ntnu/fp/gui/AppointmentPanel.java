@@ -16,12 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Person;
 
 public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	private JLabel appointment, description, startTime, endTime, location;
 	private JTextField descComp, startComp, endComp;
-	private JComboBox locComp;
+	private JTextField locComp;
+	//private JComboBox locComp;
 	//private Room[] rooms =
 	
 	private JButton save, delete;
@@ -42,7 +44,8 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		descComp = new JTextField(10);
 		startComp = new JTextField(10);
 		endComp = new JTextField(10);
-		//locComp = new JComboBox
+		locComp = new JTextField(10);
+		//locComp = new JComboBox();
 		
 		save = new JButton("Lagre");
 		delete = new JButton("Slett");
@@ -76,6 +79,9 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		constraints.gridx = 1;
 		constraints.gridy = 3;
 		add(endComp, constraints);
+		constraints.gridx = 1;
+		constraints.gridy = 4;
+		add(locComp, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 5;
 		add(save, constraints);
@@ -89,15 +95,21 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 			}
 		});
 		
-		/*startComp.addKeyListener(new KeyAdapter(){
+		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setDate(startComp.getText().toString());
+				model.setStartDate(new Date(startComp.getText()));
 			}
 		});
 		
 		endComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setDate(endComp.getText());
+				model.setEndDate(new Date(endComp.getText()));
+			}
+		}); 
+		
+	/*	LOCComp.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e){
+				model.setLocation(locComp.getText());
 			}
 		}); */
 		
@@ -108,6 +120,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	    	   descComp.setText(model.getDescription());
 	    	   startComp.setText(model.getStartDate().toGMTString());
 	    	   endComp.setText(model.getEndDate().toGMTString());
+	    	//   locComp.setText(model.getLocation());
 	       }
 	    }
 	 
@@ -143,8 +156,18 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
+		if(evt.getPropertyName() == Appointment.DESC_PROPERTY) {
+			descComp.setText(model.getDescription());
+		}
+		if(evt.getPropertyName() == Appointment.END_PROPERTY){
+			endComp.setEndDate(model.getEndDate());
+		}
+		if(evt.getPropertyName() == Appointment.START_PROPERTY){
+			endComp.setStartDate(model.getStartDate());
+		}
+		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
+			endComp.setLocation(model.getLocation());
+		}
 	}
 
 }

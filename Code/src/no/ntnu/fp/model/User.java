@@ -2,6 +2,7 @@ package no.ntnu.fp.model;
 
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,8 +19,8 @@ public class User extends Model implements Serializable {
 	private String email;
 	
 	private ModelChangeListener modelChangeListener;
-	private Calendar calendar;
-	private List<Notification> notifications;
+	private Calendar calendar = new Calendar(this);
+	private List<Notification> notifications = new ArrayList<Notification>();
 	
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
  	public final static String UNAME_PROPERT ="Username";
@@ -30,9 +31,7 @@ public class User extends Model implements Serializable {
  	public final static String EMAIL_PROPERT ="Email";
  	public final static String CAL_PROPERT ="Calendar";
 
- 	public User() {
- 		
- 	}
+ 	public User() {}
  	
  	public User(String username) {
  		this.username = username;
@@ -81,6 +80,10 @@ public class User extends Model implements Serializable {
 	
 	public void removeNotification(Notification notification){
 		notifications.remove(notification);
+	}
+	
+	public List<Notification> getNotifications() {
+		return calendar.getMeetingNotifications();
 	}
 	
 	public void setCalendar(Calendar calendar){
@@ -148,6 +151,15 @@ public class User extends Model implements Serializable {
 	
 	public static void main(String[] args) {
 		
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof User) {
+			User user = (User)obj;
+			return username.equals(user.username);
+		}
+		return false;
 	}
 	
 	@Override

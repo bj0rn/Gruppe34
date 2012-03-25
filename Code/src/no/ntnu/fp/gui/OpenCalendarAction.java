@@ -6,9 +6,9 @@ import javax.swing.AbstractAction;
 
 public class OpenCalendarAction extends AbstractAction  {
 
-	private ApplicationPanel panel;
+	private ApplicationFrame panel;
 	
-	public OpenCalendarAction(ApplicationPanel panel) {
+	public OpenCalendarAction(ApplicationFrame panel) {
 		this.panel = panel;
 	}
 	

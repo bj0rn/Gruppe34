@@ -12,3 +12,21 @@
 
 
 request><header><method>login</method><authenticate><user>havard</user><pass>test</pass></authenticate></header></request>
+
+
+
+
+<request>
+	<header>
+		<test />
+		<authenticate>
+			<user>havard</user>
+			<pass>test</pass>
+		</authenticate>
+	</header>
+	<data>
+	<data0>19</data0>
+	<data1>offda</data1>
+	<data2>auda</data2>
+	</data>
+</request>
