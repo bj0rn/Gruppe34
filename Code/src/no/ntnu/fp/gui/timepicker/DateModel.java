@@ -132,5 +132,11 @@ public class DateModel {
 	
 	public void removePropertyChangeListener(PropertyChangeListener l) {
 		pcs.removePropertyChangeListener(l);
+	}
+
+	public int getWeek() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(getDate());
+		return cal.get(Calendar.WEEK_OF_YEAR);
 	}	
 }

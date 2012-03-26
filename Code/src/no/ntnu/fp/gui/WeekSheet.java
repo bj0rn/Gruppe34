@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -28,14 +29,21 @@ public class WeekSheet extends JPanel {
 	private int cellHeight;
 	private int cellWidth;
 	private int hourColWidth;
-	private Calendar cal;
+	private JPanel weekHeader;
 
 	public WeekSheet() {
-		cal = Calendar.getInstance();
 		addHourLabels();
 		setPreferredSize(new Dimension(600, 1500));
 	}
-
+	
+	public int getCellHeight() {
+		return cellHeight;
+	}
+	
+	public int getCellWidth() {
+		return cellWidth;
+	}
+	
 	private void addHourLabels() {
 		JLabel hour;
 		for (int i = 0; i < 24; i++) {

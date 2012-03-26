@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import no.ntnu.fp.gui.timepicker.DateModel;
 import no.ntnu.fp.model.Appointment;
 
 public class CalendarPanel extends JPanel {
@@ -22,40 +24,30 @@ public class CalendarPanel extends JPanel {
 	private Navigator weekNavigator;
 	private Navigator yearNavigator;
 
-	private JButton newAppointment;
-	private JButton newMeeting;
-	private JButton calendars;
-
-	private JLabel weekLabel;
-	private JLabel yearLabel;
 	JScrollPane scrollArea;
 
 	private WeekSheet weekSheet;
-
+	private DateModel dateModel;
+	
 	public CalendarPanel() {
+		//Creates instance with current system time Date object
+		this(new DateModel(Calendar.getInstance().getTime()));
+	}
+	
+	public CalendarPanel(DateModel dateModel) {
+		this.dateModel = dateModel;
+		
 		setLayout(new BorderLayout(12,12));
-
+		
 		JPanel top = new JPanel();
-		// TODO: Set to current week
-		top.add(weekNavigator = new Navigator(1, 1, 52));
-		top.add(yearNavigator = new Navigator(2012, 0, Integer.MAX_VALUE));
+		top.add(weekNavigator = new Navigator(dateModel.getWeek(), 1, 52));
+		top.add(yearNavigator = new Navigator(dateModel.getYear(), 0, Integer.MAX_VALUE));
 
 		weekSheet = new WeekSheet();
-
 		
 		scrollArea = new JScrollPane(weekSheet);
 		scrollArea.setPreferredSize(new Dimension(600,300));
 		scrollArea.setRowHeaderView(new JLabel(" "));
-		JPanel weekheader = new JPanel();
-		weekheader.add(new JLabel("Kl."));
-		String[] weekDays = {"Mandag", "Tirsdag", "Onsdag","Torsdag","Fredag","L�rdag","S�ndag"};
-		JLabel d;
-		for(String s:weekDays){
-			d= new JLabel(s);
-			d.setSize(300, 100);
-			weekheader.add(d);
-		}
-		scrollArea.setColumnHeaderView(weekheader);
 		add(top, BorderLayout.NORTH);
 		add(scrollArea, BorderLayout.CENTER);
 	}

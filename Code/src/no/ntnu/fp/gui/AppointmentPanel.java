@@ -24,6 +24,7 @@ import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Person;
 import no.ntnu.fp.model.Place;
+import no.ntnu.fp.model.Room;
 import no.ntnu.fp.util.TimeLord;
 
 public class AppointmentPanel extends JPanel implements PropertyChangeListener {
@@ -32,6 +33,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	private JTextField locComp;
 	//private JComboBox locComp;
 	//private Room[] rooms =
+	private PlacePickerPanel plPickPanel;
 	
 	private JButton save, delete;
 	
@@ -52,6 +54,9 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		endTime = new JLabel("Sluttid");
 		location = new JLabel("Sted");
 		
+		plPickPanel = new PlacePickerPanel(this);
+
+		
 		descComp = new JTextField(10);
 		startComp = new JTextField(10);
 		endComp = new JTextField(10);
@@ -66,6 +71,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		setLayout(grid); // gj¿r at man faktisk endrer noe(det synes)
 		
+		constraints.gridwidth = constraints.RELATIVE;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 		add(appointment, constraints);
@@ -81,24 +87,27 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		constraints.gridx = 0;
 		constraints.gridy = 4;
 		add(location, constraints);
-		constraints.gridx = 1;
+		constraints.gridx = 3;
 		constraints.gridy = 1;
 		add(descComp, constraints);
-		constraints.gridx = 1;
+		constraints.gridx = 3;
 		constraints.gridy = 2;
 		add(startComp, constraints);
-		constraints.gridx = 1;
+		constraints.gridx = 3;
 		constraints.gridy = 3;
 		add(endComp, constraints);
-		constraints.gridx = 1;
+		constraints.gridx = 3;
 		constraints.gridy = 4;
 		add(locComp, constraints);
 		constraints.gridx = 0;
-		constraints.gridy = 5;
+		constraints.gridy = 6;
 		add(save, constraints);
-		constraints.gridx = 1;
-		constraints.gridy = 5;
+		constraints.gridx = 3;
+		constraints.gridy = 6;
 		add(delete, constraints);
+		
+		constraints.gridwidth = constraints.REMAINDER;
+		add(plPickPanel, TimeLord.setConstraints(constraints, 0, 5));
 		
 		descComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
@@ -108,8 +117,6 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				//Gives an error because we can't easily parse the string
-				//to a date
 				model.setStartDate(TimeLord.changeDateToJava(startComp.getText()));
 			}
 		});
@@ -142,8 +149,6 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		});
 		endComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				//Gives an error because we can't easily parse the string
-				//to a date
 				model.setEndDate(TimeLord.changeDateToJava(endComp.getText()));
 			}
 		}); 
@@ -151,7 +156,6 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				System.out.println("I!");
-				
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -203,6 +207,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	    	   startComp.setText(TimeLord.changeDateToSQL(model.getStartDate()));
 	    	   endComp.setText(TimeLord.changeDateToSQL(model.getEndDate()));
 	    	   locComp.setText(model.getLocation().getID() + "");
+	    	   plPickPanel.updatePanel();
 	       }
 	    }
 	 
@@ -228,6 +233,9 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		app.setLocation(new Place(33, "Gotham City"));
 		panel.setModel(app);
 		
+
+		
+		
 		frame.setLocationRelativeTo(null); //center a frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true); //display the frame
@@ -248,6 +256,10 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		}
 		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
 			locComp.setText(model.getLocation().getDescription());
+		}
+		if (evt.getPropertyName() == PlacePickerPanel.LOCATIONC_PROPERTY) {
+			model.setLocation((Location) evt.getNewValue());
+			System.out.println("OK!");
 		}
 	}
 
