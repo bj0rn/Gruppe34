@@ -21,6 +21,7 @@ import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Place;
+import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 import no.ntnu.fp.model.Meeting.State;
@@ -37,15 +38,7 @@ public class ServerController {
 	private DatabaseController databaseController;
 	private XmlHandler xmlHandler;
 	private Queue <Tuple <Socket, Object>> inQueue;
-	//Streams
-	//private DataOutputStream os;
-	//private ObjectOutputStream oos;
 	
-	//Test Protocoll
-	private final static String AUTHENTICATE = "Authenticate";
-	private final static String GET_USERS = "getUsers";
-	private final static String GET_CALENDAR = "getCalendar";
-	//GenericXmlSerializer genericXml;
 	
 	
 	//Constructor
@@ -56,7 +49,10 @@ public class ServerController {
 	}
 	
 	
-	
+	/**
+	 * @author bj0rn
+	 * Helper method for sending over objects over TCP
+	 * **/
 	private void send(Socket socket, Object data){
 		try {
 			DataOutputStream os = new DataOutputStream(socket.getOutputStream());
@@ -70,7 +66,12 @@ public class ServerController {
 	}
 	
 	
-	
+	/**
+	 * @author bj0rn
+	 * Authenticate the user by checking the database.
+	 * Sends a login succeded if the login credentials are correct, or 
+	 * login failed otherwise. 
+	 * **/
 	public void authenticate(Tuple<Socket, Object> data){
 		try{
 			Request request = (Request)data.y;
@@ -97,6 +98,14 @@ public class ServerController {
 	
 	}
 	
+	/**
+	 * @author bj0rn
+	 * Get all user from the database.
+	 * If the user who requested the users is 
+	 * authenticated, send the users and a GET_USERS_RESPONSE message, otherwise
+	 * send LOGIN_FAILED
+	 * 
+	 * **/
 	public void getUsers(Tuple <Socket, Object> data){
 		try {
 			Request request = (Request)data.y;
@@ -123,7 +132,13 @@ public class ServerController {
 	}
 	
 	
-	
+	/**
+	 * @author bj0rn
+	 * Get full user from the database
+	 * If the user, who requested the message is authenticated, send the User and
+	 * a GET_FULL_USERS_RESPONSE message, send a LOGIN_FAILED message otherwise
+	 * 
+	 * **/
 	//TODO: Implements
 	public void getFullUser(Tuple <Socket, Object> data){
 		try {
@@ -148,7 +163,13 @@ public class ServerController {
 			
 	}	
 	
-	
+	/**
+	 * @author bj0rn
+	 * Save meeting
+	 * Save received meeting object, if the user whom sent the object is authenticated.
+	 * 
+	 * 
+	 * **/
 	public void saveMeeting(Tuple <Socket, Object> data){
 		try{
 			
@@ -189,7 +210,11 @@ public class ServerController {
 		}
 		
 	}
-	
+	/**
+	 * @author bj0rn
+	 * 
+	 * 
+	 * **/
 	 public void saveAppointment(Tuple<Socket, Object> data){
 		//Got an appointment object
 		try {
@@ -262,6 +287,35 @@ public class ServerController {
 			sq.printStackTrace();
 		}
 	}
+	
+	
+	
+
+	public void getListOfRooms(Tuple <Socket, Object> data){
+		try {
+			Request request =  (Request)data.y;
+			Authenticate auth = request.getAuth();
+			if(connectedClients.containsKey(auth.getUsername())){
+				//List <Room> listRoom = databaseController.getListOfRooms();
+				List <Room> list = null;
+				Request response = new Request(null, list);
+				response.setMethod(Method.GET_LIST_OF_ROOMS_RESPONSE);
+				send(data.x, response);
+			}else {
+				Request response = new Request(null, null);
+				response.setMethod(Method.LOGIN_FAILED);
+				send(data.x, response);
+			}
+			
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
 	public void inspectRequest(Tuple <Socket, Object> data){
 		Class <? extends Object> clazz = data.y.getClass();
 		String objectName = clazz.getSimpleName();

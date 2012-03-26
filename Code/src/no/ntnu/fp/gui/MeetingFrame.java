@@ -1,7 +1,10 @@
 package no.ntnu.fp.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -47,6 +50,13 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private static final Dimension LABEL_SIZE = new Dimension(100, 20);
     private static final Dimension TEXT_INPUT_SIZE = new Dimension(260, 20);
     
+    public static final String TITLE_LABEL = "Møte";
+    public static final String DESCRIPTION_LABEL = "Beskrivelse: ";
+    public static final String START_LABEL = "Start:";
+    public static final String END_LABEL = "Slutt:";
+    public static final String PARTICIPANT_LABEL = "Deltakere:";
+    public static final String PLACE_LABEL = "Sted:";
+    
     private JTextField description = new JTextField(20);
     private JTextField startField = new JTextField(10);
     private JTextField endField = new JTextField(10);
@@ -68,20 +78,40 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	
     	JPanel panel = new JPanel();
     	
-    	
+    	panel.setLayout(new BorderLayout());
     	
     	listModel = new ParticipantListModel(model);
     	participantList = new JEditableList(listModel, new ParticipantListCellRenderer());
     	participantList.setPreferredSize(new Dimension(410, 150));
     	
-    	JLabel labelMeeting = new JLabel("M�te");
-        JLabel labelDescription = new JLabel("Beskrivelse:");
-        JLabel labelStart = new JLabel("Start:");
-        JLabel labelEnd = new JLabel("Slutt:");
-        JLabel labelParticipants = new JLabel("Deltakere:");
-        JLabel labelPlace = new JLabel("Sted:");
-        
+    	JLabel labelMeeting = new JLabel(TITLE_LABEL);
         panel.add(labelMeeting);
+    	
+        JPanel center = new JPanel();
+        
+        center.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        
+        addGridBagLabel(center, DESCRIPTION_LABEL, 0, c);
+        addGridBagComponent(center, description, 0, c);
+        
+        addGridBagLabel(center, START_LABEL, 1, c);
+        addGridBagComponent(center, startField, 1, c);
+        
+        addGridBagLabel(center, END_LABEL, 2, c);
+        addGridBagComponent(center, endField, 2, c);
+        
+        addGridBagComponent(center, new JLabel(PARTICIPANT_LABEL), 3, 0, c, 2);
+        addGridBagComponent(center, participantList, 4, 0, c, 2);
+        addGridBagComponent(center, addParticipantButton, 5, 0, c, 2);
+        
+        
+        addGridBagLabel(center, PLACE_LABEL, 6, c);
+        addGridBagComponent(center, locationField, 6, c);
+        
+        panel.add(center, BorderLayout.CENTER);
+        
+       /* panel.add(labelMeeting);
         panel.add(labelDescription);
         panel.add(description);
         panel.add(labelStart);
@@ -95,7 +125,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         panel.add(locationField);
         panel.add(reserveRoomListButton);
         panel.add(saveButton);
-        panel.add(cancelButton);
+        panel.add(cancelButton);*/
         
         description.addKeyListener(new KeyAdapter() {
         	@Override
@@ -130,13 +160,13 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         endField.addFocusListener(new TimePickableFieldListener(endField, this));
 
        
-        for (Component c : getComponents()) {
+       /* for (Component c : getComponents()) {
             if (c instanceof JLabel) c.setPreferredSize(LABEL_SIZE);
             if (c instanceof JComboBox) c.setPreferredSize(LABEL_SIZE);
             if (c instanceof JTextField) c.setPreferredSize(TEXT_INPUT_SIZE);
-        }
+        }*/
         
-        SpringLayout layout = new SpringLayout();
+        /*SpringLayout layout = new SpringLayout();
         setLayout(layout);
         
         layout.putConstraint(SpringLayout.WEST, labelMeeting, SPACING, SpringLayout.WEST, panel);
@@ -176,9 +206,15 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         layout.putConstraint(SpringLayout.WEST, saveButton, 100, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, saveButton, 30, SpringLayout.SOUTH, labelPlace);
         layout.putConstraint(SpringLayout.WEST, cancelButton, SPACING, SpringLayout.EAST, saveButton);
-        layout.putConstraint(SpringLayout.NORTH, cancelButton, 0, SpringLayout.NORTH, saveButton);
+        layout.putConstraint(SpringLayout.NORTH, cancelButton, 0, SpringLayout.NORTH, saveButton);*/
+        
+        
+       
+        
+        
         
         setModel(model);
+        model.setOwner(user);
         
         panel.setPreferredSize(new Dimension(410, 410));
         setPreferredSize(new Dimension(410, 410));
@@ -190,6 +226,34 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         setVisible(true);
         
     }
+	
+	private void addGridBagLabel(JPanel panel, String s, int row, GridBagConstraints c) {
+		c.gridx = 0;
+		c.gridy = row;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
+		c.anchor = GridBagConstraints.LINE_START;
+		JLabel label = new JLabel(s);
+		label.setFont(StylingDefinition.DIALOG_LABEL_FONT);
+		panel.add(label, c);
+	}
+	
+	private void addGridBagComponent(JPanel panel, Component comp, int row, GridBagConstraints c) {
+		addGridBagComponent(panel, comp, row, 1, c, 1);
+	}
+	
+	private void addGridBagComponent(JPanel panel, Component comp, int row, int col, GridBagConstraints c, int width) {
+		c.gridx = col;
+		c.gridy = row;
+		c.gridheight = 1;
+		c.gridwidth = width;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
+		c.anchor = GridBagConstraints.LINE_START;
+		panel.add(comp, c);	
+	}
     
     public Meeting getModel() {
     	return model;
@@ -234,7 +298,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         @Override
         public void actionPerformed(ActionEvent arg0) {
         	CommunicationController c = CommunicationController.getInstance();
-        	c.saveMeeting(model.clone());
+        	c.saveMeeting(model.shallowCopy());
         }
     }
     

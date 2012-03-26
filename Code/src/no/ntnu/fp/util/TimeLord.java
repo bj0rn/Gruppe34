@@ -53,8 +53,12 @@ public class TimeLord {
 	}
 	
 	public static String formatDate(Date date) {
-		DateFormat f = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.FRENCH);
-		return f.format(date);
+		if (date != null) {
+			DateFormat f = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.FRENCH);
+			return f.format(date);
+		} else {
+			return "";
+		}
 	}
 
 }
