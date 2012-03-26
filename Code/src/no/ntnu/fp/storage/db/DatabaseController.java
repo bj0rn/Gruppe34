@@ -313,8 +313,6 @@ public class DatabaseController {
 		+	"WHERE C.Username = '" + username + "' " 
 		+	"ORDER BY start ASC";
 
-		System.out.println(sql);
-		
 		DbConnection db = getConnection();
 		
 		ResultSet rs = db.query(sql);
@@ -344,13 +342,9 @@ public class DatabaseController {
 					assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
 					entry = new Appointment(start, end, desc, id);
 				}
-				
 				entry.setOwner(new User(owner));
-				
 				Location location = getLocation(locationID);
 				entry.setLocation(location);
-				
-				calendar.addCalendarEntry(entry);
 			}
 		}
 		

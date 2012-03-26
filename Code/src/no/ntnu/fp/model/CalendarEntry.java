@@ -4,6 +4,7 @@ import java.util.Date;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.Calendar;
 
 public abstract class CalendarEntry implements Serializable {
 
@@ -151,6 +152,16 @@ public abstract class CalendarEntry implements Serializable {
 
 	public void removePropertyChangeListener(PropertyChangeListener l) {
 		pcs.removePropertyChangeListener(l);
+	}
+	
+	public int getWeek(){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		return cal.get(Calendar.WEEK_OF_YEAR);
+	}
+	
+	public int getYear() {
+		return startDate.getYear();
 	}
 
 	public enum CalendarEntryType {
