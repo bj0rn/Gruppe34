@@ -64,10 +64,11 @@ public class JEditableList extends JPanel implements ListDataListener {
 			setPreferredSize(new Dimension(280, y));
 			if (getParent() != null) {
 				Container c = getParent();
-				if (c instanceof JViewport) {
-					((JViewport)c).revalidate();
-				} else if (c instanceof JPanel) {
-					((JPanel)c).revalidate();
+				if (c instanceof JComponent) {
+					JComponent comp = (JComponent)c;
+					
+					comp.revalidate();
+					comp.repaint();
 				}
 			}
 		}

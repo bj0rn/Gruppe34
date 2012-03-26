@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -28,6 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -71,6 +73,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private JButton reserveRoomListButton = new JButton(new roomListAction("Rom"));
     private JButton saveButton = new JButton(new saveAction("Lagre"));
     private JButton cancelButton = new JButton(new cancelAction("Avbryt"));
+    private JButton deleteButton = new JButton(new deleteAction("Slett"));
     
     private Meeting model;
     private ParticipantListModel listModel;
@@ -91,6 +94,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	participantList.setPreferredSize(new Dimension(410, 150));
     	
     	JLabel labelMeeting = new JLabel(TITLE_LABEL);
+		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+    	labelMeeting.setBorder(padding);
+    	labelMeeting.setFont(StylingDefinition.FRAME_TITLE_FONT);
         panel.add(labelMeeting, BorderLayout.NORTH);
     	
         JPanel center = new JPanel();
@@ -137,6 +143,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         
         addGridBagComponent(center, new JLabel(PARTICIPANT_LABEL), 3, 0, c, 2);
         JScrollPane scrollPanel = new JScrollPane(participantList);
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPanel.setPreferredSize(new Dimension(410, 200));
         addGridBagComponent(center, scrollPanel, 4, 0, c, 2);
         addGridBagComponent(center, addParticipantButton, 5, 0, c, 2);
@@ -150,19 +157,21 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         
         buttons.add(saveButton);
         buttons.add(cancelButton);
+        buttons.add(deleteButton);
         
         panel.add(buttons, BorderLayout.SOUTH);
         
 
         model.setOwner(user);
         
-        panel.setPreferredSize(new Dimension(410, 410));
-        setPreferredSize(new Dimension(410, 410));
+        panel.setPreferredSize(new Dimension(500, 500));
+        setPreferredSize(new Dimension(500, 500));
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(panel);
         pack();
         setLocationRelativeTo(null);
+        setResizable(false);
         setVisible(true);
         
     }
@@ -254,6 +263,20 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         public void actionPerformed(ActionEvent arg0) {
         	dispose();
         }
+    }
+    
+    private class deleteAction extends AbstractAction {
+    	
+    	public deleteAction(String text) {
+    		super(text);
+    	}	
+    	
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    		// TODO Auto-generated method stub
+    		
+    	}
+    	
     }
     
     private class RemoveParticipant extends AbstractAction {

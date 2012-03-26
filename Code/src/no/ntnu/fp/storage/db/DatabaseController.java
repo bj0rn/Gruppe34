@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Array;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -331,25 +331,27 @@ public class DatabaseController {
 			
 			CalendarEntry entry = null;
 			System.out.println(type == null);
-			if (type.equals(CalendarEntry.MEETING)) {
-				Meeting meeting = new Meeting(start, end, desc, id);
+			if (type != null) {
+				if (type.equals(CalendarEntry.MEETING)) {
+					Meeting meeting = new Meeting(start, end, desc, id);
+					
+					Map<User, State> participants = getParticipants(id);
+					meeting.addParticipants(participants);
+					
+					entry = meeting;
+					
+				} else {
+					assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
+					entry = new Appointment(start, end, desc, id);
+				}
 				
-				Map<User, State> participants = getParticipants(id);
-				meeting.addParticipants(participants);
+				entry.setOwner(new User(owner));
 				
-				entry = meeting;
+				Location location = getLocation(locationID);
+				entry.setLocation(location);
 				
-			} else {
-				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
-				entry = new Appointment(start, end, desc, id);
+				calendar.addCalendarEntry(entry);
 			}
-			
-			entry.setOwner(new User(owner));
-			
-			Location location = getLocation(locationID);
-			entry.setLocation(location);
-			
-			calendar.addCalendarEntry(entry);
 		}
 		
 		db.close();
