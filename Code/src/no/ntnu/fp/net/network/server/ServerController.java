@@ -156,17 +156,9 @@ public class ServerController {
 			Meeting meeting = (Meeting)request.getObject();
 			String username = meeting.getOwner().getUsername();
 			System.out.println("Owner: "+username);
-<<<<<<< HEAD
+
 			if(connectedClients.containsKey(username)){
 				Integer id = databaseController.saveMeeting(meeting);
-=======
-		//	if(connectedClients.containsKey(username)){
-				//Authenticated
-				//TODO: Store in the db
-				String key = "20";
-				String xml = XmlHandler.getFullUserToXMl(username, "none", key, "saveMeeting");
-				int id = databaseController.saveMeeting(meeting);
->>>>>>> branch 'master' of https://bj0rn@github.com/bj0rn/Gruppe34.git
 				meeting.setID(id);
 				//send key to owner
 				Request response = new Request(null, id);
@@ -190,19 +182,8 @@ public class ServerController {
 						System.out.println("Sorry the client is not connected");
 					}
 				}
-				
-		/*	}else {
-				//Not authenticated
-<<<<<<< HEAD
-				Request response = new Request(null, null);
-				response.setMethod(Request.Method.LOGIN_FAILED);
-				send(data.x, response);
 			}
-=======
-				String xml = xmlHandler.loginUnsucessful();
-				send(data.x, xml);
-			}*/
->>>>>>> branch 'master' of https://bj0rn@github.com/bj0rn/Gruppe34.git
+				
 		}catch(SQLException sq){
 			sq.printStackTrace();
 		}
