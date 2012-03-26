@@ -147,34 +147,40 @@ public class ServerController {
 	
 	
 	public void saveMeeting(Tuple <Socket, Object> data){
-		Meeting meeting = (Meeting)data.y;
-		String username = meeting.getOwner().getUsername();
-		System.out.println("Owner: "+username);
-		if(connectedClients.containsKey(username)){
-			//Authenticated
-			//TODO: Store in the db
-			String key = "20";
-			String xml = XmlHandler.getFullUserToXMl(username, "none", key, "saveMeeting");
-			send(data.x, xml);
-			//also send message to available clients
-			System.out.println("Send data to connected clients");
-			Set <User> participants = meeting.getParticipants();
-			for(User u : participants){
-				String user = u.getUsername();
-				System.out.println("Participant: "+user);
-				if(connectedClients.containsKey(user)){
-					Socket sockfd = connectedClients.get(username);
-					send(sockfd, meeting);
-				}else{
-					//do some stuff in the db ?
-					System.out.println("Sorry the client is not connected");
+		try{
+			Meeting meeting = (Meeting)data.y;
+			String username = meeting.getOwner().getUsername();
+			System.out.println("Owner: "+username);
+			if(connectedClients.containsKey(username)){
+				//Authenticated
+				//TODO: Store in the db
+				String key = "20";
+				String xml = XmlHandler.getFullUserToXMl(username, "none", key, "saveMeeting");
+				int id = databaseController.saveMeeting(meeting);
+				meeting.setID(id);
+				send(data.x, xml);
+				//also send message to available clients
+				System.out.println("Send data to connected clients");
+				Set <User> participants = meeting.getParticipants();
+				for(User u : participants){
+					String user = u.getUsername();
+					System.out.println("Participant: "+user);
+					if(connectedClients.containsKey(user)){
+						Socket sockfd = connectedClients.get(username);
+						send(sockfd, meeting);
+					}else{
+						//do some stuff in the db ?
+						System.out.println("Sorry the client is not connected");
+					}
 				}
+				
+			}else {
+				//Not authenticated
+				String xml = xmlHandler.loginUnsucessful();
+				send(data.x, xml);
 			}
-			
-		}else {
-			//Not authenticated
-			String xml = xmlHandler.loginUnsucessful();
-			send(data.x, xml);
+		}catch(SQLException sq){
+			sq.printStackTrace();
 		}
 		
 	}
@@ -188,6 +194,7 @@ public class ServerController {
 			if(connectedClients.containsKey(user)){
 				//Is authenticated
 				int key = databaseController.saveAppointment(a);
+				a.setID(key); 
 				//TODO: change name of this method
 				String xml = XmlHandler.getFullUserToXMl(user, "none", String.valueOf(key), "saveAppointment");
 				send(data.x, xml);
