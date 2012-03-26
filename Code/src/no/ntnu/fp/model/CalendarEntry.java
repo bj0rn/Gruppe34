@@ -102,6 +102,7 @@ public abstract class CalendarEntry implements Serializable {
 		Location oldValue = this.location;
 		this.location = location;
 		pcs.firePropertyChange(LOC_PROPERTY, oldValue, location);
+		
 	}
 
 	public Location getLocation() {
