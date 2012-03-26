@@ -62,6 +62,13 @@ public class ClientWorker implements Runnable {
 		if(response.getMethod() == Method.MEETING_NOTIFICATION){
 			System.out.println("We have a notification");
 			return true;
+		
+		}else if(response.getMethod() == Method.CHANGE_MEETING_NOTFICATION){
+			System.out.println("Someone changed a meeting (views)");
+			return true;
+		}else if(response.getMethod() == Method.CHANGE_APPOINTMENT_NOTIFICATION){
+			System.out.println("Someone changed an appointment (views)");
+			return true;
 		}else {
 			return false;
 		}
