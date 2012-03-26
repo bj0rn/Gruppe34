@@ -42,8 +42,9 @@ public class WeekSheet extends JPanel {
 	
 	private void addEvents() {
 		for(CalendarEntryView cev: adapter){
-			System.out.println(cev.getModel().getDuration());
 			events.add(cev);
+			add(cev);
+			System.out.println(events.size());
 		}
 	}
 

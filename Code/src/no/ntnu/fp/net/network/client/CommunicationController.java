@@ -370,13 +370,43 @@ public List <Room> getListOfRooms(){
 }
 
 
+public boolean cancelView(String username){
+	try {
+		Request request = new Request(auth, username);
+		request.setMethod(Method.CANCEL_VIEW);
+		int i = 0;
+		while(true){
+			System.out.println("Number of tries: "+i++);
+			Request response = (Request)testQueue.takeFirst();
+			if(response.getMethod() == Method.CANCEL_VIEW_SUCCEDED){
+				return true;
+			}else if(response.getMethod() == Method.LOGIN_FAILED){
+				return false;
+			}else {
+				testQueue.putLast((Object)response);
+			}
+			
+		}
+	}catch(InterruptedException e){
+		e.printStackTrace();
+	}
+	return false;
+}
 
-public boolean deleteMeeting(){
-	return true;
+
+
+public void deleteMeeting(Meeting meeting){
+	Integer id = meeting.getID();
+	Request request = new Request(auth, id);
+	request.setMethod(Method.DELETE_MEETING);
+	send(mySocket, request);
 }
 	
-public boolean deleteAppointment(){
-	return true;
+public void deleteAppointment(Appointment appointment){
+	Integer id = appointment.getID();
+	Request request = new Request(auth, id);
+	request.setMethod(Method.DELETE_APPOINTMENT);
+	send(mySocket, request);
 }
 
 

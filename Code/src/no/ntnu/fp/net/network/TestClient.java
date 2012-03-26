@@ -29,6 +29,9 @@ public class TestClient {
 //			System.out.println("Yeey");
 //		}
 		
+		User user = communicationController.getFullUser("havard");
+		
+		
 //		User user = communicationController.getFullUser("havard");
 //		if(user == null){
 //			System.out.println("Failed");
