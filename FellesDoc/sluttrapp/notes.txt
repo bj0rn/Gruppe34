@@ -1,0 +1,9 @@
+Oppsummere erfaringene fra prosjektet
+	Et avsnitt til hver av de fire viktigste erfaringene våre
+Evaluere prosjektets grad av vellykkethet
+	Tidsbruk (planlagt vs faktisk)
+		grafer over tidsbruk, whoooo!
+
+Systemtestrapport
+	Altså vi må gjennomføre systemtesten/
+	og skrive rapport
