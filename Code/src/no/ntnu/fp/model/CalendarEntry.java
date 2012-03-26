@@ -4,43 +4,40 @@ import java.util.Date;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.util.Calendar;
 
 public abstract class CalendarEntry implements Serializable {
-	
+
 	private static final long serialVersionUID = -5666618955325756218L;
-	
+
 	public final static String MEETING = "Meeting";
 	public final static String APPOINTMENT = "Appointment";
 
-	private ModelChangeListener modelChangeListener;
 	private String description;
 	private User owner;
 	private Location location;
 	private Date startDate;
 	private Date endDate;
-	private int id;
-	private Calendar cal;
+	private int id = -1;
 
-	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-	public final static String MODEL_PROPERTY = "Model";
-	public final static String DESC_PROPERTY = "Description";
-	public final static String OWNER_PROPERTY = "Owner";
-	public final static String LOC_PROPERTY = "Location";
-	public final static String START_PROPERTY ="Start time";
-	public final static String END_PROPERTY ="End time";
+	protected transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	public final static transient String MODEL_PROPERTY = "Model";
+	public final static transient String DESC_PROPERTY = "Description";
+	public final static transient String OWNER_PROPERTY = "Owner";
+	public final static transient String LOC_PROPERTY = "Location";
+	public final static transient String START_PROPERTY ="Start time";
+	public final static transient String END_PROPERTY ="End time";
 
-	
 	public CalendarEntry(int id) {
 		this.id = id;
 	}
-	
+
 	public CalendarEntry(String description) {
 		this.description = description;
 
 	}
 
-	public CalendarEntry(String description, Date startDate, Date endDate, int id) {
+	public CalendarEntry(String description, Date startDate, Date endDate,
+			int id) {
 		this(description);
 		this.id = id;
 		setDate(startDate, endDate);
@@ -63,24 +60,24 @@ public abstract class CalendarEntry implements Serializable {
 			this.endDate = endDate;
 		}
 	}
-	
-	public void setStartDate(Date startDate){
+
+	public void setStartDate(Date startDate) {
 		Date oldValue = startDate;
 		this.startDate = startDate;
 		pcs.firePropertyChange(START_PROPERTY, oldValue, startDate);
-		
+
 	}
-	public void setEndDate(Date endDate){
+
+	public void setEndDate(Date endDate) {
 		Date oldValue = endDate;
 		this.endDate = endDate;
 		pcs.firePropertyChange(END_PROPERTY, oldValue, endDate);
 	}
-	
-	
+
 	public Date getStartDate() {
 		return startDate;
 	}
-	
+
 	public Date getEndDate() {
 		return endDate;
 	}
@@ -90,8 +87,9 @@ public abstract class CalendarEntry implements Serializable {
 	 * 
 	 * @return the duration of this entry in milliseconds
 	 */
-	public long getDuration() {
-		return endDate.getTime() - startDate.getTime();
+	public int getDuration() {
+		return (endDate.getHours() * 60 + endDate.getMinutes())
+				- (startDate.getHours() * 60 - startDate.getMinutes());
 	}
 
 	public void setLocation(Location location) {
@@ -123,33 +121,27 @@ public abstract class CalendarEntry implements Serializable {
 	public User getOwner() {
 		return owner;
 	}
-	
+
 	public int getID() {
 		return this.id;
 	}
 
-	public void setModelCL(ModelChangeListener modelChangeListener) {
-		ModelChangeListener oldValue = this.modelChangeListener;
-		this.modelChangeListener = modelChangeListener;
-		pcs.firePropertyChange(MODEL_PROPERTY, oldValue, modelChangeListener);
-	}
-
-	public ModelChangeListener getModelCL() {
-		return modelChangeListener;
-	}
-	
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		
+
 		builder.append(id);
-		
+
 		return builder.toString();
 	}
-	
+
 	public void addPropertyChangeListener(PropertyChangeListener l) {
+		if (pcs == null) {
+			pcs = new PropertyChangeSupport(this);
+		}
+		
 		pcs.addPropertyChangeListener(l);
 	}
-	
+
 	public void removePropertyChangeListener(PropertyChangeListener l) {
 		pcs.removePropertyChangeListener(l);
 	}
@@ -174,9 +166,7 @@ public abstract class CalendarEntry implements Serializable {
 	 * @return weekday int corr to {@code Calendar.<DAY>}
 	 */
 	public int getDayOfWeek() {
-		cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		return cal.get(Calendar.DAY_OF_WEEK);
+		return startDate.getDay();
 	}
 
 	/**
@@ -184,10 +174,9 @@ public abstract class CalendarEntry implements Serializable {
 	 * @return minutes since 00:00
 	 */
 	public int getTimeOfDay() {
-		cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		return cal.get(Calendar.HOUR*60)+cal.get(Calendar.MINUTE);
+		return startDate.getHours()*60+startDate.getMinutes();
 	}
+
 	/**
 	 * Set the database id
 	 * @param id 

@@ -151,7 +151,7 @@ public class ServerController {
 			Meeting meeting = (Meeting)data.y;
 			String username = meeting.getOwner().getUsername();
 			System.out.println("Owner: "+username);
-			if(connectedClients.containsKey(username)){
+		//	if(connectedClients.containsKey(username)){
 				//Authenticated
 				//TODO: Store in the db
 				String key = "20";
@@ -174,11 +174,11 @@ public class ServerController {
 					}
 				}
 				
-			}else {
+		/*	}else {
 				//Not authenticated
 				String xml = xmlHandler.loginUnsucessful();
 				send(data.x, xml);
-			}
+			}*/
 		}catch(SQLException sq){
 			sq.printStackTrace();
 		}

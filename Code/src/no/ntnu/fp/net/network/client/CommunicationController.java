@@ -16,6 +16,7 @@ import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
@@ -222,6 +223,7 @@ public class CommunicationController {
 		try {
 			os = new DataOutputStream(socket.getOutputStream());
 			ObjectOutputStream oos = new ObjectOutputStream(os);
+			System.out.println(obj);
 			oos.writeObject(obj);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -380,6 +382,13 @@ public boolean deleteAppointment(){
 
 public boolean deleteUser(){
 	return true;
+}
+
+
+
+public ArrayList<Location> getListOfRooms() {
+	// TODO Auto-generated method stub
+	return null;
 }
 	
 	

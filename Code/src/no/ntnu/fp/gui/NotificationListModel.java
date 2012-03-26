@@ -45,6 +45,6 @@ public class NotificationListModel extends AbstractListModel implements Property
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		notifications = calendar.getMeetingNotifications();
-		fireContentsChanged(evt.getSource(), 0, getSize());		
+		fireContentsChanged(evt.getSource(), 0, getSize());
 	}
 }

@@ -1,6 +1,7 @@
 package no.ntnu.fp.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Room extends Location implements Serializable{
 	
@@ -39,6 +40,10 @@ public class Room extends Location implements Serializable{
 	
 	public String toString() {
 		return "Rom: " + name;
+	}
+	public boolean isAvailable(Date from, Date to) {
+		
+		return false;
 	}
 
 }
