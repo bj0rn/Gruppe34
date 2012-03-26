@@ -1054,7 +1054,7 @@ public class DatabaseController {
 		ArrayList<Tuple<String, String>> res =  new ArrayList<Tuple <String, String>>();
 		
 		String sql = "SELECT Shows.Username, Calendar.Username"
-				+"FROM Shows" +
+				+"FROM Shows" 
 				+"LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";
 		
 		
