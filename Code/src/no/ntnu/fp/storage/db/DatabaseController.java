@@ -795,7 +795,7 @@ public class DatabaseController {
 		
 		String role = "Owner";
 		String state = "Accepted";
-		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "'";
+		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "')";
 		int CalendarEntryID = id;
 		
 		builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
@@ -803,7 +803,7 @@ public class DatabaseController {
 		role = "Participant";
 		for (User user : meeting.getParticipants()) {
 			state = meeting.getState(user).toString();
-			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "'";
+			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "')";
 			
 			builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
 		}
@@ -1027,4 +1027,24 @@ public class DatabaseController {
 		return result;
 	}
 	
+
+
+
+
+	public void subscribeToCalendar(String username, String requestedUserName) throws SQLException{
+		DbConnection db = getConnection();
+		
+		String sql = "INSERT INTO Shows (Username,CalendarID) " 
+		+" Values('" + username + "', (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' ))";
+		
+		db.executeUpdate(sql);
+		
+	}
+	
+	public void unsubscribeToCalendar(String username, String requestedUserName) throws SQLException{
+		DbConnection db = getConnection();
+		String sql = "DELETE FROM Shows WHERE Username = '" + username + "'"
+				+" AND CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' ))";
+		db.executeUpdate(sql);
+	}
 }
