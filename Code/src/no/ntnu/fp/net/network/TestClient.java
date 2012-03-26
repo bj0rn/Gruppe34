@@ -19,13 +19,18 @@ public class TestClient {
 		CommunicationController communicationController = CommunicationController.getInstance();
 		
 		//Spawn threads
-		System.out.println("Send data");
+		//System.out.println("Send data");
+		//communicationController.authenticate("havard", "test");
 		communicationController.authenticate("bjorn", "lol");
-		User user = new User("bjorn", "test");
-		Meeting meeting  =new Meeting(7);
-		State state = State.Pending;
+		User user = new User("bjorn", "lol");
+		User user2 = new User("havard", "test");
+		Meeting meeting = new Meeting("test");
+		meeting.setOwner(user);
+		meeting.addParticipant(user2, State.Pending);
 		
-		System.out.println(communicationController.dispatchMeetingReply(user, meeting, state));
+		System.out.println(communicationController.saveMeeting(meeting));
+//		
+		//System.out.println(communicationController.dispatchMeetingReply(user, meeting, state));
 		
 		
 		//User user = communicationController.getFullUser("havard", "test", "havard");

@@ -23,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -65,7 +66,7 @@ public class MeetingInviteFrame extends JFrame implements PropertyChangeListener
 	public static final String OK_BUTTON_LABEL = "OK";
 	public static final String CANCEL_BUTTON_LABEL = "Avbryt";
 	
-	private JLabel descriptionLabel;
+	private JTextArea descriptionLabel;
 	private JLabel startLabel;
 	private JLabel endLabel;
 	private JLabel locationLabel;
@@ -99,7 +100,8 @@ public class MeetingInviteFrame extends JFrame implements PropertyChangeListener
 		c.insets = new Insets(5, 5, 5, 5);
 		
 		addGridBagLabel(center, DESCRIPTION_LABEL, 0, c);
-		descriptionLabel = new JLabel();
+		descriptionLabel = new JTextArea();
+		descriptionLabel.setWrapStyleWord(true);
 		descriptionLabel.setFont(StylingDefinition.DIALOG_VALUE_FONT);
 		addGridBagComponent(center, descriptionLabel, 0, c);
 		
@@ -252,15 +254,6 @@ public class MeetingInviteFrame extends JFrame implements PropertyChangeListener
 	}
 
 	private void updateDescriptionLabel() {
-		/*StringBuilder builder = new StringBuilder();
-		builder.append("<html>");
-		System.out.println(model.getDescription());
-		String[] lines = StringHelper.boxing(model.getDescription(), 40);
-		for(String line : lines) {
-			builder.append(line + "<br/>");
-		}
-			
-		builder.append("</html>");*/
 		descriptionLabel.setText(model.getDescription());
 	}
 
@@ -348,7 +341,7 @@ public class MeetingInviteFrame extends JFrame implements PropertyChangeListener
 		User p5 = new User("tina");
 		p5.setName("Tina Syversen");
 		
-		Meeting model = new Meeting("møte.");
+		Meeting model = new Meeting("møte møte møte møte møte møte møte møte møte møte møte møte møte møte møte møte møte møte møte møte møte ");
 		model.setDate(new Date(112, 2, 1, 12, 0, 0), new Date(112, 2, 1, 13, 0, 0));
 		model.setLocation(new Place(1, "Kiosken"));
 		model.setOwner(user);

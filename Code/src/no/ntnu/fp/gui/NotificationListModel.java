@@ -1,22 +1,26 @@
 package no.ntnu.fp.gui;
 
+import java.beans.IndexedPropertyChangeEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
 
+import no.ntnu.fp.model.Calendar;
 import no.ntnu.fp.model.Notification;
 
-public class NotificationListModel extends AbstractListModel {
+public class NotificationListModel extends AbstractListModel implements PropertyChangeListener {
+	
+	private Calendar calendar;
 	
 	private List<Notification> notifications;
 	
-	public NotificationListModel() {
-		notifications = new ArrayList<Notification>();
-	}
-	
-	public NotificationListModel(List<Notification> list) {
-		
+	public NotificationListModel(Calendar calendar) {
+		this.calendar = calendar;
+		calendar.addPropertyChangeListener(this);
+		this.notifications = calendar.getMeetingNotifications();
 	}
 
 	@Override
@@ -37,5 +41,10 @@ public class NotificationListModel extends AbstractListModel {
 	public List<Notification> getNotifications() {
 		return notifications;
 	}
-	
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		notifications = calendar.getMeetingNotifications();
+		fireContentsChanged(evt.getSource(), 0, getSize());		
+	}
 }
