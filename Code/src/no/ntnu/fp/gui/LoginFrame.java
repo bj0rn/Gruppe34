@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,17 +44,21 @@ public class LoginFrame extends JFrame implements PropertyChangeListener, KeyLis
 		
 		JLabel title = new JLabel(LOGIN_TITLE);
 		title.setFont(StylingDefinition.FRAME_TITLE_FONT);
-		title.setBorder(new EmptyBorder(10,10,10,10));
+		title.setBorder(new EmptyBorder(5,5,5,5));
 		panel.add(title, BorderLayout.NORTH);
 		
 		JPanel content = new JPanel();
+		content.setBorder(new EmptyBorder(2, 2, 2, 2));
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 
 		JLabel usernameLabel = new JLabel(USERNAME_LABEL);
 		content.add(usernameLabel);
 		
+		LoginButtonAction loginAction = new LoginButtonAction(this, model);
+		
 		usernameField = new JTextField();
 		usernameField.addKeyListener(this);
+		usernameField.addActionListener(loginAction);
 		content.add(usernameField);
 		
 		JLabel passwordLabel = new JLabel(PASSWORD_LABEL);
@@ -61,18 +66,20 @@ public class LoginFrame extends JFrame implements PropertyChangeListener, KeyLis
 		
 		passwordField = new JPasswordField();
 		passwordField.addKeyListener(this);
+		passwordField.addActionListener(loginAction);
 		content.add(passwordField);
 		
 		panel.add(content, BorderLayout.CENTER);
 		
 		loginButton = new JButton(LOGIN_BUTTON_LABEL);
-		loginButton.addActionListener(new LoginButtonAction(model));
+		loginButton.addActionListener(loginAction);
 		panel.add(loginButton, BorderLayout.SOUTH);
 		
 		setContentPane(panel);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(null);
+		setMinimumSize(new Dimension(200,200));
 		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 		
 	}
@@ -93,20 +100,18 @@ public class LoginFrame extends JFrame implements PropertyChangeListener, KeyLis
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
+	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent e) {}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 		if (e.getSource() == usernameField) {
 			model.setUsername(usernameField.getText());
 		} else  if (e.getSource() == passwordField) {
-			model.setPassword(passwordField.getText());
+			model.setPassword(new String(passwordField.getPassword()));
 		}
 	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {}
 
 }

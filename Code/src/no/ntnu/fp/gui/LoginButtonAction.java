@@ -10,29 +10,25 @@ import no.ntnu.fp.net.network.client.CommunicationController;
 
 public class LoginButtonAction extends AbstractAction {
 
+	private LoginFrame frame;
 	private Authenticate auth;
 	
-	public LoginButtonAction(Authenticate auth) {
+	public LoginButtonAction(LoginFrame frame, Authenticate auth) {
+		this.frame = frame;
 		this.auth = auth;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
 		CommunicationController c = CommunicationController.getInstance();
-		
-		String username = auth.getUsername();
-		String password = auth.getPassword();
-		
-		boolean authenticated = c.authenticate(username, password);
+		boolean authenticated = c.authenticate(auth);
 		
 		if (authenticated) {
-			System.out.println(username);
-			System.out.println(password);
-			System.out.println("yeah");
+			new ApplicationFrame(auth.getUsername());
+			frame.dispose();
 		} else {
-			System.out.println(username);
-			System.out.println(password);
-			System.out.println("bah");
+			//frame.notifyNotCorrect
 		}
 		
 	}

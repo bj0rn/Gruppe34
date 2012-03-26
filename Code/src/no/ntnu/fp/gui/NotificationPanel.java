@@ -74,18 +74,17 @@ public class NotificationPanel extends JPanel {
 		titleLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(titleLabel, BorderLayout.NORTH);
 		
-		notificationListModel = new NotificationListModel();
+		notificationListModel = new NotificationListModel(user.getCalendar());
 		setModel(user.getNotifications());
 		
 		notificationList = new JEditableList(notificationListModel, new NotificationCellRenderer());
-		notificationList.setMinimumSize(new Dimension(300, 800));
+		notificationList.setPreferredSize(new Dimension(260, 800));
 		
 		JScrollPane scrollPane = new JScrollPane(notificationList);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		notificationList.update();
 		
 		add(scrollPane, BorderLayout.CENTER);
-		
-		setMinimumSize(new Dimension(300, 500));
-		
 		
 	}
 	
@@ -118,7 +117,6 @@ public class NotificationPanel extends JPanel {
 					User user = ((MeetingNotification) notif).getUser();
 					State state = meeting.getState(user);
 
-					panel.setMinimumSize(new Dimension(300,22));
 					panel.setLayout(new BorderLayout());
 					
 					JLabel title = new JLabel(MEETING_REPLY_TITLE);
@@ -128,11 +126,12 @@ public class NotificationPanel extends JPanel {
 					
 					
 					JTextArea textComp = new JTextArea();
+					textComp.setBackground(new Color(237,237,237));
 					textComp.setEditable(false);
 					textComp.setLineWrap(true);
 					textComp.setMargin(new Insets(4,4,4,4));
 					
-					String text = user.getName() + " har " + state + " din møte innkalling";
+					String text = user.getName() + " har avvist din møteinnkalling";
 					textComp.setText(text);
 					
 					
@@ -144,8 +143,6 @@ public class NotificationPanel extends JPanel {
 					
 				} else { 
 					assert(notif instanceof MeetingInviteNotification);
-
-					panel.setMinimumSize(new Dimension(300,200));
 					panel.setLayout(new BorderLayout());
 					
 					JLabel title = new JLabel(MEETING_INVITATION_TITLE);
@@ -198,6 +195,8 @@ public class NotificationPanel extends JPanel {
 				}
 			}
 			
+			
+			panel.setPreferredSize(new Dimension(250,150));
 			return panel;
 		}
 	}
@@ -258,29 +257,17 @@ public class NotificationPanel extends JPanel {
 		m1.addParticipant(p3, State.Pending);
 		m1.addParticipant(p4, State.Accepted);
 		m1.addParticipant(p5, State.Rejected);
+		p2.getCalendar().addMeeting(m1);
 		
 		Meeting m2 = new Meeting("Møte 2");
 		m2.setDate(new Date(112, 2, 1, 12, 0, 0), new Date(112, 2, 1, 13, 0, 0));
 		m2.setLocation(new Room(1, "414", "P15", 30));
 		m2.setOwner(p2);
 		m2.addParticipant(user, State.Rejected);
-		
-		MeetingInviteNotification n1 = new MeetingInviteNotification();
-		n1.setUser(p2);
-		n1.setMeeting(m1);
-		
-		MeetingReplyNotification n2 = new MeetingReplyNotification();
-		n2.setUser(user);
-		n2.setMeeting(m2);
-		
-		
-		
-		List<Notification> model = new ArrayList<Notification>();
-		model.add(n1);
-		model.add(n2);
-		
+		p2.getCalendar().addMeeting(m2);
+
 		NotificationPanel panel = new NotificationPanel(p2);
-		panel.setModel(model);
+		panel.setModel(user.getNotifications());
 		
 		frame.setContentPane(panel);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

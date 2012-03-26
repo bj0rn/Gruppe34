@@ -29,8 +29,8 @@ public class OkMeetingInviteAction extends AbstractAction {
 		State state = meeting.getState(user);
 		
 		if (state != orginalState) {
-			//CommunicationController c = CommunicationController.getInstance();
-			//c.dispatchMeetingReply(user, meeting, state);
+			CommunicationController c = CommunicationController.getInstance();
+			c.dispatchMeetingReply(user, meeting, state);
 		}
 		
 		model.dispose();

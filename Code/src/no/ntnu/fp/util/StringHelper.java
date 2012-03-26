@@ -48,6 +48,16 @@ public class StringHelper {
 		
 	}
 	
+	public static String nullPaddNumber(int number) {
+		
+		if (number <= 9) {
+			return "0" + number;
+		} else  {
+			return Integer.toString(number);
+		}
+		
+	}
+	
 	public static void main(String[] args) {
 		String str = "dette er skal bli en veldig lang møte tekst slik av den kommer på flere linjer.";
 		

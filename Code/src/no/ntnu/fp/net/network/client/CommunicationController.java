@@ -50,6 +50,8 @@ public class CommunicationController {
 	private Socket mySocket;
 	private UpdateHandler updateHandler;
 	private LinkedBlockingDeque<Object> testQueue;
+	
+	private Authenticate auth;
 
 	
 	private DataOutputStream os;
@@ -117,10 +119,11 @@ public class CommunicationController {
 	/**
 	 * This method will authenticate will login in the user to the server
 	 * **/
-	public boolean authenticate(String username, String password){
+	public boolean authenticate(Authenticate auth){
 		try {
 			oos = new ObjectOutputStream(os);
-			oos.writeObject(new Authenticate(username, password));
+			setAuthunticate(auth);
+			oos.writeObject(auth);
 			//Wait for response
 			boolean good = false;
 			int i = 0;
@@ -154,6 +157,16 @@ public class CommunicationController {
 }
 
 	
+	private void setAuthunticate(Authenticate auth) {
+		this.auth = auth;		
+	}
+	
+	public Authenticate getAuthenticate() {
+		return auth;
+	}
+
+
+
 	/**
 	 * This method will get all the users from the server
 	 * **/
@@ -217,7 +230,11 @@ public class CommunicationController {
 		
 	}
 	
-	public User getFullUser(String myUsername, String myPassword, String user){
+	public User getFullUser(String user){
+		
+		String myUsername = auth.getUsername();
+		String myPassword = auth.getPassword();
+		
 		try {
 			send(mySocket, XmlHandler.getFullUserToXMl(myUsername, myPassword, user, "getFullUser"));
 			int i = 0;
@@ -295,7 +312,7 @@ public class CommunicationController {
 						return false;
 					}
 				}else {
-					//Not the packet I«m waiting for
+					//Not the packet Iï¿½m waiting for
 					testQueue.putLast(obj);
 				}
 			}

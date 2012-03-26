@@ -13,6 +13,7 @@ import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Notification;
+import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.util.TimeLord;
 
@@ -81,6 +82,9 @@ public class DatabaseControllerTest extends TestCase {
 	}//testGetFullUser()
 	
 	public void testSaveAppointment() throws SQLException {
+		if (true) {
+			return;
+		}
 		String description = "AMAZING!";
 		Place pl = new Place(39, "it's where the butts go!");
 		Date start = new Date();
@@ -97,10 +101,50 @@ public class DatabaseControllerTest extends TestCase {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}//testSaveAppointment()
 	
+	public void testSaveMeeting() throws SQLException {
+		String desc = "BRILLIANT!";
+		Place pl = new Place(43, "It's where I want to be");
+		Date start = new Date();
+		Date end = start;
+		end.setHours(start.getHours() + 3);
+		Meeting m = new Meeting(start, end, desc, -1);
+		m.setLocation(pl);
+		ctrl = new DatabaseController();
+		try {
+			System.out.println(ctrl.saveMeeting(m));
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}//testSaveMeeting()
+	
+	public void testSaveRoom() throws SQLException {
+		String name = "Spaceatorium";
+		String desc = "it's space";
+		int cap = Integer.MAX_VALUE;
+		int id = -1;
+		Room room = new Room(id, name, desc, cap);
+		ctrl = new DatabaseController();
+		try {
+			System.out.println(ctrl.saveRoom(room));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}//testSaveRoom()
+	
+	public void testSavePlace() throws SQLException {
+		String description = "Awkwardly bland.";
+		int id = -1;
+		ctrl = new DatabaseController();
+		Place place = new Place(id, description);
+		try {
+			System.out.println(ctrl.savePlace(place));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}//testSavePlace()
 	public void testNotifications() {
 		
 		String username = "bjorn";
