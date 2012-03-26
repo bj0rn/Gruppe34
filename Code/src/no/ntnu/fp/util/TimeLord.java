@@ -1,11 +1,16 @@
 package no.ntnu.fp.util;
 
 
+import java.awt.GridBagConstraints;
 import java.awt.datatransfer.DataFlavor;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.swing.SpringLayout.Constraints;
 
 public class TimeLord {
 	//sql format:  2012-03-22 14:04:35 
@@ -37,9 +42,26 @@ public class TimeLord {
 		return d;
 	}
 	
+	public static Date parseDate(String str) {
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
+		try {
+			return formatter.parse(str);
+		} catch (ParseException e ) {
+			e.printStackTrace();
+		}
+		
+		return new Date();
+	}
+	
 	public static String formatDate(Date date) {
 		DateFormat f = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.FRENCH);
 		return f.format(date);
+	}
+	
+	public static GridBagConstraints setConstraints(GridBagConstraints constr, int x, int y) {
+		constr.gridx = x;
+		constr.gridy = y;
+		return constr;
 	}
 
 }

@@ -162,7 +162,7 @@ public class DateTimePicker extends JPanel implements PropertyChangeListener {
 	private void updateField() {
 		
 		if (model != null) {
-			field.setText(TimeLord.formatDate(model.getDate()));	
+			field.setText(TimeLord.formatDate(model.getDate()));
 		}
 	}
 	
@@ -212,5 +212,6 @@ public class DateTimePicker extends JPanel implements PropertyChangeListener {
 	private void update() {
 		updatePanel();
 		updateField();
+		
 	}
 }
