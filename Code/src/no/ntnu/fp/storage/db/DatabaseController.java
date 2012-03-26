@@ -720,10 +720,10 @@ public class DatabaseController {
 				CalendarEntryType.APPOINTMENT + "', " + 
 				appointment.getLocation().getID() + ")";
 			dbc.executeUpdate(sql);
-			System.out.println(sql);
+			//System.out.println(sql);
 			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
 			ResultSet rs = dbc.query(s);
-			System.out.println("herp");
+			//System.out.println("herp");
 		if(rs.first())
 			return rs.getInt("ID");
 		}
