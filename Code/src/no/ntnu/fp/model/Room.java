@@ -36,7 +36,7 @@ public class Room extends Location implements Serializable{
 	}
 	public boolean isAvailable(Date from, Date to) {
 		
-		return false;
+		return true;
 	}
 
 }
