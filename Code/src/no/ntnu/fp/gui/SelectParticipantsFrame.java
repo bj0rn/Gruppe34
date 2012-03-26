@@ -120,6 +120,8 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		getContentPane().add(labelUsers, "North");
 		getContentPane().add(p, "Center");
 		getContentPane().add(participantButtons, "South");
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setVisible(true);
 	
 	}
 	private Vector getListOfAllUsers() {
@@ -163,7 +165,7 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
         }
     }
     
-    //Action for å avbryte skjema
+    //Action for ï¿½ avbryte skjema
     private class cancelAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
