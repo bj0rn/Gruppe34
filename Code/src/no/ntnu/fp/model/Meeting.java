@@ -13,7 +13,7 @@ import java.util.Set;
 import javax.jws.soap.SOAPBinding.ParameterStyle;
 
 
-public class Meeting extends CalendarEntry implements Serializable{
+public class Meeting extends CalendarEntry implements Serializable {
 	
 	private static final long serialVersionUID = 3423853302160071085L;
 
@@ -36,7 +36,6 @@ public class Meeting extends CalendarEntry implements Serializable{
 		}
 	}
 	
-	private ModelChangeListener modelChangeListener;
 	
 	private Map<User, State> participants = new HashMap<User, State>();
 	
@@ -50,12 +49,10 @@ public class Meeting extends CalendarEntry implements Serializable{
 	
 	public Meeting(String description){
 		super(description);
-		participants = new HashMap<User, State>();
 	}
 	
 	public Meeting(Date start, Date end, String description, int id) {
 		super(description, start, end, id);
-		participants = new HashMap<User, State>();
 	}
 	
 	public void addParticipant(User user, State state){

@@ -6,9 +6,9 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 
 public abstract class CalendarEntry implements Serializable {
-	
+
 	private static final long serialVersionUID = -5666618955325756218L;
-	
+
 	public final static String MEETING = "Meeting";
 	public final static String APPOINTMENT = "Appointment";
 
@@ -73,12 +73,11 @@ public abstract class CalendarEntry implements Serializable {
 		this.endDate = endDate;
 		pcs.firePropertyChange(END_PROPERTY, oldValue, endDate);
 	}
-	
-	
+
 	public Date getStartDate() {
 		return startDate;
 	}
-	
+
 	public Date getEndDate() {
 		return endDate;
 	}
@@ -122,19 +121,19 @@ public abstract class CalendarEntry implements Serializable {
 	public User getOwner() {
 		return owner;
 	}
-	
+
 	public int getID() {
 		return this.id;
 	}
-	
+
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		
+
 		builder.append(id);
-		
+
 		return builder.toString();
 	}
-	
+
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		if (pcs == null) {
 			pcs = new PropertyChangeSupport(this);
@@ -142,7 +141,7 @@ public abstract class CalendarEntry implements Serializable {
 		
 		pcs.addPropertyChangeListener(l);
 	}
-	
+
 	public void removePropertyChangeListener(PropertyChangeListener l) {
 		pcs.removePropertyChangeListener(l);
 	}
@@ -177,6 +176,7 @@ public abstract class CalendarEntry implements Serializable {
 	public int getTimeOfDay() {
 		return startDate.getHours()*60+startDate.getMinutes();
 	}
+
 	/**
 	 * Set the database id
 	 * @param id 

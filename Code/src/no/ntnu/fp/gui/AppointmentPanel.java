@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
@@ -106,15 +108,72 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setStartDate(new Date(startComp.getText()));
+				//Gives an error because we can't easily parse the string
+				//to a date
+				model.setStartDate(TimeLord.changeDateToJava(startComp.getText()));
 			}
 		});
-		
+		startComp.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				System.out.println("DP");
+				
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		endComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setEndDate(new Date(endComp.getText()));
+				//Gives an error because we can't easily parse the string
+				//to a date
+				model.setEndDate(TimeLord.changeDateToJava(endComp.getText()));
 			}
 		}); 
+		endComp.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("I!");
+				
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
 		locComp.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
@@ -164,7 +223,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		AppointmentPanel panel = new AppointmentPanel();
 		frame.add(panel); //adder alt i konstrukt¿ren
 		
-		Appointment app = new Appointment(new Date(), new Date(2012, 05, 03),
+		Appointment app = new Appointment(new Date(0, 0, 0), new Date(2012, 05, 03),
 				"Kill the batman", 35);
 		app.setLocation(new Place(33, "Gotham City"));
 		panel.setModel(app);
@@ -182,10 +241,10 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 				descComp.setText(model.getDescription());
 		}
 		if(evt.getPropertyName() == Appointment.END_PROPERTY){
-			endComp.setText(TimeLord.changeDateToSQL(model.getEndDate()));
+			endComp.setText(TimeLord.formatDate(model.getEndDate()));
 		}
 		if(evt.getPropertyName() == Appointment.START_PROPERTY){
-			startComp.setText(TimeLord.changeDateToSQL(model.getStartDate()));
+			startComp.setText(TimeLord.formatDate(model.getStartDate()));
 		}
 		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
 			locComp.setText(model.getLocation().getDescription());
