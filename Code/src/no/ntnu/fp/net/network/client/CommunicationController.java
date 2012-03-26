@@ -302,7 +302,6 @@ public class CommunicationController {
 	
 	
 	
-	
 public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
 	try{
 		//Gather information 
