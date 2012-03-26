@@ -1,11 +1,13 @@
 package no.ntnu.fp.gui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Insets;
 
 import javax.swing.JTextArea;
 
 import no.ntnu.fp.model.CalendarEntry;
+import no.ntnu.fp.util.TimeLord;
 
 /**
  * View that represents an entry on the week sheet
@@ -28,12 +30,14 @@ public class CalendarEntryView extends JTextArea{
 
 	public CalendarEntryView(CalendarEntry model) {
 		this.model = model;
-		setText(model.getDescription());
+		setFont(new Font("Arial", 0, 9));
+		setText(model.getDescription() +"\nStart: \n" + TimeLord.formatDate(model.getStartDate()) + 
+				"\nEnd: \n" + TimeLord.formatDate(model.getEndDate()));
 		setLineWrap(true);
 		setMargin(new Insets(PADDING, PADDING, PADDING, PADDING));
 		
 		//TODO: BG-COLORS SHOULD REPRESENT CALENDAR 
 		setBackground(Color.getHSBColor(129, 185, 106));
 	}
-
+	
 }
