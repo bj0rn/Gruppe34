@@ -1,7 +1,10 @@
 package no.ntnu.fp.gui;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -10,10 +13,14 @@ import javax.swing.JPanel;
 public class Navigator extends JPanel implements ActionListener{
 	public JButton previousButton, nextButton;
 	private JLabel numberLabel;
-	private int i,max,min;
+	private int value,max,min;
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	
-	public Navigator(int current, int min, int max) {
+	public final static String VALUE_PROPERTY = "Value";
+	
+	public Navigator(String label, int current, int min, int max) {
 		super();
+		setLayout(new BorderLayout());
 		this.max=max;
 		this.min=min;
 		numberLabel = new JLabel();
@@ -22,13 +29,24 @@ public class Navigator extends JPanel implements ActionListener{
 		nextButton.addActionListener(this);
 		previousButton.addActionListener(this);
 		
-		add(previousButton);
-		add(numberLabel);
-		add(nextButton);
+		add(new JLabel(label), BorderLayout.NORTH);
+		add(previousButton, BorderLayout.WEST);
+		add(numberLabel, BorderLayout.CENTER);
+		add(nextButton, BorderLayout.EAST);
 
-		setNumber(current);
+		setValue(current);
 	}
 
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(listener);
+	}
+	
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		pcs.removePropertyChangeListener(listener);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(nextButton)){
@@ -39,26 +57,31 @@ public class Navigator extends JPanel implements ActionListener{
 	}
 
 	public void previous() {
-		if(i>min){
-			i--;
-			setNumber(i);
+		if(value>min){
+			value--;
+			setValue(value);
 		}else{
-			i=min;
+			value=min;
 		}
 
 	}
 
 	public void next() {
-		if(i<max){
-			i++;
-			setNumber(i);
+		if(value<max){
+			value++;
+			setValue(value);
 		}else{
-			i=max;
+			value=max;
 		}
 	}
 
-	public void setNumber(int i) {
-		this.i = i;
+	public void setValue(int i) {
+		pcs.firePropertyChange(VALUE_PROPERTY, this.value, i);
+		this.value = i;
 		numberLabel.setText(Integer.toString(i));
+	}
+	
+	public int getValue(){
+		return value;
 	}
 }

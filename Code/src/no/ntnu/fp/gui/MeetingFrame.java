@@ -17,16 +17,19 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -50,12 +53,16 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private static final Dimension LABEL_SIZE = new Dimension(100, 20);
     private static final Dimension TEXT_INPUT_SIZE = new Dimension(260, 20);
     
-    public static final String TITLE_LABEL = "Møte";
+    public static final String TITLE_LABEL = "M�te";
     public static final String DESCRIPTION_LABEL = "Beskrivelse: ";
     public static final String START_LABEL = "Start:";
     public static final String END_LABEL = "Slutt:";
     public static final String PARTICIPANT_LABEL = "Deltakere:";
     public static final String PLACE_LABEL = "Sted:";
+	
+	public static final String MEETING_ACCEPTED = "Akseptert";
+	public static final String MEETING_REJECTED = "Avvist";
+	public static final String MEETING_PENDING = "Venter på svar";
     
     private JTextField description = new JTextField(20);
     private JTextField startField = new JTextField(10);
@@ -66,6 +73,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private JButton reserveRoomListButton = new JButton(new roomListAction("Rom"));
     private JButton saveButton = new JButton(new saveAction("Lagre"));
     private JButton cancelButton = new JButton(new cancelAction("Avbryt"));
+    private JButton deleteButton = new JButton(new deleteAction("Slett"));
     
     private Meeting model;
     private ParticipantListModel listModel;
@@ -75,7 +83,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     }
     
     public MeetingFrame(User user, Meeting model) {
-    	
+
+        setModel(model);
     	JPanel panel = new JPanel();
     	
     	panel.setLayout(new BorderLayout());
@@ -85,7 +94,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	participantList.setPreferredSize(new Dimension(410, 150));
     	
     	JLabel labelMeeting = new JLabel(TITLE_LABEL);
-        panel.add(labelMeeting);
+		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+    	labelMeeting.setBorder(padding);
+    	labelMeeting.setFont(StylingDefinition.FRAME_TITLE_FONT);
+        panel.add(labelMeeting, BorderLayout.NORTH);
     	
         JPanel center = new JPanel();
         
@@ -93,47 +105,16 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         GridBagConstraints c = new GridBagConstraints();
         
         addGridBagLabel(center, DESCRIPTION_LABEL, 0, c);
-        addGridBagComponent(center, description, 0, c);
-        
-        addGridBagLabel(center, START_LABEL, 1, c);
-        addGridBagComponent(center, startField, 1, c);
-        
-        addGridBagLabel(center, END_LABEL, 2, c);
-        addGridBagComponent(center, endField, 2, c);
-        
-        addGridBagComponent(center, new JLabel(PARTICIPANT_LABEL), 3, 0, c, 2);
-        addGridBagComponent(center, participantList, 4, 0, c, 2);
-        addGridBagComponent(center, addParticipantButton, 5, 0, c, 2);
-        
-        
-        addGridBagLabel(center, PLACE_LABEL, 6, c);
-        addGridBagComponent(center, locationField, 6, c);
-        
-        panel.add(center, BorderLayout.CENTER);
-        
-       /* panel.add(labelMeeting);
-        panel.add(labelDescription);
-        panel.add(description);
-        panel.add(labelStart);
-        panel.add(startField);
-        panel.add(labelEnd);
-        panel.add(endField);
-        panel.add(labelParticipants);
-        panel.add(participantList);
-        panel.add(addParticipantButton);
-        panel.add(labelPlace);
-        panel.add(locationField);
-        panel.add(reserveRoomListButton);
-        panel.add(saveButton);
-        panel.add(cancelButton);*/
-        
         description.addKeyListener(new KeyAdapter() {
         	@Override
         	public void keyReleased(KeyEvent e) {
         		getModel().setDescription(description.getText());
         	}
 		});
+        addGridBagComponent(center, description, 0, c);
         
+        addGridBagLabel(center, START_LABEL, 1, c);
+        startField.addFocusListener(new TimePickableFieldListener(startField, this));
         startField.getDocument().addDocumentListener(new DocumentListener() {
 			
         	public void changedUpdate(DocumentEvent e) {}
@@ -144,7 +125,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 				}
 			}
 		});
+        addGridBagComponent(center, startField, 1, c);
         
+        addGridBagLabel(center, END_LABEL, 2, c);
+        endField.addFocusListener(new TimePickableFieldListener(endField, this));
         endField.getDocument().addDocumentListener(new DocumentListener() {
         	
         	public void changedUpdate(DocumentEvent e) {}
@@ -155,74 +139,39 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 				}
 			}
         });
+        addGridBagComponent(center, endField, 2, c);
         
-        startField.addFocusListener(new TimePickableFieldListener(startField, this));
-        endField.addFocusListener(new TimePickableFieldListener(endField, this));
+        addGridBagComponent(center, new JLabel(PARTICIPANT_LABEL), 3, 0, c, 2);
+        JScrollPane scrollPanel = new JScrollPane(participantList);
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPanel.setPreferredSize(new Dimension(410, 200));
+        addGridBagComponent(center, scrollPanel, 4, 0, c, 2);
+        addGridBagComponent(center, addParticipantButton, 5, 0, c, 2);
+        
+        addGridBagLabel(center, PLACE_LABEL, 6, c);
+        addGridBagComponent(center, locationField, 6, c);
+        
+        panel.add(center, BorderLayout.CENTER);
+                
+        JPanel buttons = new JPanel();
+        
+        buttons.add(saveButton);
+        buttons.add(cancelButton);
+        buttons.add(deleteButton);
+        
+        panel.add(buttons, BorderLayout.SOUTH);
+        
 
-       
-       /* for (Component c : getComponents()) {
-            if (c instanceof JLabel) c.setPreferredSize(LABEL_SIZE);
-            if (c instanceof JComboBox) c.setPreferredSize(LABEL_SIZE);
-            if (c instanceof JTextField) c.setPreferredSize(TEXT_INPUT_SIZE);
-        }*/
-        
-        /*SpringLayout layout = new SpringLayout();
-        setLayout(layout);
-        
-        layout.putConstraint(SpringLayout.WEST, labelMeeting, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, labelMeeting, SPACING, SpringLayout.NORTH, panel);
-        
-        layout.putConstraint(SpringLayout.WEST, labelDescription, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, labelDescription, SPACING, SpringLayout.SOUTH, labelMeeting);
-        layout.putConstraint(SpringLayout.WEST, description, SPACING, SpringLayout.EAST, labelDescription);
-        layout.putConstraint(SpringLayout.NORTH, description, SPACING, SpringLayout.NORTH, labelDescription);
-        
-        layout.putConstraint(SpringLayout.WEST, labelStart, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, labelStart, SPACING, SpringLayout.SOUTH, labelDescription);
-        layout.putConstraint(SpringLayout.WEST, startField, SPACING, SpringLayout.EAST, labelStart);
-        layout.putConstraint(SpringLayout.NORTH, startField, SPACING, SpringLayout.NORTH, labelStart);
-        
-        layout.putConstraint(SpringLayout.WEST, labelEnd, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, labelEnd, SPACING, SpringLayout.SOUTH, labelStart);
-        layout.putConstraint(SpringLayout.WEST, endField, SPACING, SpringLayout.EAST, labelEnd);
-        layout.putConstraint(SpringLayout.NORTH, endField, SPACING, SpringLayout.NORTH, labelEnd);
-        
-        layout.putConstraint(SpringLayout.WEST, labelParticipants, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, labelParticipants, SPACING, SpringLayout.SOUTH, labelEnd);
-        
-        layout.putConstraint(SpringLayout.WEST, participantList, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, participantList, SPACING, SpringLayout.SOUTH, labelParticipants);
-        
-        layout.putConstraint(SpringLayout.WEST, addParticipantButton, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, addParticipantButton, SPACING, SpringLayout.SOUTH, participantList);
-        
-        layout.putConstraint(SpringLayout.WEST, labelPlace, SPACING, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, labelPlace, SPACING, SpringLayout.SOUTH, addParticipantButton);
-        layout.putConstraint(SpringLayout.WEST, locationField, SPACING, SpringLayout.EAST, labelPlace);
-        layout.putConstraint(SpringLayout.NORTH, locationField, SPACING, SpringLayout.NORTH, labelPlace);
-        layout.putConstraint(SpringLayout.WEST, reserveRoomListButton, SPACING, SpringLayout.EAST, locationField);
-        layout.putConstraint(SpringLayout.NORTH, reserveRoomListButton, -4, SpringLayout.NORTH, locationField);
-        
-        layout.putConstraint(SpringLayout.WEST, saveButton, 100, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, saveButton, 30, SpringLayout.SOUTH, labelPlace);
-        layout.putConstraint(SpringLayout.WEST, cancelButton, SPACING, SpringLayout.EAST, saveButton);
-        layout.putConstraint(SpringLayout.NORTH, cancelButton, 0, SpringLayout.NORTH, saveButton);*/
-        
-        
-       
-        
-        
-        
-        setModel(model);
         model.setOwner(user);
         
-        panel.setPreferredSize(new Dimension(410, 410));
-        setPreferredSize(new Dimension(410, 410));
-        
+        panel.setPreferredSize(new Dimension(500, 500));
+        setPreferredSize(new Dimension(500, 500));
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(panel);
         pack();
+        setLocationRelativeTo(null);
+        setResizable(false);
         setVisible(true);
         
     }
@@ -316,6 +265,20 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         }
     }
     
+    private class deleteAction extends AbstractAction {
+    	
+    	public deleteAction(String text) {
+    		super(text);
+    	}	
+    	
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    		// TODO Auto-generated method stub
+    		
+    	}
+    	
+    }
+    
     private class RemoveParticipant extends AbstractAction {
     	
     	private User user;
@@ -389,7 +352,17 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 			User participant = (User)listModel.getElementAt(index);
 			
 			panel.add(new JLabel(participant.getName()));
-			panel.add(new JLabel("Status"));
+			
+			String status = "";
+		//	if (model != null) {
+				switch(model.getState(participant)) {
+					case Accepted: status = MEETING_ACCEPTED; break;
+					case Rejected: status = MEETING_REJECTED; break;
+					case Pending: status = MEETING_PENDING; break;
+				}
+			//}
+			
+			panel.add(new JLabel(status));
 			JButton button = new JButton("Fjern");
 			button.addActionListener(new RemoveParticipant(participant));
 			panel.add(button);

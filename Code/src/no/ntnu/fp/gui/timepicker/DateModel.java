@@ -139,4 +139,11 @@ public class DateModel {
 		cal.setTime(getDate());
 		return cal.get(Calendar.WEEK_OF_YEAR);
 	}	
+	
+	public void setWeek(int week){
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, getYear());
+		cal.set(Calendar.WEEK_OF_YEAR, week);
+		date = cal.getTime();
+	}
 }

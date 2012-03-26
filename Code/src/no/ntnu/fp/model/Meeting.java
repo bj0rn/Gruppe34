@@ -110,6 +110,11 @@ public class Meeting extends CalendarEntry implements Serializable {
 		}
 	}
 	
+	public boolean removeAllParticipants() {
+		participants.clear();
+		return true;
+	}
+	
 	public Meeting shallowCopy() {
 		Meeting meeting = new Meeting(startDate, endDate, description, id, location);
 		meeting.setOwner(new User(getOwner().getUsername()));
@@ -119,7 +124,6 @@ public class Meeting extends CalendarEntry implements Serializable {
 		}
 		
 		return meeting;
-		
 	}
 	
 	public String toString() {

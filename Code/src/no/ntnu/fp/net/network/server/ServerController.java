@@ -38,6 +38,7 @@ public class ServerController {
 	private DatabaseController databaseController;
 	private XmlHandler xmlHandler;
 	private Queue <Tuple <Socket, Object>> inQueue;
+	private Map <String, ArrayList<String>> views;
 	
 	
 	
@@ -46,6 +47,7 @@ public class ServerController {
 		databaseController = new DatabaseController();
 		connectedClients = clients;
 		this.inQueue = inQueue;
+		views = new HashMap<String, ArrayList<String>>();
 	}
 	
 	
@@ -62,6 +64,11 @@ public class ServerController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+	
+	
+	private void getSubscribers(){
 		
 	}
 	
@@ -132,6 +139,42 @@ public class ServerController {
 	}
 	
 	
+	private void markViewed(String requestFrom, String viewUser ) throws SQLException{
+		// a user can view more than on calendar
+		if(!requestFrom.equals(viewUser)){
+			if(views.containsKey(viewUser)){
+				ArrayList<String> list = views.get(viewUser);
+				list.add(requestFrom);
+			}else {
+				ArrayList<String> list = new ArrayList<String>();
+				list.add(requestFrom);
+				views.put(viewUser, list);
+				System.out.println("request From (Value): "+requestFrom);
+				System.out.println("view user (key)"+viewUser);
+			}
+			
+			databaseController.subscribeToCalendar(requestFrom, viewUser);
+		}
+	}
+	
+	private void sendChangesToViewers(String username, Object data){
+		if(views.containsKey(username)){
+			ArrayList<String> list = views.get(username);
+			for(String s : list){
+				if(connectedClients.containsKey(s)){
+					Socket sockfd = connectedClients.get(s);
+					Request response = new Request(null, data);
+					if(data instanceof Meeting){
+						response.setMethod(Method.CHANGE_MEETING_NOTFICATION);
+					}else if(data instanceof Appointment){
+						response.setMethod(Method.CHANGE_APPOINTMENT_NOTIFICATION);
+					}
+					send(sockfd, response);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * @author bj0rn
 	 * Get full user from the database
@@ -145,7 +188,16 @@ public class ServerController {
 			Request request = (Request)data.y;
 			Authenticate auth = request.getAuth();
 			String username = (String)request.getObject();
+			
 			if(connectedClients.containsKey(auth.getUsername())){
+				
+				
+				
+				//TODO:test 
+				markViewed(auth.getUsername(), username);
+				
+				
+				
 				User user = databaseController.getFullUser(username);
 				Request response = new Request(null, user);
 				System.out.println("User "+user.getName());
@@ -186,6 +238,12 @@ public class ServerController {
 				response.setMethod(Request.Method.SAVE_MEETING_RESPONSE);
 				send(data.x, response);
 				System.out.println("Send data to connected clients");
+				
+				
+				//TODO: Does this work 
+				sendChangesToViewers(username, meeting);
+				
+				
 				
 				//also send message to available clients
 				System.out.println("Send data to connected clients");
@@ -228,6 +286,12 @@ public class ServerController {
 				Request response = new Request(null, id);
 				response.setMethod(Request.Method.SAVE_APPOINTMENT_RESPONSE);
 				send(data.x, response);
+				
+				
+				//TODO: does this work
+				sendChangesToViewers(auth.getUsername(), a);
+				
+				
 				
 			}else {
 				//Not authenticated
@@ -312,6 +376,58 @@ public class ServerController {
 		}
 	}
 	
+	
+	public void cancelView(Tuple <Socket, Object> data){
+		try{
+			Request request = (Request)data.y;
+			String username = request.getAuth().getUsername();
+			String cancelViewOfUser = (String)request.getObject();
+			if(connectedClients.containsKey(username)){
+				views.remove(cancelViewOfUser);
+				databaseController.unsubscribeToCalendar(username, cancelViewOfUser);
+				Request response = new Request(null, null);
+				response.setMethod(Method.CANCEL_VIEW_SUCCEDED);
+				send(data.x, response);
+				
+			}else{
+				Request response = new Request(null, null);
+				response.setMethod(Method.LOGIN_FAILED);
+				send(data.x, response);
+				
+			}
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	}
+	
+	public void deleteMeeting(Tuple <Socket, Object> data){
+		try{
+			Request request = (Request)data.y;
+			String username = request.getAuth().getUsername();
+			if(connectedClients.containsKey(username)){
+				Integer id = (Integer)request.getObject();
+				databaseController.deleteMeeting(id);
+				//send response ? 
+			}
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	}
+	
+	public void deleteAppointment(Tuple <Socket, Object> data){
+		try {
+			Request request = (Request)data.y;
+			String username = request.getAuth().getUsername();
+			if(connectedClients.containsKey(username)){
+				Integer id = (Integer)request.getObject();
+				databaseController.deleteAppointment(id);
+			}else {
+				//Hmm ? 
+			}
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	}
 	
 	
 	

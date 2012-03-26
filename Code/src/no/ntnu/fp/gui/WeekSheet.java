@@ -25,17 +25,29 @@ public class WeekSheet extends JPanel {
 	private ArrayList<JLabel> hours = new ArrayList<JLabel>();
 
 	public ArrayList<CalendarEntryView> events = new ArrayList<CalendarEntryView>();
+	
+	private WeekSheetAdapter adapter;
 
 	private int cellHeight;
 	private int cellWidth;
 	private int hourColWidth;
 	private JPanel weekHeader;
 
-	public WeekSheet() {
+	public WeekSheet(WeekSheetAdapter adapter) {
+		this.adapter = adapter;
 		addHourLabels();
+		addEvents();
 		setPreferredSize(new Dimension(600, 1500));
 	}
 	
+	private void addEvents() {
+		for(CalendarEntryView cev: adapter){
+			events.add(cev);
+			add(cev);
+			System.out.println(events.size());
+		}
+	}
+
 	public int getCellHeight() {
 		return cellHeight;
 	}
@@ -87,16 +99,6 @@ public class WeekSheet extends JPanel {
 
 			e.setBounds(x, y, width, height);
 		}
-	}
-
-	/**
-	 * 
-	 * @param e
-	 *            CalendarEntryView to add, to be displayed on the sheet
-	 */
-	public void addCalendarEntryView(CalendarEntryView e) {
-		add(e);
-		events.add(e);
 	}
 
 	/**
