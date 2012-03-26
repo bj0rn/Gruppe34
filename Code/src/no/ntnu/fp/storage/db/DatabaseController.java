@@ -659,13 +659,12 @@ public class DatabaseController {
 					+ user.getEmail() + ")";
 			return getLastInsertedID("User", dbc);
 		}
-		if (i > 1) {
+		//if (i > 1) {
 			//so what is exactly supposed to happen here?
 			//What kind of measures are we supposed to take when
 			//we've broken our own restraints?
 			//I guess... return?
 			return null;
-		}
 		
 		//herp a derp don't look here.
 //		//IF EXISTS doesn't work for us.
