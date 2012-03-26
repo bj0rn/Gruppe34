@@ -116,8 +116,6 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				//Gives an error because we can't easily parse the string
-				//to a date
 				model.setStartDate(TimeLord.changeDateToJava(startComp.getText()));
 			}
 		});
@@ -150,8 +148,6 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		});
 		endComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				//Gives an error because we can't easily parse the string
-				//to a date
 				model.setEndDate(TimeLord.changeDateToJava(endComp.getText()));
 			}
 		}); 
@@ -159,7 +155,6 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				System.out.println("I!");
-				
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
