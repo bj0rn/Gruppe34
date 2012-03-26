@@ -1,7 +1,6 @@
 package no.ntnu.fp.util;
 
 
-import java.awt.GridBagConstraints;
 import java.awt.datatransfer.DataFlavor;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -56,12 +55,6 @@ public class TimeLord {
 	public static String formatDate(Date date) {
 		DateFormat f = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.FRENCH);
 		return f.format(date);
-	}
-	
-	public static GridBagConstraints setConstraints(GridBagConstraints constr, int x, int y) {
-		constr.gridx = x;
-		constr.gridy = y;
-		return constr;
 	}
 
 }

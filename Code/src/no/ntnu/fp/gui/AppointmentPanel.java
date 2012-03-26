@@ -25,6 +25,7 @@ import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Person;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
+import no.ntnu.fp.util.GridBagHelper;
 import no.ntnu.fp.util.TimeLord;
 
 public class AppointmentPanel extends JPanel implements PropertyChangeListener {
@@ -55,7 +56,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		location = new JLabel("Sted");
 		
 		plPickPanel = new PlacePickerPanel();
-
+		plPickPanel.addPropertyChangeListener(this);
 		
 		descComp = new JTextField(10);
 		startComp = new JTextField(10);
@@ -107,7 +108,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		add(delete, constraints);
 		
 		constraints.gridwidth = constraints.REMAINDER;
-		add(plPickPanel, TimeLord.setConstraints(constraints, 0, 5));
+		add(plPickPanel, GridBagHelper.setConstraints(constraints, 0, 5));
 		
 		descComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
@@ -213,8 +214,9 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	 
 	   public void setModel(Appointment app) {
    		if (app != null) {
-   			if (model != null)
+   			if (model != null) {
    				model.removePropertyChangeListener(this);
+   			}
    			model = app;
    			model.addPropertyChangeListener(this);
    			plPickPanel.setLocation(model.getLocation());
@@ -246,6 +248,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		System.out.println("d");
 		if(evt.getPropertyName() == Appointment.DESC_PROPERTY) {
 				descComp.setText(model.getDescription());
 		}
