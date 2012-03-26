@@ -38,7 +38,7 @@ public class Meeting extends CalendarEntry implements Serializable{
 	
 	private ModelChangeListener modelChangeListener;
 	
-	private Map<User, State> participants;
+	private Map<User, State> participants = new HashMap<User, State>();
 	
 	public Meeting() {
 		this(-1);
