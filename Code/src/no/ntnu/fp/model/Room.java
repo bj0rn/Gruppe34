@@ -1,13 +1,13 @@
 package no.ntnu.fp.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Room extends Location implements Serializable{
 	
 	private static final long serialVersionUID = -63886587424231393L;
 	
 	private String name; //id/pk
-	private String description;
 	private int capacity;
 	
 	public Room(int id, String name, String description, int capacity) {
@@ -24,12 +24,6 @@ public class Room extends Location implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
 	public int getCapacity() {
 		return capacity;
 	}
@@ -39,6 +33,10 @@ public class Room extends Location implements Serializable{
 	
 	public String toString() {
 		return "Rom: " + name;
+	}
+	public boolean isAvailable(Date from, Date to) {
+		
+		return false;
 	}
 
 }

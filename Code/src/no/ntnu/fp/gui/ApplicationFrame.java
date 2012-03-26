@@ -52,8 +52,8 @@ public class ApplicationFrame extends JFrame {
 		panel.setLayout(new BorderLayout());
 		
 		// Add Calendar Panel
-		//calendarPanel = new CalendarPanel();
-		//add(calendarPanel, BorderLayout.CENTER);
+		calendarPanel = new CalendarPanel();
+		panel.add(calendarPanel, BorderLayout.CENTER);
 		
 		// Add Notification Panel
 		notificationPanel = new NotificationPanel(model);
@@ -67,7 +67,7 @@ public class ApplicationFrame extends JFrame {
 		buttons.add(newAppointmentButton);
 
 		newMeetingButton = new JButton("Nytt Møte");
-		newMeetingButton.addActionListener(new NewMeetingAction(this));
+		newMeetingButton.addActionListener(new NewMeetingAction(this, getModel()));
 		buttons.add(newMeetingButton);
 		
 		calendarButton = new JButton("Kalendere");
@@ -77,7 +77,7 @@ public class ApplicationFrame extends JFrame {
 		panel.add(buttons, BorderLayout.SOUTH);
 		
 		
-		setPreferredSize(new Dimension(700, 600));
+		setPreferredSize(new Dimension(900, 600));
 		setContentPane(panel);
 		pack();
 		setLocationRelativeTo(null);
