@@ -144,6 +144,8 @@ public class ServerController {
 				ArrayList<String> list = new ArrayList<String>();
 				list.add(requestFrom);
 				views.put(viewUser, list);
+				System.out.println("request From (Value): "+requestFrom);
+				System.out.println("view user (key)"+viewUser);
 			}
 		}
 	}
@@ -181,7 +183,14 @@ public class ServerController {
 			String username = (String)request.getObject();
 			
 			if(connectedClients.containsKey(auth.getUsername())){
+				
+				
+				
+				//TODO:test 
 				markViewed(auth.getUsername(), username);
+				
+				
+				
 				User user = databaseController.getFullUser(username);
 				Request response = new Request(null, user);
 				System.out.println("User "+user.getName());
@@ -360,6 +369,53 @@ public class ServerController {
 		}
 	}
 	
+	
+	public void cancelView(Tuple <Socket, Object> data){
+		Request request = (Request)data.y;
+		String username = request.getAuth().getUsername();
+		String cancelViewOfUser = (String)request.getObject();
+		if(connectedClients.containsKey(username)){
+			views.remove(cancelViewOfUser);
+			Request response = new Request(null, null);
+			response.setMethod(Method.CANCEL_VIEW_SUCCEDED);
+			send(data.x, response);
+			
+		}else{
+			Request response = new Request(null, null);
+			response.setMethod(Method.LOGIN_FAILED);
+			send(data.x, response);
+			
+		}
+	}
+	
+	public void deleteMeeting(Tuple <Socket, Object> data){
+		try{
+			Request request = (Request)data.y;
+			String username = request.getAuth().getUsername();
+			if(connectedClients.containsKey(username)){
+				Integer id = (Integer)request.getObject();
+				databaseController.deleteMeeting(id);
+				//send response ? 
+			}
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	}
+	
+	public void deleteAppointment(Tuple <Socket, Object> data){
+		try {
+			Request request = (Request)data.y;
+			String username = request.getAuth().getUsername();
+			if(connectedClients.containsKey(username)){
+				Integer id = (Integer)request.getObject();
+				databaseController.deleteAppointment(id);
+			}else {
+				//Hmm ? 
+			}
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	}
 	
 	
 	
