@@ -2,8 +2,12 @@ package no.ntnu.fp.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
@@ -17,7 +21,10 @@ import javax.swing.JTextField;
 
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.CalendarEntry;
+import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Person;
+import no.ntnu.fp.model.Place;
+import no.ntnu.fp.util.TimeLord;
 
 public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	private JLabel appointment, description, startTime, endTime, location;
@@ -34,11 +41,15 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	
 	private Appointment model;
 	
-	public AppointmentPanel(){
+	public AppointmentPanel(Appointment appmnt) {
+		this();
+		this.model = appmnt;
+	}
+	public AppointmentPanel() {
 		appointment = new JLabel("Avtale");
 		description = new JLabel("Beskrivelse");
-		startTime = new JLabel("Start Tid");
-		endTime = new JLabel("Slutt Tid");
+		startTime = new JLabel("Starttid");
+		endTime = new JLabel("Sluttid");
 		location = new JLabel("Sted");
 		
 		descComp = new JTextField(10);
@@ -97,30 +108,101 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setStartDate(new Date(startComp.getText()));
+				//Gives an error because we can't easily parse the string
+				//to a date
+				model.setStartDate(TimeLord.changeDateToJava(startComp.getText()));
+			}
+		});
+		startComp.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				System.out.println("DP");
+				
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		endComp.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e){
+				//Gives an error because we can't easily parse the string
+				//to a date
+				model.setEndDate(TimeLord.changeDateToJava(endComp.getText()));
+			}
+		}); 
+		endComp.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("I!");
+				
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		
-		endComp.addKeyListener(new KeyAdapter(){
-			public void keyReleased(KeyEvent e){
-				model.setEndDate(new Date(endComp.getText()));
+		locComp.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				//uh, okay, so let's, ah -- uh, get that list of rooms/places, right?
+				//launch placepicker
 			}
-		}); 
-		
-	/*	LOCComp.addKeyListener(new KeyAdapter(){
-			public void keyReleased(KeyEvent e){
-				model.setLocation(locComp.getText());
+		});
+		//private JButton save, delete;
+		this.save.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//button is clicked, run code that will save the model
 			}
-		}); */
-		
+		});
+		this.delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//button is clicked DELETE EVERYTHING.
+				//wait _where_ are we keeping the code to send the DB-req to delete something?
+			}
+		});
 	}
 	
 	 private void updatePanel() {
 	       if (model != null) {
 	    	   descComp.setText(model.getDescription());
-	    	   startComp.setText(model.getStartDate().toGMTString());
-	    	   endComp.setText(model.getEndDate().toGMTString());
-	    	//   locComp.setText(model.getLocation());
+	    	   startComp.setText(TimeLord.changeDateToSQL(model.getStartDate()));
+	    	   endComp.setText(TimeLord.changeDateToSQL(model.getEndDate()));
+	    	   locComp.setText(model.getLocation().getID() + "");
 	       }
 	    }
 	 
@@ -130,6 +212,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
    				model.removePropertyChangeListener(this);
    			model = app;
    			model.addPropertyChangeListener(this);
+   			
    			updatePanel();
    		}
     }
@@ -140,12 +223,10 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		AppointmentPanel panel = new AppointmentPanel();
 		frame.add(panel); //adder alt i konstrukt¿ren
 		
-		Appointment app = new Appointment("test");
-		app.setDate(new Date(2012,2,1,12,0,0), new Date(2012,2,1,12,0,30));
-		
+		Appointment app = new Appointment(new Date(0, 0, 0), new Date(2012, 05, 03),
+				"Kill the batman", 35);
+		app.setLocation(new Place(33, "Gotham City"));
 		panel.setModel(app);
-		
-		app.setDescription("he");
 		
 		frame.setLocationRelativeTo(null); //center a frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -157,16 +238,16 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt.getPropertyName() == Appointment.DESC_PROPERTY) {
-			descComp.setText(model.getDescription());
+				descComp.setText(model.getDescription());
 		}
 		if(evt.getPropertyName() == Appointment.END_PROPERTY){
-			endComp.setEndDate(model.getEndDate());
+			endComp.setText(TimeLord.formatDate(model.getEndDate()));
 		}
 		if(evt.getPropertyName() == Appointment.START_PROPERTY){
-			endComp.setStartDate(model.getStartDate());
+			startComp.setText(TimeLord.formatDate(model.getStartDate()));
 		}
 		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
-			endComp.setLocation(model.getLocation());
+			locComp.setText(model.getLocation().getDescription());
 		}
 	}
 

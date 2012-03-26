@@ -7,14 +7,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import no.ntnu.fp.net.network.Tuple;
 
 public class ClientHandler implements Runnable {
 	//Fields
 	private Socket mySocket;
-	private BlockingQueue<Tuple <Socket, Object>> inQueue;
+	private Queue<Tuple <Socket, Object>> inQueue;
 	//private DataOutputStream os;
 	private HashMap<String, Socket> clients;
 	
@@ -25,7 +27,7 @@ public class ClientHandler implements Runnable {
 	
 	//Receive messages from the clients
 	//Need some request queue, blocked queue
-	public ClientHandler(Socket socket, BlockingQueue<Tuple <Socket, Object>> inQueue, HashMap<String, Socket> clients){
+	public ClientHandler(Socket socket, Queue<Tuple <Socket, Object>> inQueue, HashMap<String, Socket> clients){
 		this.mySocket = socket;
 		this.inQueue = inQueue;
 		this.clients = clients;
@@ -45,9 +47,9 @@ public class ClientHandler implements Runnable {
 				DataInputStream is = new DataInputStream(mySocket.getInputStream());
 				ObjectInputStream ios = new ObjectInputStream(is);
 				Object obj = ios.readObject();
-				inQueue.put(new Tuple(mySocket, obj));
-				System.out.println("Got data");
 				
+				((LinkedBlockingDeque)inQueue).putFirst(new Tuple(mySocket, obj));
+				System.out.println("Got data");
 				
 			} catch (IOException e) {
 				running = false;

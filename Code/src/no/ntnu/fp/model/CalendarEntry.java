@@ -184,4 +184,16 @@ public abstract class CalendarEntry implements Serializable {
 	public int getTimeOfDay() {
 		return startDate.getHours()*60+startDate.getMinutes();
 	}
+<<<<<<< HEAD
 }
+=======
+	/**
+	 * Set the database id
+	 * @param id 
+	 * 
+	 * **/
+	public void setID(int id){
+		this.id = id;
+	}
+}
+>>>>>>> branch 'master' of https://andyphilipp@github.com/bj0rn/Gruppe34.git

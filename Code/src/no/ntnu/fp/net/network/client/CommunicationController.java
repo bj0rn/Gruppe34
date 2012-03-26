@@ -12,7 +12,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
 
+import org.jdom.adapters.XML4JDOMAdapter;
+
+import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Location;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 
@@ -35,12 +41,19 @@ import no.ntnu.fp.model.XmlHandler;
 
 
 public class CommunicationController {
+	
+	public final static String HOST = "127.0.0.1";
+	public final static int PORT = 1337;
+
+	private static CommunicationController instance;
 	//fields
 	private BlockingQueue<Object> inQueue;
 	private Socket mySocket;
 	private UpdateHandler updateHandler;
 	private LinkedBlockingDeque<Object> testQueue;
 	
+	private Authenticate auth;
+
 	
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
@@ -68,10 +81,15 @@ public class CommunicationController {
 	
 	
 	//constructor 
-	public CommunicationController(Socket mySocket, LinkedBlockingDeque<Object> testQueue){
+	private CommunicationController(){
+		
+		
+		LinkedBlockingDeque<Object> testQueue = new LinkedBlockingDeque<Object>();
+		//CommunicationController communicationController = new CommunicationController(mySocket, testQueue)
+		Client c = new Client(HOST, PORT, testQueue, this);
 		
 		try {
-			this.mySocket = mySocket;
+			this.mySocket = c.getSocket();
 			os = new DataOutputStream(mySocket.getOutputStream());
 			updateHandler = new UpdateHandler();
 			this.testQueue = testQueue;
@@ -79,7 +97,16 @@ public class CommunicationController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		new Thread(c).start();
+	}
 	
+	public static CommunicationController getInstance() {
+		if (instance == null) {
+			instance = new CommunicationController();
+		}
+		
+		return instance;
 	}
 	
 	public void inspect(){
@@ -93,10 +120,11 @@ public class CommunicationController {
 	/**
 	 * This method will authenticate will login in the user to the server
 	 * **/
-	public boolean authenticate(String username, String password){
+	public boolean authenticate(Authenticate auth){
 		try {
 			oos = new ObjectOutputStream(os);
-			oos.writeObject(new Authenticate(username, password));
+			setAuthunticate(auth);
+			oos.writeObject(auth);
 			//Wait for response
 			boolean good = false;
 			int i = 0;
@@ -130,6 +158,16 @@ public class CommunicationController {
 }
 
 	
+	private void setAuthunticate(Authenticate auth) {
+		this.auth = auth;		
+	}
+	
+	public Authenticate getAuthenticate() {
+		return auth;
+	}
+
+
+
 	/**
 	 * This method will get all the users from the server
 	 * **/
@@ -193,7 +231,11 @@ public class CommunicationController {
 		
 	}
 	
-	public User getFullUser(String myUsername, String myPassword, String user){
+	public User getFullUser(String user){
+		
+		String myUsername = auth.getUsername();
+		String myPassword = auth.getPassword();
+		
 		try {
 			send(mySocket, XmlHandler.getFullUserToXMl(myUsername, myPassword, user, "getFullUser"));
 			int i = 0;
@@ -218,6 +260,135 @@ public class CommunicationController {
 		}
 		return null;
 	}
+	
+	
+	
+	public boolean saveMeeting(Meeting meeting){
+		try{
+		send(mySocket, meeting);
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries: "+i++);
+				//This should be a response containing the key
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof String){
+					//Check if this is the correct one; the method field should be saveUser
+					if(XmlHandler.inspectMethod((String)obj).equals("saveMeeting")){
+						//Correct  message
+						String key = XmlHandler.inspectKey((String)obj);
+						meeting.setID(Integer.parseInt(key));
+						return true;
+					}
+				System.out.println("Put it back");
+				testQueue.putLast(obj);
+				}
+			}		
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	public boolean saveAppointment(Appointment appointment){
+		try{
+		//Does saveAppointment return a key
+			send(mySocket, appointment);
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries ");
+				//This response should contain a key
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof String){
+					String key = XmlHandler.inspectKey((String)obj);
+					if(key != null){
+						appointment.setID(Integer.parseInt(key));
+						return true;
+					}
+					else if(XmlHandler.inspectStatus((String)obj).equals("401")){
+						System.out.println("Failed to authenticate");
+						return false;
+					}else{
+						System.out.println("You are really fucked up this time");
+						return false;
+					}
+				}else {
+					//Not the packet I�m waiting for
+					testQueue.putLast(obj);
+				}
+			}
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
+		//Gather information 
+		String userInfo[] = {
+			user.getUsername(),
+			"",
+		};
+		
+		String dataValues[] = {
+			user.getId(),
+			String.valueOf(meeting.getID()),
+			state.toString()
+		};
+		//Pack and send
+		String xml = XmlHandler.dispatchMeetingReplyToXml(userInfo, dataValues, "dispatchMeetingReply");
+		send(mySocket, xml);
+		int i = 0;
+		//Wait for response
+		while(true){
+			try {
+				Object obj = testQueue.takeFirst();
+				if(obj instanceof String){
+					String status = XmlHandler.inspectStatus((String)obj);
+					if(status != null){
+						if(status.equals("200")){
+							return true;
+						}
+						else {
+							return false;
+						}
+					}
+				}
+				//Put it back
+				testQueue.putLast(obj);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+}
+
+public boolean deleteMeeting(){
+	return true;
+}
+	
+public boolean deleteAppointment(){
+	return true;
+}
+
+
+public boolean deleteUser(){
+	return true;
+}
+
+
+
+public ArrayList<Location> getListOfRooms() {
+	// TODO Auto-generated method stub
+	return null;
+}
 	
 	
 }

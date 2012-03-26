@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -267,7 +268,7 @@ public class DatabaseController {
 			
 			user = new User(uname, name, age, phoneNumber, email);
 			
-			user.setCalendar(getCalendar(uname));
+			user.setCalendar(getCalendar(user));
 		}
 		
 		return user;
@@ -287,12 +288,15 @@ public class DatabaseController {
 	 * @throws SQLException 
 	 */
 	
-	public Calendar getCalendar(String username) throws SQLException {
+	public Calendar getCalendar(User user) throws SQLException {
 		
-		Calendar calendar = new Calendar();
+		Calendar calendar = new Calendar(user);
+		
+		String username = user.getUsername();
 		
 		String sql = 
 			"SELECT " 
+		+	"	OWNCA.Username as owner, "
 		+	"	CE.CalendarEntryID AS id, "
 		+	"	CE.EntryType AS type, " 
 		+	"	CE.TimeStart AS start, " 
@@ -303,14 +307,20 @@ public class DatabaseController {
 		+	"	LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID "
 		+	"	LEFT JOIN CalendarEntry AS CE ON CO.CalendarEntryID = CE.CalendarEntryID "
 		+	"	LEFT JOIN Location AS L ON CE.LocationID = L.LocationID "
+		+	"	LEFT JOIN Contains AS OWNCO ON CE.CalendarEntryID = OWNCO.CalendarEntryID " 
+		+	"		AND OWNCO.Role = 'Owner' "
+		+	"	LEFT JOIN Calendar AS OWNCA ON OWNCO.CalendarID = OWNCA.CalendarID "
 		+	"WHERE C.Username = '" + username + "'";
 
+		System.out.println(sql);
+		
 		DbConnection db = getConnection();
 		
 		ResultSet rs = db.query(sql);
 		
 		rs.beforeFirst();
 		while(rs.next()) {
+			String owner = rs.getString("owner");
 			int id = rs.getInt("id");
 			String type = rs.getString("type");
 			Date start = rs.getDate("start");
@@ -332,6 +342,8 @@ public class DatabaseController {
 				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
 				entry = new Appointment(start, end, desc, id);
 			}
+			
+			entry.setOwner(new User(owner));
 			
 			Location location = getLocation(locationID);
 			entry.setLocation(location);
@@ -469,6 +481,7 @@ public class DatabaseController {
 		rs.beforeFirst();
 		
 		while(rs.next()) {
+			
 		}
 		
 		//String sqlP = "SELECT LocationID, Description FROM Place";
@@ -526,9 +539,7 @@ public class DatabaseController {
 			//String state = rs.getString("state");
 			int mid = rs.getInt("meeting");
 			
-			MeetingInviteNotification notification = new MeetingInviteNotification();
-			notification.setMeeting(new Meeting(mid));
-			notification.setUser(new User(uname));
+			MeetingInviteNotification notification = new MeetingInviteNotification(new User(uname), new Meeting(mid));
 		
 			invites.add(notification);
 		}
@@ -570,14 +581,33 @@ public class DatabaseController {
 			//String state = rs.getString("state");
 			int mid = rs.getInt("meeting");
 			
-			MeetingReplyNotification notification = new MeetingReplyNotification();
-			notification.setMeeting(new Meeting(mid));
-			notification.setUser(new User(uname));
+			MeetingReplyNotification notification = new MeetingReplyNotification(new User(uname), new Meeting(mid));
 			
 			replies.add(notification);
 		}
 		
 		return replies;
+	}
+	
+	/**
+	 * 
+	 * @param username
+	 * @param meeting_id
+	 * @param state
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateMeetingState(String username, String meeting_id, State state) throws SQLException {
+		
+		DbConnection db = getConnection();
+		
+		String sql = "UPDATE Contains SET State = '" + state + "' WHERE CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '"+username+"') AND CalendarEntryID = " + meeting_id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -595,31 +625,73 @@ public class DatabaseController {
 	 */
 	public String saveUser(User user) throws SQLException {
 		DbConnection dbc = getConnection();
+		String sqlSelUsr = "SELECT count(*) AS ROW FROM User WHERE Username='"+user.getUsername()+"'"; 
+		ResultSet rs = dbc.query(sqlSelUsr);
+		String sql = "";
+		//find out if we've gotten more than one username from this
+		//-- why do we need to do that this shouldn't happen AT ALL
+		int i = 0;
+		if(rs.first()) {
+			while (rs.next()) {
+				i++;
+			}
+		}
+		if (i == 1) {
+			//update the one existing user.
+			sql = "UPDATE User SET "
+				 +"Password='"+ user.getPassword() + "', "
+				 +"Name='"+ user.getName() +"', "
+				 +"Age="+ user.getAge() +"', "
+				 +"PhoneNumber="+ user.getPhoneNumber() +"', "
+				 +"Email='"+ user.getEmail() +"' "
+				 +"WHERE Username='"+ user.getUsername()+"'";
+			dbc.executeUpdate(sql);
+			return user.getUsername();
+		}
+		if (i == 0) {
+			sql = "INSERT INTO User (Username, Password, Name, " +
+					"Age, PhoneNumber, Email) VALUES("
+					+ user.getUsername() + ", "
+					+ user.getPassword() + ", "
+					+ user.getName() + ", "
+					+ user.getAge() + ", " 
+					+ user.getPhoneNumber() + ", "
+					+ user.getEmail() + ")";
+			return getLastInsertedID("User", dbc);
+		}
+		//if (i > 1) {
+			//so what is exactly supposed to happen here?
+			//What kind of measures are we supposed to take when
+			//we've broken our own restraints?
+			//I guess... return?
+			return null;
 		
-		String s = ""
-			+ "IF EXISTS( SELECT * FROM User WHERE Username="
-			+ user.getUsername() + ") BEGIN UPDATE User"
-			+ "SET Password=" + user.getPassword()
-			+ ", Name=" + user.getName()
-			+ ", Age=" + user.getAge()
-			+ ", PhoneNumber=" + user.getPhoneNumber()
-			+ ", Email=" + user.getEmail()
-			+ " WHERE Username=" + user.getUsername()
-			+ "END ELSE "
-			//Below a new user is created.
-			+ "BEGIN INSERT INTO User (Username, Password, Name, " +
-			"Age, PhoneNumber, Email) VALUES("
-			+ user.getUsername() + ", "
-			+ user.getPassword() + ", "
-			+ user.getName() + ", "
-			+ user.getAge() + ", " 
-			+ user.getPhoneNumber() + ", "
-			+ user.getEmail() + ")"
-			+" END";
-		
-		
-		dbc.query(s); //Since we're just updating/inserting there's no need for the result set, right?
-		return user.getUsername();
+		//herp a derp don't look here.
+//		//IF EXISTS doesn't work for us.
+//		String s = ""
+//			+ "IF EXISTS( SELECT * FROM User WHERE Username="
+//			+ user.getUsername() + ") BEGIN UPDATE User"
+//			+ "SET Password=" + user.getPassword()
+//			+ ", Name=" + user.getName()
+//			+ ", Age=" + user.getAge()
+//			+ ", PhoneNumber=" + user.getPhoneNumber()
+//			+ ", Email=" + user.getEmail()
+//			+ " WHERE Username=" + user.getUsername()
+//			+ "END ELSE "
+//			//Below a new user is created.
+//			+ "BEGIN INSERT INTO User (Username, Password, Name, " +
+//			"Age, PhoneNumber, Email) VALUES("
+//			+ user.getUsername() + ", "
+//			+ user.getPassword() + ", "
+//			+ user.getName() + ", "
+//			+ user.getAge() + ", " 
+//			+ user.getPhoneNumber() + ", "
+//			+ user.getEmail() + ")"
+//			+" END";
+//		
+//		
+//		dbc.query(s); //Since we're just updating/inserting there's no need for the result set, right?
+//		return user.getUsername();
 	}
 	
 	
@@ -641,20 +713,21 @@ public class DatabaseController {
 		String sql = "";
 		if (appointment.getID() == -1) { //need to create a new appointment k
 			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
-		", Description, EntryType, LocationID) VALUES ('" 					  +
-		TimeLord.changeDateToSQL(appointment.getStartDate()) +"', '"+
-		TimeLord.changeDateToSQL(appointment.getEndDate()) +"', "+
-		"NOW(), '" + appointment.getDescription() + "', '" +
-		CalendarEntryType.APPOINTMENT + "', " + 
-		appointment.getLocation().getID() + ")";
-		dbc.executeUpdate(sql);
-		System.out.println(sql);
-		String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
-		ResultSet rs = dbc.query(s);
-		System.out.println("herp");
+				", Description, EntryType, LocationID) VALUES ('" +
+				TimeLord.changeDateToSQL(appointment.getStartDate()) +"', '"+
+				TimeLord.changeDateToSQL(appointment.getEndDate()) +"', "+
+				"NOW(), '" + appointment.getDescription() + "', '" +
+				CalendarEntryType.APPOINTMENT + "', " + 
+				appointment.getLocation().getID() + ")";
+			dbc.executeUpdate(sql);
+			//System.out.println(sql);
+			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
+			ResultSet rs = dbc.query(s);
+			//System.out.println("herp");
 		if(rs.first())
 			return rs.getInt("ID");
 		}
+		
 		
 		
 		//ok so the thing exists in the database.
@@ -680,23 +753,70 @@ public class DatabaseController {
 	 * @return the {@code Meeting}s database id
 	 */
 	public int saveMeeting(Meeting meeting) throws SQLException {
-		return 0;
+		DbConnection dbc = getConnection();
+		String sql = "";
+		if (meeting.getID() == -1) { //it's a brand new meeting.
+			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
+				", Description, EntryType, LocationID) VALUES('"+
+				TimeLord.changeDateToSQL(meeting.getStartDate())+"', '"+
+				TimeLord.changeDateToSQL(meeting.getEndDate())+"', "+
+				"NOW(), '"+meeting.getDescription()+"', '"+
+				CalendarEntryType.MEETING+"', "+
+				meeting.getLocation().getID()+")";
+			dbc.executeUpdate(sql);
+			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
+			ResultSet rs = dbc.query(s);
+			dbc.close();
+			if (rs.first())
+				return rs.getInt("ID");
+		}//end new meeting
+		
+		//did we get here? okay, we need to update an existing meeting.
+		sql = "UPDATE CalendarEntry SET TimeStart='" +
+				TimeLord.changeDateToSQL(meeting.getStartDate())+"', "+
+				"TimeEnd='"+TimeLord.changeDateToSQL(meeting.getEndDate())+
+				"', Description='"+meeting.getDescription()+"', "+
+				"LocationID="+meeting.getLocation().getID()+
+				" WHERE CalendarEntryID="+meeting.getID();
+		dbc.executeUpdate(sql);
+		dbc.close();
+		return meeting.getID();
 	}
 	
 	/**
 	 * Saves a {@code Room} to the database.
 	 * A non-existing {@code Room} will be created,
-	 * a existing will be updated
+	 * a existing will be updated.
+	 * Currently allowing for room names to be changed post-creation.
 	 * 
 	 * @param user
 	 * 		  the {@code Room} to created/change
 	 * 
 	 * @return the {@code Room}s database id
+	 * 
 	 */	
-	public int saveRoom(Room room) {
-		return 0;
+	public int saveRoom(Room room) throws SQLException {
+		//the primary key of a room is its name
+		//it also has a location ID
+		DbConnection dbc = getConnection();
+		String sql = "";
+		if (room.getName() == null || room.getID() == -1) {
+			int locID = createLocation(dbc);
+			//SQL-query string
+			sql = "INSERT INTO Room (RoomName, Description, Capacity, LocationID) "
+				 +" VALUES('" + room.getName() + "', '" + room.getDescription() +"', '"
+				 +room.getCapacity() + "', " + locID + ")";
+			dbc.executeUpdate(sql);
+			return locID;
+		}//end new room
+		//update existing room
+		sql = "UPDATE Room SET "
+			 +"RoomName='"+room.getName()+"', "
+			 +"Description='"+room.getDescription()+"', "
+			 +"Capacity="+room.getCapacity()
+			 +"WHERE LocationID="+room.getID()+" AND RoomName='"+room.getName()+"'";
+		return room.getID();
 	}
-	
 	/**
 	 * Saves a {@code Place} to the database.
 	 * A non-existing {@code Place} will be created,
@@ -707,9 +827,33 @@ public class DatabaseController {
 	 * 
 	 * @return the {@code Place}s database id
 	 */
-	public int savePlace(Place place) {
-		return 0;
-		
+	public int savePlace(Place place) throws SQLException {
+		DbConnection dbc = getConnection();
+		String sql = "";
+		if (place.getID() == -1) {//begin new place
+			int locID = createLocation(dbc);
+			sql = "INSERT INTO Place (Description, LocationID) VALUES ("
+			     +"Description='"+place.getDescription()+"', "
+			     +"LocationID()="+locID+")";
+		}//end new place
+		//begin update of existing place
+		sql = "UPDATE Place SET "
+			 +"Description='"+place.getDescription()+"' "
+			 +"WHERE LocationID="+place.getID();
+		dbc.executeUpdate(sql);
+		return place.getID();
+	}
+	/**
+	 * Creates a new location in the database through the given connection
+	 * and returns its ID.
+	 * 
+	 * @return
+	 * 		Returns the ID of the newly created location.
+	 */
+	private int createLocation(DbConnection dbc) throws SQLException {
+		String sql = "INSERT INTO Location VALUES ()";
+		dbc.executeUpdate(sql);
+		return Integer.parseInt(getLastInsertedID("Location", dbc));
 	}
 	
 	/**
@@ -720,9 +864,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteUser(int id) {
-		return false;
+	public boolean deleteUser(String username) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM User WHERE Username = '" + username + "'";
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 	
 	/**
@@ -733,9 +886,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteAppointment(int id) {
-		return false;
+	public boolean deleteAppointment(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM CalendarEntry WHERE CalendarEntryId = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -746,9 +908,19 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteMeeting(int id) {
-		return false;
+	public boolean deleteMeeting(int id) throws SQLException {
+		
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM CalendarEntry WHERE CalendarEntryId = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -759,9 +931,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deleteRoom(int id) {
-		return false;
+	public boolean deleteRoom(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM Location WHERE LocationID = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 
 	/**
@@ -772,9 +953,18 @@ public class DatabaseController {
 	 * 
 	 * @return {@code true} if the delete is successful,
 	 * 		   {@code false} if not.
+	 * @throws SQLException 
 	 */
-	public boolean deletePlace(int id) {
-		return false;
+	public boolean deletePlace(int id) throws SQLException {
+		DbConnection db = getConnection();
+		
+		String sql = "DELETE FROM Location WHERE LocationID = " + id;
+		
+		int n = db.executeUpdate(sql);
+		
+		db.close();
+		
+		return n == 1;
 	}
 	
 	/**
@@ -787,4 +977,22 @@ public class DatabaseController {
 	public DbConnection getConnection() {
 		return new DbConnection(props);
 	}
+	/**
+	 * Gets the ID of the last inserted element in the given table.
+	 * @param table
+	 * 		  the name of the table to get the last inserted ID from
+	 * @return
+	 * 		  the last inserted ID in the given table
+	 */
+	public String getLastInsertedID(String table, DbConnection dbc) throws SQLException {
+		String result = "-1";
+		String sql = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM " + table +";";
+		ResultSet rs = dbc.query(sql);
+		if (rs.first()) {
+			result = rs.getString("ID");
+		}
+		dbc.close();
+		return result;
+	}
+	
 }

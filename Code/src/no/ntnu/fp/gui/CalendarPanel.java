@@ -1,10 +1,11 @@
 package no.ntnu.fp.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -12,8 +13,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
-import no.ntnu.fp.model.Calendar;
+import no.ntnu.fp.model.Appointment;
 
 public class CalendarPanel extends JPanel {
 
@@ -26,15 +28,14 @@ public class CalendarPanel extends JPanel {
 
 	private JLabel weekLabel;
 	private JLabel yearLabel;
+	JScrollPane scrollArea;
 
 	private MessagePanel messagePanel;
 
 	private WeekSheet weekSheet;
 
-	private List<Calendar> model;
-
 	public CalendarPanel() {
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout(12,12));
 
 		JPanel top = new JPanel();
 		// TODO: Set to current week
@@ -47,19 +48,26 @@ public class CalendarPanel extends JPanel {
 		bottom.add(newAppointment = new JButton("Kalendere"));
 
 		weekSheet = new WeekSheet();
+
+		
+		scrollArea = new JScrollPane(weekSheet);
+		scrollArea.setPreferredSize(new Dimension(600,300));
+		scrollArea.setRowHeaderView(new JLabel(" "));
+		JPanel weekheader = new JPanel();
+		weekheader.add(new JLabel("Kl."));
+		String[] weekDays = {"Mandag", "Tirsdag", "Onsdag","Torsdag","Fredag","L¿rdag","S¿ndag"};
+		JLabel d;
+		for(String s:weekDays){
+			d= new JLabel(s);
+			d.setSize(300, 100);
+			weekheader.add(d);
+		}
+		scrollArea.setColumnHeaderView(weekheader);
 		add(top, BorderLayout.NORTH);
-		add(weekSheet, BorderLayout.CENTER);
+		add(scrollArea, BorderLayout.CENTER);
 		add(bottom, BorderLayout.SOUTH);
 		add(messagePanel = new MessagePanel(), BorderLayout.EAST);
 
-	}
-
-	public List<Calendar> getModel() {
-		return model;
-	}
-
-	public void setModel(List<Calendar> model) {
-		this.model = model;
 	}
 
 	private void addMockImage() {
@@ -79,7 +87,10 @@ public class CalendarPanel extends JPanel {
 		JFrame frame = new JFrame("WeekSheet");
 		CalendarPanel cp = new CalendarPanel();
 		frame.add(cp);
+		frame.setSize(1000,600);
 		frame.setVisible(true);
+		cp.weekSheet.addCalendarEntryView(new CalendarEntryView(new Appointment(new Date(2012, 01, 01, 14, 00), new Date(2012, 01, 01, 15, 30), "M¿te", 0)));
+		cp.weekSheet.events.get(cp.weekSheet.events.size()-1).select(0, 100);
 	}
 
 }
