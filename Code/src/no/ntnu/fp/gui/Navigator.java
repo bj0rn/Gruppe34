@@ -12,7 +12,7 @@ public class Navigator extends JPanel implements ActionListener{
 	private JLabel numberLabel;
 	private int i,max,min;
 	
-	public Navigator(int i, int min, int max) {
+	public Navigator(int current, int min, int max) {
 		super();
 		this.max=max;
 		this.min=min;
@@ -26,7 +26,7 @@ public class Navigator extends JPanel implements ActionListener{
 		add(numberLabel);
 		add(nextButton);
 
-		setNumber(i);
+		setNumber(current);
 	}
 
 	@Override
