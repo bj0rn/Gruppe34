@@ -3,6 +3,8 @@ package no.ntnu.fp.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -33,6 +37,7 @@ import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.net.network.client.CommunicationController;
+import no.ntnu.fp.util.TimeLord;
 
 
 public class MeetingFrame extends JFrame implements PropertyChangeListener {
@@ -91,6 +96,35 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         panel.add(reserveRoomListButton);
         panel.add(saveButton);
         panel.add(cancelButton);
+        
+        description.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyReleased(KeyEvent e) {
+        		getModel().setDescription(description.getText());
+        	}
+		});
+        
+        startField.getDocument().addDocumentListener(new DocumentListener() {
+			
+        	public void changedUpdate(DocumentEvent e) {}
+			public void removeUpdate(DocumentEvent e) {}
+			public void insertUpdate(DocumentEvent e) {
+				if (getModel() != null) {
+					getModel().setStartDate(TimeLord.parseDate(startField.getText()));
+				}
+			}
+		});
+        
+        endField.getDocument().addDocumentListener(new DocumentListener() {
+        	
+        	public void changedUpdate(DocumentEvent e) {}
+        	public void removeUpdate(DocumentEvent e) {}
+			public void insertUpdate(DocumentEvent e) {
+				if (getModel() != null) {
+					getModel().setEndDate(TimeLord.parseDate(startField.getText()));
+				}
+			}
+        });
         
         startField.addFocusListener(new TimePickableFieldListener(startField, this));
         endField.addFocusListener(new TimePickableFieldListener(endField, this));
@@ -157,6 +191,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         
     }
     
+    public Meeting getModel() {
+    	return model;
+    }
+    
     //Action for Legg til deltaker
     private class addParticipantAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
@@ -196,7 +234,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         @Override
         public void actionPerformed(ActionEvent arg0) {
         	CommunicationController c = CommunicationController.getInstance();
-        	c.saveMeeting(model);
+        	c.saveMeeting(model.clone());
         }
     }
     
@@ -244,8 +282,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     @SuppressWarnings("deprecation")
 	public void updatePanel() {
     	description.setText(model.getDescription());
-    	//startField.setText(model.getStartDate().toGMTString());
-    	//endField.setText(model.getEndDate().toGMTString());
+    	startField.setText(TimeLord.formatDate(model.getStartDate()));
+    	endField.setText(TimeLord.formatDate(model.getEndDate()));
     	//participantList.setListData(model.getParticipants());
     	updateLocation();
     }

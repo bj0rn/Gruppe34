@@ -1,9 +1,11 @@
 package no.ntnu.fp.net.network;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
@@ -21,27 +23,30 @@ public class TestClient {
 		//Spawn threads
 		//System.out.println("Send data");
 		//communicationController.authenticate("havard", "test");
-		communicationController.authenticate("bjorn", "lol");
-		User user = new User("bjorn", "lol");
-		User user2 = new User("havard", "test");
-		Meeting meeting = new Meeting("test");
-		meeting.setOwner(user);
-		meeting.addParticipant(user2, State.Pending);
-		
-		System.out.println(communicationController.saveMeeting(meeting));
-//		
-		//System.out.println(communicationController.dispatchMeetingReply(user, meeting, state));
-		
-		
-		//User user = communicationController.getFullUser("havard", "test", "havard");
-		//System.out.println("Got user: "+user.getName());
-//		List <User> users = communicationController.getUsers("havard", "test");
-//		for(User u: users){
-//			System.out.println(u.getName());
-//			System.out.println(u.getEmail());
+		System.out.println(communicationController.authenticate(new Authenticate("bjorn", "lol")));
+//		List <User> users = communicationController.getUsers();
+//		if(users != null){
+//			System.out.println("Yeey");
 //		}
-		//communicationController.getUsers("bjorn", "lol");
-		System.out.println("Data sent");
+		
+//		User user = communicationController.getFullUser("havard");
+//		if(user == null){
+//			System.out.println("Failed");
+//		}else {
+//			System.out.println("User"+user.getName());
+//		}
+//		
+//		Meeting meeting = new Meeting("hallo");
+//		Meeting m = new Meeting();
+//		User userOwner = new User("bjorn");
+//		User p = new User("havard");
+//		
+//		meeting.addParticipant(p, State.Pending);
+//		meeting.setOwner(userOwner);
+//		communicationController.saveMeeting(meeting);
+		
+		
+		
 		
 	}
 }

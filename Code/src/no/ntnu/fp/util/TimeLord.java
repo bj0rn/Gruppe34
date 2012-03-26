@@ -4,6 +4,8 @@ package no.ntnu.fp.util;
 import java.awt.GridBagConstraints;
 import java.awt.datatransfer.DataFlavor;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -38,6 +40,17 @@ public class TimeLord {
 				Integer.parseInt(s.substring(17,19))
 				);
 		return d;
+	}
+	
+	public static Date parseDate(String str) {
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
+		try {
+			return formatter.parse(str);
+		} catch (ParseException e ) {
+			e.printStackTrace();
+		}
+		
+		return new Date();
 	}
 	
 	public static String formatDate(Date date) {

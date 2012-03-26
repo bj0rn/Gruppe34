@@ -12,14 +12,14 @@ public abstract class CalendarEntry implements Serializable {
 	public final static String MEETING = "Meeting";
 	public final static String APPOINTMENT = "Appointment";
 
-	private String description;
-	private User owner;
-	private Location location;
-	private Date startDate;
-	private Date endDate;
-	private int id = -1;
+	protected String description;
+	protected User owner;
+	protected Location location;
+	protected Date startDate;
+	protected Date endDate;
+	protected int id = -1;
 
-	protected transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	public final static transient String MODEL_PROPERTY = "Model";
 	public final static transient String DESC_PROPERTY = "Description";
 	public final static transient String OWNER_PROPERTY = "Owner";
@@ -29,11 +29,12 @@ public abstract class CalendarEntry implements Serializable {
 
 	public CalendarEntry(int id) {
 		this.id = id;
+		pcs = new PropertyChangeSupport(this);
 	}
 
 	public CalendarEntry(String description) {
 		this.description = description;
-
+		pcs = new PropertyChangeSupport(this);
 	}
 
 	public CalendarEntry(String description, Date startDate, Date endDate,
@@ -41,6 +42,11 @@ public abstract class CalendarEntry implements Serializable {
 		this(description);
 		this.id = id;
 		setDate(startDate, endDate);
+	}
+	
+	public CalendarEntry(String description, Date startDate, Date endDate, int id, Location location) {
+		this(description, startDate, endDate, id);
+		setLocation(location);
 	}
 
 	/**
