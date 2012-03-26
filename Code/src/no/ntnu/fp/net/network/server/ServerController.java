@@ -134,7 +134,7 @@ public class ServerController {
 	}
 	
 	
-	private void markViewed(String requestFrom, String viewUser ){
+	private void markViewed(String requestFrom, String viewUser ) throws SQLException{
 		// a user can view more than on calendar
 		if(!requestFrom.equals(viewUser)){
 			if(views.containsKey(viewUser)){
@@ -147,6 +147,8 @@ public class ServerController {
 				System.out.println("request From (Value): "+requestFrom);
 				System.out.println("view user (key)"+viewUser);
 			}
+			
+			databaseController.subscribeToCalendar(requestFrom, viewUser);
 		}
 	}
 	
@@ -371,20 +373,25 @@ public class ServerController {
 	
 	
 	public void cancelView(Tuple <Socket, Object> data){
-		Request request = (Request)data.y;
-		String username = request.getAuth().getUsername();
-		String cancelViewOfUser = (String)request.getObject();
-		if(connectedClients.containsKey(username)){
-			views.remove(cancelViewOfUser);
-			Request response = new Request(null, null);
-			response.setMethod(Method.CANCEL_VIEW_SUCCEDED);
-			send(data.x, response);
-			
-		}else{
-			Request response = new Request(null, null);
-			response.setMethod(Method.LOGIN_FAILED);
-			send(data.x, response);
-			
+		try{
+			Request request = (Request)data.y;
+			String username = request.getAuth().getUsername();
+			String cancelViewOfUser = (String)request.getObject();
+			if(connectedClients.containsKey(username)){
+				views.remove(cancelViewOfUser);
+				databaseController.unsubscribeToCalendar(username, cancelViewOfUser);
+				Request response = new Request(null, null);
+				response.setMethod(Method.CANCEL_VIEW_SUCCEDED);
+				send(data.x, response);
+				
+			}else{
+				Request response = new Request(null, null);
+				response.setMethod(Method.LOGIN_FAILED);
+				send(data.x, response);
+				
+			}
+		}catch(SQLException sq){
+			sq.printStackTrace();
 		}
 	}
 	
