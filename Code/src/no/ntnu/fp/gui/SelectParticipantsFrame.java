@@ -54,19 +54,19 @@ public class SelectParticipantsFrame implements ListCellRenderer {
 
 class ListRenderingFrame extends JFrame implements ListSelectionListener {
 	
-	
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private Meeting model;
 
 	public ListRenderingFrame(Meeting meeting) {
+		
+		this.model = meeting;
 		
 		JLabel labelUsers = new JLabel("Brukere");
 		
 		JButton saveButton = new JButton(new saveAction("Lagre"));
-		JButton cancelButton = new JButton(new cancelAction("Avbryt"));
+		JButton cancelButton = new JButton(new cancelAction("Avbryt", meeting));
 	
 		JPanel participantButtons = new JPanel();
 		participantButtons.add(saveButton);
@@ -125,7 +125,6 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 	private Vector getListOfAllUsers() {
 		Vector users = new Vector();
 	
-	
 		User user = new User("havard");
 		user.setName("Håvard Wormdal Høiby");
 		User p1 = new User("bjorn");
@@ -138,6 +137,7 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		p4.setName("Eivind Kvissel");
 		User p5 = new User("tina");
 		p5.setName("Tina Syversen");
+		
 		
 		users.add(user);
 		users.add(p1);
@@ -157,7 +157,9 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	System.out.println("lagre");
+
+        	System.out.println("Lagre");
+        	System.out.println(model.getParticipants());
         }
     }
     
@@ -165,13 +167,17 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
     private class cancelAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public cancelAction(String text) {
+        private Meeting model;
+        
+        public cancelAction(String text, Meeting model) {
         	super(text, null);
+        	this.model = model;
         }
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
         	System.out.println("Avbryt");
+            System.out.println(model.getParticipants());
         }
     }
 
