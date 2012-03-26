@@ -13,21 +13,25 @@ public class Duration implements ContainComparable<Duration> {
 	public Duration(Date from, Date to) {
 		setFrom(from);
 		setTo(to);
+		
+		if (from.compareTo(to) != -1) {
+			throw new IllegalArgumentException("From("+TimeLord.formatDate(from)+") must be before to("+TimeLord.formatDate(to)+")");
+		}
 	}
 	
-	public void setFrom(Date from) {
+	private void setFrom(Date from) {
 		this.from = from;
 	}
 	
-	public void setTo(Date to) {
+	private void setTo(Date to) {
 		this.to = to;
 	}
 	
-	public Date getFrom() {
+	public final Date getFrom() {
 		return from;
 	}
 	
-	public Date getTo() {
+	public final Date getTo() {
 		return to;
 	}
 
@@ -46,15 +50,10 @@ public class Duration implements ContainComparable<Duration> {
 	@Override
 	public boolean contains(Duration o) {
 		
-		//System.out.println(from.compareTo(o.from));
-		//System.out.println(to.compareTo(o.to));
+		boolean isBefore = (to.compareTo(o.from) <= 0);
+		boolean isAfter = (from.compareTo(o.to) >= 0);
 		
-		boolean before = (to.compareTo(o.from) < 0);
-		//boolean after = 
-		
-		///return ! && !(from.compareTo(o.to) > 0);  
-		return false;
-		//from.compareTo(o.from) <= 0 && to.compareTo(o.to) >= 0
+		return !isBefore && !isAfter;
 	}
 	
 	public String toString() {
@@ -62,15 +61,11 @@ public class Duration implements ContainComparable<Duration> {
 	}
 	
 	public static void main(String[] args) {
-		SortedList<Duration> list = new SortedList<Duration>();
+		SortedDistinctTimeList<Duration> list = new SortedDistinctTimeList<Duration>();
 		
 		Duration d1 = new Duration(new Date(112, 2, 1, 12, 0, 0), new Date(112, 2, 1, 13, 0, 0));
 		Duration d2 = new Duration(new Date(112, 2, 1, 13, 0, 0), new Date(112, 2, 1, 14, 0, 0));
 		Duration d3 = new Duration(new Date(112, 2, 1, 12, 0, 0), new Date(112, 2, 1, 12, 30, 0));
-		
-		System.out.println(d1.contains(d2) == false);
-		System.out.println(d1.contains(d3) == true);
-		System.out.println(d2.contains(d3) == false);
 		
 		list.add(d1);
 		list.add(d2);
