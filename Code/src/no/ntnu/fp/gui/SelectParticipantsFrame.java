@@ -40,10 +40,12 @@ public class SelectParticipantsFrame implements ListCellRenderer {
 		return panel;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 		
 		Meeting m = new Meeting();
 		m.addParticipant(new User("havard"), State.Pending);
+		m.addParticipant(new User("andy"), State.Pending);
 		
 		JFrame frame = new ListRenderingFrame(m);
 		frame.show();
@@ -79,7 +81,6 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		});
 		
 		
-		
 		JList list = new JList(getListOfAllUsers());
 		
 		
@@ -89,6 +90,8 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 			 */
 			private static final long serialVersionUID = 1L;
 
+			
+			
 			@Override
 		    public void setSelectionInterval(int index0, int index1) {
 		        if(super.isSelectedIndex(index0)) {
@@ -99,6 +102,14 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		        }
 		    }
 		});
+		
+		for(int i = 0; i < list.getModel().getSize(); i++) {
+			User user = (User)list.getModel().getElementAt(i);
+			if (meeting.getParticipants().contains(user)) {
+				list.setSelectedIndex(i);
+			}
+		}
+		
 		list.setCellRenderer(new SelectParticipantsFrame());
 		JScrollPane scrollPane = new JScrollPane(list);
 		
