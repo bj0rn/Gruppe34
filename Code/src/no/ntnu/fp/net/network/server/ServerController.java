@@ -68,6 +68,11 @@ public class ServerController {
 	}
 	
 	
+	private void getSubscribers(){
+		
+	}
+	
+	
 	/**
 	 * @author bj0rn
 	 * Authenticate the user by checking the database.

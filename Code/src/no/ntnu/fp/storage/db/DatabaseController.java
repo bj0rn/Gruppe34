@@ -27,6 +27,7 @@ import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
+import no.ntnu.fp.net.network.Tuple;
 import no.ntnu.fp.util.TimeLord;
 
 /**
@@ -1045,5 +1046,19 @@ public class DatabaseController {
 		String sql = "DELETE FROM Shows WHERE Username = '" + username + "'"
 				+" AND CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' ))";
 		db.executeUpdate(sql);
+	}
+	
+	
+	public List <Tuple <String, String>> getSubscribers(){
+		DbConnection db = getConnection();
+		ArrayList<Tuple<String, String>> res =  new ArrayList<Tuple <String, String>>();
+		
+		String sql = "SELECT Shows.Username, Calendar.Username"
+				+"FROM Shows" +
+				+"LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";
+		
+		
+		
+		return res;
 	}
 }
