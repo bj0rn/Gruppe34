@@ -223,6 +223,7 @@ public class CommunicationController {
 		try {
 			os = new DataOutputStream(socket.getOutputStream());
 			ObjectOutputStream oos = new ObjectOutputStream(os);
+			System.out.println(obj);
 			oos.writeObject(obj);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

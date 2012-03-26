@@ -21,8 +21,12 @@ public class MeetingInviteRejectButtonAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		State state = State.Rejected;
+		
 		CommunicationController c = CommunicationController.getInstance();
-		c.dispatchMeetingReply(user, meeting, State.Rejected);
+		c.dispatchMeetingReply(user, meeting, state);
+		
+		meeting.setState(user, state);
 	}
 
 }

@@ -753,9 +753,13 @@ public class DatabaseController {
 	 * @return the {@code Meeting}s database id
 	 */
 	public int saveMeeting(Meeting meeting) throws SQLException {
+		
 		DbConnection dbc = getConnection();
 		String sql = "";
+
+		int id = -1;
 		if (meeting.getID() == -1) { //it's a brand new meeting.
+			System.out.println("new meeting");
 			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+
 				", Description, EntryType, LocationID) VALUES('"+
 				TimeLord.changeDateToSQL(meeting.getStartDate())+"', '"+
@@ -766,21 +770,48 @@ public class DatabaseController {
 			dbc.executeUpdate(sql);
 			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
 			ResultSet rs = dbc.query(s);
-			dbc.close();
+			
 			if (rs.first())
-				return rs.getInt("ID");
-		}//end new meeting
+				id = rs.getInt("ID");
+		} else {
 		
-		//did we get here? okay, we need to update an existing meeting.
-		sql = "UPDATE CalendarEntry SET TimeStart='" +
+			//did we get here? okay, we need to update an existing meeting.
+			sql = "UPDATE CalendarEntry SET TimeStart='" +
 				TimeLord.changeDateToSQL(meeting.getStartDate())+"', "+
 				"TimeEnd='"+TimeLord.changeDateToSQL(meeting.getEndDate())+
 				"', Description='"+meeting.getDescription()+"', "+
 				"LocationID="+meeting.getLocation().getID()+
 				" WHERE CalendarEntryID="+meeting.getID();
+			dbc.executeUpdate(sql);
+		}
+		
+		// Update Contains table
+		sql = "DELETE FROM Contains WHERE CalendarEntryID = " + id;
 		dbc.executeUpdate(sql);
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("INSERT INTO Contains (Role, State, CalendarID, CalendarEntryID) VALUES ");
+		
+		String role = "Owner";
+		String state = "Accepted";
+		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "'";
+		int CalendarEntryID = id;
+		
+		builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
+		
+		role = "Participant";
+		for (User user : meeting.getParticipants()) {
+			state = meeting.getState(user).toString();
+			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "'";
+			
+			builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
+		}
+		
+		sql = builder.toString();
+		dbc.executeUpdate(sql);
+		
 		dbc.close();
-		return meeting.getID();
+		return id;
 	}
 	
 	/**

@@ -67,7 +67,7 @@ public class ApplicationFrame extends JFrame {
 		buttons.add(newAppointmentButton);
 
 		newMeetingButton = new JButton("Nytt Møte");
-		newMeetingButton.addActionListener(new NewMeetingAction(this));
+		newMeetingButton.addActionListener(new NewMeetingAction(this, getModel()));
 		buttons.add(newMeetingButton);
 		
 		calendarButton = new JButton("Kalendere");

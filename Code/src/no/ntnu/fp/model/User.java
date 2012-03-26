@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class User extends Model implements Serializable {
+public class User extends Model implements Serializable, Comparable {
 	/**
 	 * 
 	 */
@@ -165,6 +165,14 @@ public class User extends Model implements Serializable {
 	@Override
 	public int hashCode() {
 		return username.hashCode();
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (o instanceof User) {
+			username.compareTo(((User)o).username);
+		}
+		return -1;
 	}
 	
 }

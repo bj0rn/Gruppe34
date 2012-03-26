@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
@@ -61,8 +62,14 @@ public class JEditableList extends JPanel implements ListDataListener {
 				add(comp);
 			}
 			setPreferredSize(new Dimension(280, y));
-			if (getParent() != null) 
-				((JViewport)getParent()).revalidate();
+			if (getParent() != null) {
+				Container c = getParent();
+				if (c instanceof JViewport) {
+					((JViewport)c).revalidate();
+				} else if (c instanceof JPanel) {
+					((JPanel)c).revalidate();
+				}
+			}
 		}
 	}
 	
