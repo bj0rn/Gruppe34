@@ -53,7 +53,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private static final Dimension LABEL_SIZE = new Dimension(100, 20);
     private static final Dimension TEXT_INPUT_SIZE = new Dimension(260, 20);
     
-    public static final String TITLE_LABEL = "Møte";
+    public static final String TITLE_LABEL = "Mï¿½te";
     public static final String DESCRIPTION_LABEL = "Beskrivelse: ";
     public static final String START_LABEL = "Start:";
     public static final String END_LABEL = "Slutt:";
@@ -93,16 +93,11 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	participantList = new JEditableList(listModel, new ParticipantListCellRenderer());
     	participantList.setPreferredSize(new Dimension(410, 150));
     	
-<<<<<<< HEAD
-    	JLabel labelMeeting = new JLabel(TITLE_LABEL, JLabel.CENTER);
-        panel.add(labelMeeting);
-=======
     	JLabel labelMeeting = new JLabel(TITLE_LABEL);
 		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
     	labelMeeting.setBorder(padding);
     	labelMeeting.setFont(StylingDefinition.FRAME_TITLE_FONT);
         panel.add(labelMeeting, BorderLayout.NORTH);
->>>>>>> branch 'master' of https://EivindK@github.com/bj0rn/Gruppe34.git
     	
         JPanel center = new JPanel();
         
