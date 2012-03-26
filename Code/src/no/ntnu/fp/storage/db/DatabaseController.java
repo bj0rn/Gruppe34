@@ -44,9 +44,12 @@ public class DatabaseController {
 	public static void main(String[] args) throws SQLException {
 		DatabaseController dbCtrl = new DatabaseController();
 		
-		List<User> users = dbCtrl.getListOfUsers();
-		for (User user : users) {
-			System.out.println(user);
+		User user = dbCtrl.getFullUser("havard");
+		
+		Calendar calendar = user.getCalendar();
+		
+		for (CalendarEntry entry : calendar) {
+			System.out.println(TimeLord.formatDate(entry.getStartDate()));
 		}
 	}
 	
@@ -322,13 +325,12 @@ public class DatabaseController {
 			String owner = rs.getString("owner");
 			int id = rs.getInt("id");
 			String type = rs.getString("type");
-			Date start = rs.getDate("start");
-			Date end = rs.getDate("end");
+			Date start = rs.getTimestamp("start");
+			Date end = rs.getTimestamp("end");
 			String desc = rs.getString("description");
 			int locationID = rs.getInt("LocationID");
 			
 			CalendarEntry entry = null;
-			System.out.println(type == null);
 			if (type != null) {
 				if (type.equals(CalendarEntry.MEETING)) {
 					Meeting meeting = new Meeting(start, end, desc, id);
@@ -345,6 +347,8 @@ public class DatabaseController {
 				entry.setOwner(new User(owner));
 				Location location = getLocation(locationID);
 				entry.setLocation(location);
+				
+				calendar.addCalendarEntry(entry);
 			}
 		}
 		
