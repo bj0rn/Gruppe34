@@ -624,41 +624,74 @@ public class DatabaseController {
 	 */
 	public String saveUser(User user) throws SQLException {
 		DbConnection dbc = getConnection();
-		String sql = "SELECT count(*) AS ROW FROM User WHERE Username='"+user.getUsername()+"'";
-		ResultSet rs = dbc.query(sql);
-		
+		String sqlSelUsr = "SELECT count(*) AS ROW FROM User WHERE Username='"+user.getUsername()+"'"; 
+		ResultSet rs = dbc.query(sqlSelUsr);
+		String sql = "";
 		//find out if we've gotten more than one username from this
+		//-- why do we need to do that this shouldn't happen AT ALL
+		int i = 0;
 		if(rs.first()) {
 			while (rs.next()) {
-				
+				i++;
 			}
 		}
+		if (i == 1) {
+			//update the one existing user.
+			sql = "UPDATE User SET "
+				 +"Password='"+ user.getPassword() + "', "
+				 +"Name='"+ user.getName() +"', "
+				 +"Age="+ user.getAge() +"', "
+				 +"PhoneNumber="+ user.getPhoneNumber() +"', "
+				 +"Email='"+ user.getEmail() +"' "
+				 +"WHERE Username='"+ user.getUsername()+"'";
+			dbc.executeUpdate(sql);
+			return user.getUsername();
+		}
+		if (i == 0) {
+			sql = "INSERT INTO User (Username, Password, Name, " +
+					"Age, PhoneNumber, Email) VALUES("
+					+ user.getUsername() + ", "
+					+ user.getPassword() + ", "
+					+ user.getName() + ", "
+					+ user.getAge() + ", " 
+					+ user.getPhoneNumber() + ", "
+					+ user.getEmail() + ")";
+			return getLastInsertedID("User", dbc);
+		}
+		if (i > 1) {
+			//so what is exactly supposed to happen here?
+			//What kind of measures are we supposed to take when
+			//we've broken our own restraints?
+			//I guess... return?
+			return null;
+		}
 		
-		//IF EXISTS doesn't work for us.
-		String s = ""
-			+ "IF EXISTS( SELECT * FROM User WHERE Username="
-			+ user.getUsername() + ") BEGIN UPDATE User"
-			+ "SET Password=" + user.getPassword()
-			+ ", Name=" + user.getName()
-			+ ", Age=" + user.getAge()
-			+ ", PhoneNumber=" + user.getPhoneNumber()
-			+ ", Email=" + user.getEmail()
-			+ " WHERE Username=" + user.getUsername()
-			+ "END ELSE "
-			//Below a new user is created.
-			+ "BEGIN INSERT INTO User (Username, Password, Name, " +
-			"Age, PhoneNumber, Email) VALUES("
-			+ user.getUsername() + ", "
-			+ user.getPassword() + ", "
-			+ user.getName() + ", "
-			+ user.getAge() + ", " 
-			+ user.getPhoneNumber() + ", "
-			+ user.getEmail() + ")"
-			+" END";
-		
-		
-		dbc.query(s); //Since we're just updating/inserting there's no need for the result set, right?
-		return user.getUsername();
+		//herp a derp don't look here.
+//		//IF EXISTS doesn't work for us.
+//		String s = ""
+//			+ "IF EXISTS( SELECT * FROM User WHERE Username="
+//			+ user.getUsername() + ") BEGIN UPDATE User"
+//			+ "SET Password=" + user.getPassword()
+//			+ ", Name=" + user.getName()
+//			+ ", Age=" + user.getAge()
+//			+ ", PhoneNumber=" + user.getPhoneNumber()
+//			+ ", Email=" + user.getEmail()
+//			+ " WHERE Username=" + user.getUsername()
+//			+ "END ELSE "
+//			//Below a new user is created.
+//			+ "BEGIN INSERT INTO User (Username, Password, Name, " +
+//			"Age, PhoneNumber, Email) VALUES("
+//			+ user.getUsername() + ", "
+//			+ user.getPassword() + ", "
+//			+ user.getName() + ", "
+//			+ user.getAge() + ", " 
+//			+ user.getPhoneNumber() + ", "
+//			+ user.getEmail() + ")"
+//			+" END";
+//		
+//		
+//		dbc.query(s); //Since we're just updating/inserting there's no need for the result set, right?
+//		return user.getUsername();
 	}
 	
 	
@@ -807,6 +840,7 @@ public class DatabaseController {
 		sql = "UPDATE Place SET "
 			 +"Description='"+place.getDescription()+"' "
 			 +"WHERE LocationID="+place.getID();
+		dbc.executeUpdate(sql);
 		return place.getID();
 	}
 	/**
