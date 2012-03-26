@@ -795,7 +795,7 @@ public class DatabaseController {
 		
 		String role = "Owner";
 		String state = "Accepted";
-		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "')";
+		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "'";
 		int CalendarEntryID = id;
 		
 		builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
@@ -803,7 +803,7 @@ public class DatabaseController {
 		role = "Participant";
 		for (User user : meeting.getParticipants()) {
 			state = meeting.getState(user).toString();
-			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "')";
+			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "'";
 			
 			builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
 		}
@@ -1027,7 +1027,6 @@ public class DatabaseController {
 		return result;
 	}
 	
-
 
 
 
