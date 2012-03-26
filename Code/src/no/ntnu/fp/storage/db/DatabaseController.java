@@ -313,8 +313,6 @@ public class DatabaseController {
 		+	"WHERE C.Username = '" + username + "' " 
 		+	"ORDER BY start ASC";
 
-		System.out.println(sql);
-		
 		DbConnection db = getConnection();
 		
 		ResultSet rs = db.query(sql);
@@ -331,25 +329,27 @@ public class DatabaseController {
 			
 			CalendarEntry entry = null;
 			System.out.println(type == null);
-			if (type.equals(CalendarEntry.MEETING)) {
-				Meeting meeting = new Meeting(start, end, desc, id);
+			if (type != null) {
+				if (type.equals(CalendarEntry.MEETING)) {
+					Meeting meeting = new Meeting(new java.util.Date(start.getTime()), new java.util.Date(end.getTime()), desc, id);
+					
+					Map<User, State> participants = getParticipants(id);
+					meeting.addParticipants(participants);
+					
+					entry = meeting;
+					
+				} else {
+					assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
+					entry = new Appointment(new java.util.Date(start.getTime()), new java.util.Date(end.getTime()), desc, id);
+				}
+				entry.setOwner(new User(owner));
+				Location location = getLocation(locationID);
+				entry.setLocation(location);
 				
-				Map<User, State> participants = getParticipants(id);
-				meeting.addParticipants(participants);
-				
-				entry = meeting;
-				
-			} else {
-				assert(type.equals(CalendarEntry.APPOINTMENT)); // the database should only contain two types
-				entry = new Appointment(start, end, desc, id);
+				calendar.addCalendarEntry(entry);
 			}
 			
-			entry.setOwner(new User(owner));
 			
-			Location location = getLocation(locationID);
-			entry.setLocation(location);
-			
-			calendar.addCalendarEntry(entry);
 		}
 		
 		db.close();
