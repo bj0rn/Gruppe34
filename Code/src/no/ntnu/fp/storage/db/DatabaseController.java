@@ -481,6 +481,7 @@ public class DatabaseController {
 		rs.beforeFirst();
 		
 		while(rs.next()) {
+			
 		}
 		
 		//String sqlP = "SELECT LocationID, Description FROM Place";

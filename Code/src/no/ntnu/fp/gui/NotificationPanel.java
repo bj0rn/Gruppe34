@@ -74,18 +74,17 @@ public class NotificationPanel extends JPanel {
 		titleLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		add(titleLabel, BorderLayout.NORTH);
 		
-		notificationListModel = new NotificationListModel();
+		notificationListModel = new NotificationListModel(user.getCalendar());
 		setModel(user.getNotifications());
 		
 		notificationList = new JEditableList(notificationListModel, new NotificationCellRenderer());
-		notificationList.setMinimumSize(new Dimension(300, 800));
+		notificationList.setPreferredSize(new Dimension(260, 800));
 		
 		JScrollPane scrollPane = new JScrollPane(notificationList);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		notificationList.update();
 		
 		add(scrollPane, BorderLayout.CENTER);
-		
-		setMinimumSize(new Dimension(300, 500));
-		
 		
 	}
 	
@@ -118,7 +117,6 @@ public class NotificationPanel extends JPanel {
 					User user = ((MeetingNotification) notif).getUser();
 					State state = meeting.getState(user);
 
-					panel.setMinimumSize(new Dimension(300,22));
 					panel.setLayout(new BorderLayout());
 					
 					JLabel title = new JLabel(MEETING_REPLY_TITLE);
@@ -128,11 +126,12 @@ public class NotificationPanel extends JPanel {
 					
 					
 					JTextArea textComp = new JTextArea();
+					textComp.setBackground(new Color(237,237,237));
 					textComp.setEditable(false);
 					textComp.setLineWrap(true);
 					textComp.setMargin(new Insets(4,4,4,4));
 					
-					String text = user.getName() + " har " + state + " din møte innkalling";
+					String text = user.getName() + " har avvist din møteinnkalling";
 					textComp.setText(text);
 					
 					
@@ -144,8 +143,6 @@ public class NotificationPanel extends JPanel {
 					
 				} else { 
 					assert(notif instanceof MeetingInviteNotification);
-
-					panel.setMinimumSize(new Dimension(300,200));
 					panel.setLayout(new BorderLayout());
 					
 					JLabel title = new JLabel(MEETING_INVITATION_TITLE);
@@ -198,6 +195,8 @@ public class NotificationPanel extends JPanel {
 				}
 			}
 			
+			
+			panel.setPreferredSize(new Dimension(250,150));
 			return panel;
 		}
 	}

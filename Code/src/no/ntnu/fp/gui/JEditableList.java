@@ -1,11 +1,14 @@
 package no.ntnu.fp.gui;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JViewport;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
@@ -17,7 +20,7 @@ public class JEditableList extends JPanel implements ListDataListener {
 	private ListModel dataModel;
 	
 	public JEditableList(ListModel model, ListCellRenderer listCellRenderer) {
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(null);
 		setCellRenderer(listCellRenderer);
 		setListModel(model);
 	}
@@ -34,23 +37,32 @@ public class JEditableList extends JPanel implements ListDataListener {
 		}
 	}
 
-	private void update() {
-		int i=0;
-		int n=getComponents().length;
+	public void update() {
 		
-		for (int j=0; j<dataModel.getSize(); j++) {
+		if (dataModel != null) {
+			removeAll();
 			
-			Component comp = listCellRenderer.getListCellRendererComponent(null, null, j, false, false);
-			if (i <  n) {
-				remove(i);
-				add(comp, i);
-			} else {
+			int n = dataModel.getSize();
+			
+			int y = 0;
+			
+			for (int i=0; i<n; i++) {
+				Component comp = listCellRenderer.getListCellRendererComponent(null, null, i, false, false);
+				
+				Dimension size = comp.getPreferredSize();
+				int width = size.width;
+				int height = size.height;
+				
+				comp.setBounds(0, y, width, height);
+				comp.repaint();
+				
+				y += height;
+				
 				add(comp);
 			}
-		}
-		
-		for (;i<n; i++) {
-			//remove(i);
+			setPreferredSize(new Dimension(280, y));
+			if (getParent() != null) 
+				((JViewport)getParent()).revalidate();
 		}
 	}
 	

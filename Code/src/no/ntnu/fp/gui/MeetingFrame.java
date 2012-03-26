@@ -19,6 +19,7 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import no.ntnu.fp.gui.timepicker.*;
 import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Meeting;
 
@@ -42,11 +43,11 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
     
     private Meeting model;
     
-    public MeetingFrame() {
+    public MeetingFrame(JFrame frame) {
     	participantList = new JList();
     	participantList.setPreferredSize(new Dimension(100, 150));
     	
-    	JLabel labelMeeting = new JLabel("Møte");
+    	JLabel labelMeeting = new JLabel("Mï¿½te");
         JLabel labelDescription = new JLabel("Beskrivelse:");
         JLabel labelStart = new JLabel("Start:");
         JLabel labelEnd = new JLabel("Slutt:");
@@ -69,6 +70,8 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
         add(saveButton);
         add(cancelButton);
         
+        startField.addFocusListener(new TimePickableFieldListener(startField, frame));
+        endField.addFocusListener(new TimePickableFieldListener(endField, frame));
 
        
         for (Component c : getComponents()) {
@@ -170,7 +173,7 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
         }
     }
     
-    //Action for å avbryte skjema
+    //Action for ï¿½ avbryte skjema
     private class cancelAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
@@ -238,9 +241,9 @@ public class MeetingFrame extends JPanel implements PropertyChangeListener, List
     
     
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Møte");
+        JFrame frame = new JFrame("Mï¿½te");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(new MeetingFrame());
+        frame.setContentPane(new MeetingFrame(frame));
         try {
             // 1.06+
             frame.setLocationByPlatform(true);

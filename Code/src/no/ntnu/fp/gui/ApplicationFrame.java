@@ -76,6 +76,8 @@ public class ApplicationFrame extends JFrame {
 		
 		panel.add(buttons, BorderLayout.SOUTH);
 		
+		
+		setPreferredSize(new Dimension(700, 600));
 		setContentPane(panel);
 		pack();
 		setLocationRelativeTo(null);
