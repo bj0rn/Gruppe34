@@ -48,7 +48,7 @@ public class CalendarPanel extends JPanel {
 		scrollArea.setRowHeaderView(new JLabel(" "));
 		JPanel weekheader = new JPanel();
 		weekheader.add(new JLabel("Kl."));
-		String[] weekDays = {"Mandag", "Tirsdag", "Onsdag","Torsdag","Fredag","L¿rdag","S¿ndag"};
+		String[] weekDays = {"Mandag", "Tirsdag", "Onsdag","Torsdag","Fredag","Lï¿½rdag","Sï¿½ndag"};
 		JLabel d;
 		for(String s:weekDays){
 			d= new JLabel(s);
@@ -63,10 +63,10 @@ public class CalendarPanel extends JPanel {
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("WeekSheet");
 		CalendarPanel cp = new CalendarPanel();
-		frame.add(cp);
+		frame.setContentPane(cp);
 		frame.setSize(1000,600);
 		frame.setVisible(true);
-		cp.weekSheet.addCalendarEntryView(new CalendarEntryView(new Appointment(new Date(2012, 01, 01, 14, 00), new Date(2012, 01, 01, 15, 30), "M¿te", 0)));
+		cp.weekSheet.addCalendarEntryView(new CalendarEntryView(new Appointment(new Date(2012, 01, 01, 14, 00), new Date(2012, 01, 01, 15, 30), "Mï¿½te", 0)));
 	}
 
 }
