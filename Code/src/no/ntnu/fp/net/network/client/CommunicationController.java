@@ -23,6 +23,7 @@ import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 import no.ntnu.fp.net.network.Request;
 import no.ntnu.fp.net.network.Request.Method;
+import no.ntnu.fp.model.Room;
 
 
 
@@ -342,6 +343,34 @@ public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
 		return false;
 }
 
+
+public List <Room> getListOfRooms(){
+	try{
+		Request request = new Request(auth, null);
+		request.setMethod(Method.GET_LIST_OF_ROOMS);
+		send(mySocket, request);
+		int i = 0;
+		while(true){
+			Request response = (Request)testQueue.takeFirst();
+			if(response.getMethod() == Method.GET_LIST_OF_ROOMS_RESPONSE){
+				return (List <Room>)response.getObject();
+			}else if(response.getMethod() == Method.LOGIN_FAILED){
+				return null;
+			}else {
+				testQueue.putLast((Object)response);
+			}
+		}
+	}catch(InterruptedException e){
+		e.printStackTrace();
+	}
+	
+	
+	return null;
+	
+}
+
+
+
 public boolean deleteMeeting(){
 	return true;
 }
@@ -357,10 +386,7 @@ public boolean deleteUser(){
 
 
 
-public ArrayList<Location> getListOfRooms() {
-	// TODO Auto-generated method stub
-	return null;
-}
+
 	
 	
 }
