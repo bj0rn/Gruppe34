@@ -38,6 +38,7 @@ public class ServerController {
 	private DatabaseController databaseController;
 	private XmlHandler xmlHandler;
 	private Queue <Tuple <Socket, Object>> inQueue;
+	private Map <String, ArrayList<String>> views;
 	
 	
 	
@@ -46,6 +47,7 @@ public class ServerController {
 		databaseController = new DatabaseController();
 		connectedClients = clients;
 		this.inQueue = inQueue;
+		views = new HashMap<String, ArrayList<String>>();
 	}
 	
 	
@@ -132,6 +134,38 @@ public class ServerController {
 	}
 	
 	
+	private void markViewed(String requestFrom, String viewUser ){
+		// a user can view more than on calendar
+		if(!requestFrom.equals(viewUser)){
+			if(views.containsKey(viewUser)){
+				ArrayList<String> list = views.get(viewUser);
+				list.add(requestFrom);
+			}else {
+				ArrayList<String> list = new ArrayList<String>();
+				list.add(requestFrom);
+				views.put(viewUser, list);
+			}
+		}
+	}
+	
+	private void sendChangesToViewers(String username, Object data){
+		if(views.containsKey(username)){
+			ArrayList<String> list = views.get(username);
+			for(String s : list){
+				if(connectedClients.containsKey(s)){
+					Socket sockfd = connectedClients.get(s);
+					Request response = new Request(null, data);
+					if(data instanceof Meeting){
+						response.setMethod(Method.CHANGE_MEETING_NOTFICATION);
+					}else if(data instanceof Appointment){
+						response.setMethod(Method.CHANGE_APPOINTMENT_NOTIFICATION);
+					}
+					send(sockfd, response);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * @author bj0rn
 	 * Get full user from the database
@@ -145,7 +179,9 @@ public class ServerController {
 			Request request = (Request)data.y;
 			Authenticate auth = request.getAuth();
 			String username = (String)request.getObject();
+			
 			if(connectedClients.containsKey(auth.getUsername())){
+				markViewed(auth.getUsername(), username);
 				User user = databaseController.getFullUser(username);
 				Request response = new Request(null, user);
 				System.out.println("User "+user.getName());
@@ -186,6 +222,12 @@ public class ServerController {
 				response.setMethod(Request.Method.SAVE_MEETING_RESPONSE);
 				send(data.x, response);
 				System.out.println("Send data to connected clients");
+				
+				
+				//TODO: Does this work 
+				sendChangesToViewers(username, meeting);
+				
+				
 				
 				//also send message to available clients
 				System.out.println("Send data to connected clients");
@@ -228,6 +270,12 @@ public class ServerController {
 				Request response = new Request(null, id);
 				response.setMethod(Request.Method.SAVE_APPOINTMENT_RESPONSE);
 				send(data.x, response);
+				
+				
+				//TODO: does this work
+				sendChangesToViewers(auth.getUsername(), a);
+				
+				
 				
 			}else {
 				//Not authenticated
