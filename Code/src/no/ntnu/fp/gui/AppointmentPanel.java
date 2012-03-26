@@ -46,7 +46,8 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	
 	public AppointmentPanel(Appointment appmnt) {
 		this();
-		this.model = appmnt;
+		setModel(appmnt);
+		plPickPanel.setModel(appmnt);
 	}
 	public AppointmentPanel() {
 		appointment = new JLabel("Avtale");
@@ -108,6 +109,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		add(delete, constraints);
 		
 		constraints.gridwidth = constraints.REMAINDER;
+		constraints.gridheight = constraints.RELATIVE;
 		add(plPickPanel, GridBagHelper.setConstraints(constraints, 0, 5));
 		
 		descComp.addKeyListener(new KeyAdapter(){
@@ -118,7 +120,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		startComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setStartDate(TimeLord.changeDateToJava(startComp.getText()));
+				model.setStartDate(TimeLord.parseDate(startComp.getText()));
 			}
 		});
 		startComp.addMouseListener(new MouseListener() {
@@ -150,7 +152,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		});
 		endComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
-				model.setEndDate(TimeLord.changeDateToJava(endComp.getText()));
+				model.setEndDate(TimeLord.parseDate(endComp.getText()));
 			}
 		}); 
 		endComp.addMouseListener(new MouseListener() {
@@ -205,8 +207,8 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	 private void updatePanel() {
 	       if (model != null) {
 	    	   descComp.setText(model.getDescription());
-	    	   startComp.setText(TimeLord.changeDateToSQL(model.getStartDate()));
-	    	   endComp.setText(TimeLord.changeDateToSQL(model.getEndDate()));
+	    	   startComp.setText(TimeLord.formatDate(model.getStartDate()));
+	    	   endComp.setText(TimeLord.formatDate(model.getEndDate()));
 	    	   locComp.setText(model.getLocation().getID() + "");
 	    	   plPickPanel.updatePanel();
 	       }
@@ -228,16 +230,14 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	public static void main(String[] args){
 		JFrame frame = new JFrame("Frame"); //create a frame
 		
-		AppointmentPanel panel = new AppointmentPanel();
-		frame.add(panel); //adder alt i konstrukt¿ren
-		
 		Appointment app = new Appointment(new Date(0, 0, 0), new Date(2012, 05, 03),
 				"Kill the batman", 35);
 		app.setLocation(new Place(33, "Gotham City"));
+		
+		AppointmentPanel panel = new AppointmentPanel(app);
+		
+		frame.add(panel); //adder alt i konstrukt¿ren
 		panel.setModel(app);
-		
-
-		
 		
 		frame.setLocationRelativeTo(null); //center a frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

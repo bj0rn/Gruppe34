@@ -70,7 +70,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private JEditableList participantList;
     private JButton addParticipantButton = new JButton(new addParticipantAction("Legg til Deltaker"));
     private JTextField locationField = new JTextField(20);
-    private JButton reserveRoomListButton = new JButton(new roomListAction("Rom"));
+    private PlacePickerPanel placePickerPanel = new PlacePickerPanel();
     private JButton saveButton = new JButton(new saveAction("Lagre"));
     private JButton cancelButton = new JButton(new cancelAction("Avbryt"));
     private JButton deleteButton = new JButton(new deleteAction("Slett"));
@@ -148,8 +148,12 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         addGridBagComponent(center, scrollPanel, 4, 0, c, 2);
         addGridBagComponent(center, addParticipantButton, 5, 0, c, 2);
         
-        addGridBagLabel(center, PLACE_LABEL, 6, c);
-        addGridBagComponent(center, locationField, 6, c);
+        //addGridBagLabel(center, PLACE_LABEL, 6, c);
+        //addGridBagComponent(center, locationField, 6, c);
+        
+        addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
+        placePickerPanel.addPropertyChangeListener(this);
+        
         
         panel.add(center, BorderLayout.CENTER);
                 
@@ -164,8 +168,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 
         model.setOwner(user);
         
-        panel.setPreferredSize(new Dimension(500, 500));
-        setPreferredSize(new Dimension(500, 500));
+        panel.setPreferredSize(new Dimension(500, 700));
+        setPreferredSize(new Dimension(500, 700));
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(panel);
@@ -246,8 +250,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	CommunicationController c = CommunicationController.getInstance();
-        	c.saveMeeting(model.shallowCopy());
+        	System.out.println(model);
+        	//CommunicationController c = CommunicationController.getInstance();
+        	//c.saveMeeting(model.shallowCopy());
         }
     }
     
@@ -318,6 +323,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private void updateLocation() {
     	Location location = model.getLocation(); 
     	if (location != null) {
+    		placePickerPanel.setLocation(location);
     		locationField.setText(model.getLocation().toString());
     	} else {
     		locationField.setText("");
@@ -331,15 +337,17 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         final String name = event.getPropertyName();
         if (name == CalendarEntry.DESC_PROPERTY) {
         	description.setText(model.getDescription());
-        }
-        else if (name == CalendarEntry.START_PROPERTY) {}
-         
-        else if (name == CalendarEntry.END_PROPERTY) {
+        } else if (name == CalendarEntry.START_PROPERTY) {
+        	
+        } else if (name == CalendarEntry.END_PROPERTY) {
             endField.setText((String) event.getNewValue());
-         }
-        else if (name == Meeting.PARTICIPANTS_PROPERTY) {}
-        else if (name == CalendarEntry.LOC_PROPERTY) {
+        } else if (name == Meeting.PARTICIPANTS_PROPERTY) {
+        	
+        } else if (name == CalendarEntry.LOC_PROPERTY) {
         	locationField.setText(model.getLocation().toString());
+        } else if (name == PlacePickerPanel.LOCATIONC_PROPERTY) {
+        	Location l = (Location)event.getNewValue();
+        	model.setLocation(l);
         }
 	}
 	
