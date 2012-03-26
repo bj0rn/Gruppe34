@@ -110,8 +110,16 @@ public class Meeting extends CalendarEntry implements Serializable {
 		}
 	}
 	
-	public Meeting clone() {
-		return new Meeting(startDate, endDate, description, id, location);
+	public Meeting shallowCopy() {
+		Meeting meeting = new Meeting(startDate, endDate, description, id, location);
+		meeting.setOwner(new User(getOwner().getUsername()));
+		
+		for (User user : getParticipants()) {
+			meeting.addParticipant(new User(user.getUsername()), getState(user));
+		}
+		
+		return meeting;
+		
 	}
 	
 	public String toString() {

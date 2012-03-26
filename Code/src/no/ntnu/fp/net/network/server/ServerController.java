@@ -262,6 +262,13 @@ public class ServerController {
 			sq.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
 	public void inspectRequest(Tuple <Socket, Object> data){
 		Class <? extends Object> clazz = data.y.getClass();
 		String objectName = clazz.getSimpleName();

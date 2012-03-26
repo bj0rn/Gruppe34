@@ -8,6 +8,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.XmlHandler;
+import no.ntnu.fp.net.network.Request;
+import no.ntnu.fp.net.network.Request.Method;
 
 
 
@@ -56,11 +58,14 @@ public class ClientWorker implements Runnable {
 	
 	
 	public boolean handle(Object data){
-		if(data instanceof Meeting){
-			System.out.println("We have a meeting");
+		Request response = (Request) data;
+		if(response.getMethod() == Method.MEETING_NOTIFICATION){
+			System.out.println("We have a notification");
 			return true;
+		}else {
+			return false;
 		}
-		return false;
+		
 		
 	}
 
