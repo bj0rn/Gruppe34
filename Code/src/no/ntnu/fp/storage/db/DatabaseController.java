@@ -1027,4 +1027,23 @@ public class DatabaseController {
 		return result;
 	}
 	
+
+
+
+	public void subscribeToCalendar(String username, String requestedUserName) throws SQLException{
+		DbConnection db = getConnection();
+		
+		String sql = "INSERT INTO Shows (Username,CalendarID) " 
+		+" Values('" + username + "', (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' ))";
+		
+		db.executeUpdate(sql);
+		
+	}
+	
+	public void unsubscribeToCalendar(String username, String requestedUserName) throws SQLException{
+		DbConnection db = getConnection();
+		String sql = "DELETE FROM Shows WHERE Username = '" + username + "'"
+				+" AND CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' ))";
+		db.executeUpdate(sql);
+	}
 }
