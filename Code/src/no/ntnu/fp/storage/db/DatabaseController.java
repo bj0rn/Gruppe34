@@ -1026,9 +1026,6 @@ public class DatabaseController {
 		dbc.close();
 		return result;
 	}
-	
-
-
 
 	public void subscribeToCalendar(String username, String requestedUserName) throws SQLException{
 		DbConnection db = getConnection();
@@ -1045,5 +1042,19 @@ public class DatabaseController {
 		String sql = "DELETE FROM Shows WHERE Username = '" + username + "'"
 				+" AND CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' ))";
 		db.executeUpdate(sql);
+	}
+	
+	
+	public List <Tuple <String, String>> getSubscribers(){
+		DbConnection db = getConnection();
+		ArrayList<Tuple<String, String>> res =  new ArrayList<Tuple <String, String>>();
+		
+		String sql = "SELECT Shows.Username, Calendar.Username"
+				+"FROM Shows" +
+				+"LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";
+		
+		
+		
+		return res;
 	}
 }
