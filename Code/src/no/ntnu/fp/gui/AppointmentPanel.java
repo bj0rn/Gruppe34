@@ -33,7 +33,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	private JTextField locComp;
 	//private JComboBox locComp;
 	//private Room[] rooms =
-	private JPanel plPickPanel;
+	private PlacePickerPanel plPickPanel;
 	
 	private JButton save, delete;
 	
@@ -54,7 +54,8 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		endTime = new JLabel("Sluttid");
 		location = new JLabel("Sted");
 		
-		plPickPanel = new PlacePickerPanel();
+		plPickPanel = new PlacePickerPanel(this);
+
 		
 		descComp = new JTextField(10);
 		startComp = new JTextField(10);
@@ -206,6 +207,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	    	   startComp.setText(TimeLord.changeDateToSQL(model.getStartDate()));
 	    	   endComp.setText(TimeLord.changeDateToSQL(model.getEndDate()));
 	    	   locComp.setText(model.getLocation().getID() + "");
+	    	   plPickPanel.updatePanel();
 	       }
 	    }
 	 
@@ -254,6 +256,10 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		}
 		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
 			locComp.setText(model.getLocation().getDescription());
+		}
+		if (evt.getPropertyName() == PlacePickerPanel.LOCATIONC_PROPERTY) {
+			model.setLocation((Location) evt.getNewValue());
+			System.out.println("OK!");
 		}
 	}
 
