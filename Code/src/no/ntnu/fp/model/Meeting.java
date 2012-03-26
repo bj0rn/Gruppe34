@@ -110,6 +110,11 @@ public class Meeting extends CalendarEntry implements Serializable {
 		}
 	}
 	
+	public boolean removeAllParticipants() {
+		participants.clear();
+		return true;
+	}
+	
 	public Meeting clone() {
 		return new Meeting(startDate, endDate, description, id, location);
 	}
