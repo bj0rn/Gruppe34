@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -65,15 +66,18 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 	private Meeting model;
 	private ListModel listModel;
 	private ListSelectionModel selectionModel;
-
+	private CancelAction cAction;
+	
 	public ListRenderingFrame(Meeting meeting) {
 		
 		this.model = meeting;
 		
-		JLabel labelUsers = new JLabel("Brukere");
+		JLabel labelUsers = new JLabel("Brukere", JLabel.CENTER);
+		labelUsers.setFont(new Font("sansserif", Font.BOLD, 26));
 		
-		JButton saveButton = new JButton(new saveAction("Lagre"));
-		JButton cancelButton = new JButton(new cancelAction("Avbryt", meeting));
+		JButton saveButton = new JButton(new SaveAction("Lagre"));
+		cAction = new CancelAction("Avbryt", meeting);
+		JButton cancelButton = new JButton(cAction);
 	
 		JPanel participantButtons = new JPanel();
 		participantButtons.add(saveButton);
@@ -83,7 +87,7 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		setSize(380,360);
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);
+				cAction.actionPerformed(null);
 			}
 		});
 		
@@ -152,6 +156,7 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		getContentPane().add(p, "Center");
 		getContentPane().add(participantButtons, "South");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(null);
 		setVisible(true);
 	
 	}
@@ -181,10 +186,10 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		return users;
 	}
 	//Action for lagring av skjema
-	private class saveAction extends AbstractAction {
+	private class SaveAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public saveAction(String text) {
+        public SaveAction(String text) {
         	super(text, null);
         }
 
@@ -197,14 +202,14 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
     }
     
     //Action for � avbryte skjema
-    private class cancelAction extends AbstractAction {
+    private class CancelAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
         private Meeting model;
         
         private Map<User, State> savedState = new HashMap<User, State>();
         
-        public cancelAction(String text, Meeting model) {
+        public CancelAction(String text, Meeting model) {
         	super(text, null);
         	this.model = model;
         	for(User user :model.getParticipants()) {
