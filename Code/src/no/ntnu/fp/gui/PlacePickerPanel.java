@@ -82,6 +82,9 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			
 		this.locList = new JList();
 		this.locList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.listModel = new DefaultListModel();
+		this.locList.setModel(listModel);
+		
 		
 		Location loc1 = new Room(23, "Room1", "The first room", 44);
 		Location loc2 = new Place(22, "strangewhere");
@@ -90,7 +93,7 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		locs.add(loc1);
 		locs.add(loc2);
 		locs.add(loc3);
-		this.listModel = new DefaultListModel();
+		
 		
 		grid = new GridBagLayout();
 		constraints = new GridBagConstraints();
@@ -116,14 +119,15 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
+					if (locList.getSelectedValue() == null)
+						return;
 					Location oldLoc = selectedLoc;
-					setLocation((Location) locList.getSelectedValue());
+					selectedLoc = (Location) locList.getSelectedValue();
 					System.out.println("YEH");
 					//this is probably not a very clever way\
 					//of going about doing this kind of thing\
 					//then again I've never been much of a wise man.
-					
-					pcs.firePropertyChange(LOCATIONC_PROPERTY, oldLoc, selectedLoc);
+					pcs.firePropertyChange(LOCATIONC_PROPERTY, oldLoc, locList.getSelectedValue());
 				}
 				
 			}
@@ -155,7 +159,7 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 				nameComp.setText("N/A");
 			}
 		}
-		setListOfLocations(locs);
+		drawListOfLocations();
 		
 	}
 	public void setLocation(Location loc) {
@@ -163,28 +167,29 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		updatePanel();
 	}
 	public void setListOfLocations(ArrayList<Location> list) {
-		System.out.println("..");
-		if (listModel == null) { 
+		this.locs = list;
+		updatePanel();
+	}
+	
+	public void drawListOfLocations() {
+		if (listModel == null)
 			listModel = new DefaultListModel();
-		}
-		
-		listModel.removeAllElements();
-		if (list.size() < 1) {
-			listModel.addElement("Nothing's available.");
+		this.listModel.clear();
+		if (this.locs == null) {
+			listModel.addElement("Nothing's available");
 			locList.setEnabled(false);
 			return;
 		}
-		//locList.setEnabled(true);
-		int i = 0;
-		for (Location l : list) {
-			System.out.println(l.getDescription());
-			System.out.println((l instanceof Room) + " - " + showRooms);
-			System.out.println((l instanceof Room) && showRooms); 
+		locList.setEnabled(true);
+		for (Location l : locs) {
 			if (((l instanceof Room) && showRooms) || ((l instanceof Place) && showPlaces)) {
 				this.listModel.addElement(l);
 			}
 		}
-		locList.setModel(listModel);
+		if (listModel.isEmpty()) {
+			listModel.addElement("Nothing's available");
+			locList.setEnabled(false);
+		}
 	}
 	
 	private ArrayList<Room> getAvailableRooms() {

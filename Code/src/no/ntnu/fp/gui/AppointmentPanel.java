@@ -249,7 +249,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt.getPropertyName() == Appointment.DESC_PROPERTY) {
-				descComp.setText(model.getDescription());
+			descComp.setText(model.getDescription());
 		}
 		if(evt.getPropertyName() == Appointment.END_PROPERTY){
 			endComp.setText(TimeLord.formatDate(model.getEndDate()));
@@ -258,8 +258,8 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 			startComp.setText(TimeLord.formatDate(model.getStartDate()));
 		}
 		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
-			locComp.setText(model.getLocation().getDescription());
-			System.out.println();
+		//	if (model.getLocation() != null)
+				locComp.setText(model.getLocation().getDescription());
 		}
 		if (evt.getPropertyName() == PlacePickerPanel.LOCATIONC_PROPERTY) {
 			model.setLocation((Location) evt.getNewValue());
