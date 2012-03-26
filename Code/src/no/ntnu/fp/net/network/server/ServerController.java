@@ -20,9 +20,12 @@ import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Notification;
+import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 import no.ntnu.fp.model.Meeting.State;
+import no.ntnu.fp.net.network.Request;
+import no.ntnu.fp.net.network.Request.Method;
 import no.ntnu.fp.net.network.Tuple;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
@@ -52,60 +55,6 @@ public class ServerController {
 		this.inQueue = inQueue;
 	}
 	
-	public void authenticate(Tuple<Socket, Object> data) throws SQLException{
-		Authenticate auth = (Authenticate) data.y;
-		String username = auth.getUsername();
-		String password = auth.getPassword();
-		System.out.println("Username: "+ username);
-		System.out.println("Password: "+password);
-		try {
-			DataOutputStream os = new DataOutputStream(data.x.getOutputStream());
-			ObjectOutputStream oos = new ObjectOutputStream(os);
-			//Check username and password againts the database 
-			if(databaseController.authenticate(username, password)){
-				connectedClients.put(username, data.x);
-				oos.writeObject(new String(XmlHandler.loginSuccessful()));
-				System.out.println("Login completed");
-			}else {
-				oos.writeObject(new String(XmlHandler.loginUnsucessful()));
-				System.out.println("Login failed");
-			}
-			//os.close();
-			//oos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-	}
-		
-	}
-	
-	public void getUsers(Tuple <Socket, Object> data){
-		try {
-			DataOutputStream os = new DataOutputStream(data.x.getOutputStream());
-			 ObjectOutputStream oos = new ObjectOutputStream(os);
-			String xml = (String) data.y;
-			String userData[] = XmlHandler.loginFromXml(xml);
-			
-			System.out.println("GetUser user: "+userData[0]);
-			if(connectedClients.containsKey(userData[0])){
-				//send successfull login
-				System.out.println("Ka skjer");
-				List <User> users = databaseController.getListOfUsers();
-				//send the data to the client
-				oos.writeObject(users);
-				
-			}else {
-				oos.writeObject(new String(XmlHandler.loginUnsucessful()));
-				
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	
 	
 	private void send(Socket socket, Object data){
@@ -119,23 +68,77 @@ public class ServerController {
 		}
 		
 	}
+	
+	
+	
+	public void authenticate(Tuple<Socket, Object> data){
+		try{
+			Request request = (Request)data.y;
+			Authenticate auth = request.getAuth();
+			String username = auth.getUsername();
+			String password = auth.getPassword();
+			System.out.println("Username: "+ username);
+			System.out.println("Password: "+password);
+			//Check username and password againts the database 
+			if(databaseController.authenticate(username, password)){
+				connectedClients.put(username, data.x);
+				Request response = new Request(null, null);
+				response.setMethod(Request.Method.LOGIN_SUCCEDED);
+				send(data.x, response);
+				System.out.println("Login completed");
+			}else {
+				Request response = new Request(null, null);
+				response.setMethod(Request.Method.LOGIN_FAILED);
+				send(data.x, response);
+			}
+		}catch(SQLException sq){
+			sq.printStackTrace();
+		}
+	
+	}
+	
+	public void getUsers(Tuple <Socket, Object> data){
+		try {
+			Request request = (Request)data.y;
+			Authenticate auth = request.getAuth();
+			
+			System.out.println("GetUser user: "+ auth.getUsername());
+			if(connectedClients.containsKey(auth.getUsername())){
+				List <User> users = databaseController.getListOfUsers();
+				Request response = new Request(null,(Object)users);
+				response.setMethod(Request.Method.GET_USERS_RESPONSE);
+				//send the data to the client
+				send(data.x, response);
+			}else {
+				Request response = new Request(null, null);
+				response.setMethod(Request.Method.LOGIN_FAILED);
+				send(data.x, response);
+			}
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
 	//TODO: Implements
 	public void getFullUser(Tuple <Socket, Object> data){
-		//Data is received as xml
 		try {
-			String userInfo[] = XmlHandler.loginFromXml((String)data.y);
-			String key = XmlHandler.inspectKey((String)data.y);
-			System.out.println("key: "+key);
-			if(connectedClients.containsKey(userInfo[0])){
-				System.out.println("The user is auth");
-				User user = databaseController.getFullUser(key);
-				//User user = new User("havard", "H�vard", 20, 12313213, "test@test.com");
-				if(user == null){
-					System.out.println("NULL");
-				}
+			Request request = (Request)data.y;
+			Authenticate auth = request.getAuth();
+			String username = (String)request.getObject();
+			if(connectedClients.containsKey(auth.getUsername())){
+				User user = databaseController.getFullUser(username);
+				Request response = new Request(null, user);
 				System.out.println("User "+user.getName());
-				send(data.x, user);
+				response.setMethod(Request.Method.GET_FULL_USER_RESPONSE);
+				send(data.x, response);
 			}else{
+				Request response = new Request(null, null);
+				response.setMethod(Request.Method.LOGIN_FAILED);
 				send(data.x, XmlHandler.loginUnsucessful());
 			}
 		} catch (SQLException e) {
@@ -148,17 +151,20 @@ public class ServerController {
 	
 	public void saveMeeting(Tuple <Socket, Object> data){
 		try{
-			Meeting meeting = (Meeting)data.y;
+			
+			Request request = (Request)data.y;
+			Meeting meeting = (Meeting)request.getObject();
 			String username = meeting.getOwner().getUsername();
 			System.out.println("Owner: "+username);
 			if(connectedClients.containsKey(username)){
-				//Authenticated
-				//TODO: Store in the db
-				String key = "20";
-				String xml = XmlHandler.getFullUserToXMl(username, "none", key, "saveMeeting");
-				int id = databaseController.saveMeeting(meeting);
+				Integer id = databaseController.saveMeeting(meeting);
 				meeting.setID(id);
-				send(data.x, xml);
+				//send key to owner
+				Request response = new Request(null, id);
+				response.setMethod(Request.Method.SAVE_MEETING_RESPONSE);
+				send(data.x, response);
+				System.out.println("Send data to connected clients");
+				
 				//also send message to available clients
 				System.out.println("Send data to connected clients");
 				Set <User> participants = meeting.getParticipants();
@@ -167,7 +173,9 @@ public class ServerController {
 					System.out.println("Participant: "+user);
 					if(connectedClients.containsKey(user)){
 						Socket sockfd = connectedClients.get(username);
-						send(sockfd, meeting);
+						Request r = new Request(null, meeting);
+						r.setMethod(Request.Method.MEETING_NOTIFICATION);
+						send(sockfd, r);
 					}else{
 						//do some stuff in the db ?
 						System.out.println("Sorry the client is not connected");
@@ -176,8 +184,9 @@ public class ServerController {
 				
 			}else {
 				//Not authenticated
-				String xml = xmlHandler.loginUnsucessful();
-				send(data.x, xml);
+				Request response = new Request(null, null);
+				response.setMethod(Request.Method.LOGIN_FAILED);
+				send(data.x, response);
 			}
 		}catch(SQLException sq){
 			sq.printStackTrace();
@@ -188,21 +197,22 @@ public class ServerController {
 	 public void saveAppointment(Tuple<Socket, Object> data){
 		//Got an appointment object
 		try {
-			Appointment a= (Appointment)data.y;
-			String user = a.getOwner().getUsername();
-			System.out.println("user: "+user);
-			if(connectedClients.containsKey(user)){
-				//Is authenticated
-				int key = databaseController.saveAppointment(a);
-				a.setID(key); 
-				//TODO: change name of this method
-				String xml = XmlHandler.getFullUserToXMl(user, "none", String.valueOf(key), "saveAppointment");
-				send(data.x, xml);
+			Request request = (Request)data.y;
+			Authenticate auth = request.getAuth();
+			Appointment a = (Appointment)request.getObject();
+			System.out.println("user: "+auth.getUsername());
+			if(connectedClients.containsKey(auth.getUsername())){
+				Integer id = databaseController.saveAppointment(a);
+				a.setID(id); 
+				Request response = new Request(null, id);
+				response.setMethod(Request.Method.SAVE_APPOINTMENT_RESPONSE);
+				send(data.x, response);
 				
 			}else {
 				//Not authenticated
-				String xml = XmlHandler.loginUnsucessful();
-				send(data.x, xml);
+				Request response = new Request(null, null);
+				response.setMethod(Request.Method.LOGIN_FAILED);
+				send(data.x, response);
 			}
 			
 			
@@ -210,85 +220,79 @@ public class ServerController {
 			sq.printStackTrace();
 		}
 	}
+	 
+	 
+	 
+//	 public void savePlace(Tuple <Socket, Object> data){
+//		 try {
+//			 Place place = (Place)data.y;
+//			 
+//			 
+//			 
+//		 }catch(SQLException sq){
+//			 sq.printStackTrace();
+//		 }
+//	 }
 	
 	
 	public void dispatchMeetingReply(Tuple <Socket, Object> data){
-		String userInfo[] =  xmlHandler.loginFromXml((String)data.y);
-		if(connectedClients.containsKey(userInfo[0])){
-			ArrayList<String> dataValues = (ArrayList<String>) XmlHandler.dispatchMeetingReplyFromXml((String)data.y);
-			String username = dataValues.get(0);
-			System.out.println("Userid "+username);
-			String meetingId = dataValues.get(1);
-			System.out.println("MeetingId "+meetingId);
-			String state = dataValues.get(2);
-			System.out.println("State "+state);
-			//Check with db
-			try {
+		try{
+			Request request = (Request)data.y;
+			Authenticate auth = request.getAuth();
+			if(connectedClients.containsKey(auth.getUsername())){
+				String xml = (String)request.getObject();
+				ArrayList<String> dataValues = (ArrayList<String>) XmlHandler.dispatchMeetingReplyFromXml(xml);
+				String username = dataValues.get(0);
+				System.out.println("Userid "+username);
+				String meetingId = dataValues.get(1);
+				System.out.println("MeetingId "+meetingId);
+				String state = dataValues.get(2);
+				System.out.println("State "+state);
+				//Check with db
 				if(databaseController.updateMeetingState(username, meetingId, State.getState(state))){
 					//send success
-					send(data.x, xmlHandler.loginSuccessful());
-					return;
+					Request response = new Request(null, null);
+					response.setMethod(Method.SAVE_APPOINTMENT_RESPONSE);
+					send(data.x, response);
+				}else {
+					Request response = new Request(null, null);
+					response.setMethod(Method.LOGIN_FAILED);
+					send(data.x, response);
 				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
 			}
+		
+		}catch(SQLException sq){
+			sq.printStackTrace();
 		}
-		//Failed
-		send(data.x, xmlHandler.loginUnsucessful());
 	}
-	
-	
-	
-	
 	public void inspectRequest(Tuple <Socket, Object> data){
 		Class <? extends Object> clazz = data.y.getClass();
 		String objectName = clazz.getSimpleName();
 		System.out.println("ObjectName: "+objectName);
+		//This should be a request
+		Request request  = (Request) data.y;
+		Request.Method requestType = request.getMethod();
 		
-		
-		if(objectName.equals("Authenticate")){
-			try {
-				System.out.println("Test");
-				authenticate(data);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else if(objectName.equals("Appointment")){
-			System.out.println("Exec saveAppointment");
-			saveAppointment(data);
-		}
-		else if(objectName.equals("Meeting")){
-			System.out.println("Ready to debug");
+		if(requestType == Request.Method.AUTHENTICATE){
+			System.out.println("Ready for magic");
+			authenticate(data);
+		}else if(requestType == Request.Method.GET_USERS){
+			System.out.println("Ready for magic getUsers");
+			getUsers(data);
+		}else if(requestType == Request.Method.GET_FULL_USER){
+			System.out.println("readu for magic getFullUser");
+			getFullUser(data);
+		}else if(requestType == Request.Method.SAVE_MEETING){
+			System.out.println("Ready for magic saveMeeting");
 			saveMeeting(data);
+		}else if(requestType == Request.Method.SAVE_APPOINTMENT){
+			System.out.println("Ready for magic");
+			saveAppointment(data);
+		}else if(requestType == Method.DISPATCH_MEETING_REPLY){
+			System.out.println("Ready for magic DispatchMeetingReply");
+			dispatchMeetingReply(data);
 		}
-		//Standard xml
-		else if(data.y instanceof String){
-			//System.out.println("Enter tha shit");
-			String method = XmlHandler.inspectMethod((String)data.y);
-			System.out.println("METHOD: "+method);
-			if(method.equals("getUsers")){
-				System.out.println("Ready");
-				getUsers(data);
-			}
-			else if(method.equals("dispatchMeetingReply")){
-				System.out.println("Ready to debug");
-				dispatchMeetingReply(data);
-			}
-			else if(method == GET_CALENDAR){
-				//Call get calendar
-			}
-			else if(method.equals("getFullUser")){
-				
-				System.out.println("Ready for some testing");
-				getFullUser(data);
-			}
-		}
-		//TODO: CalendarEntry
-		
-		//TODO: 
 		
 		
 	}
