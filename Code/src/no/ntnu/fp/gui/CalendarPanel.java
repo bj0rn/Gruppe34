@@ -48,9 +48,6 @@ public class CalendarPanel extends JPanel {
 		scrollArea = new JScrollPane(weekSheet);
 		scrollArea.setPreferredSize(new Dimension(600,300));
 		scrollArea.setRowHeaderView(new JLabel(" "));
-		JPanel weekheader = new JPanel();
-
-		scrollArea.setColumnHeaderView(weekheader);
 		add(top, BorderLayout.NORTH);
 		add(scrollArea, BorderLayout.CENTER);
 	}
@@ -58,10 +55,10 @@ public class CalendarPanel extends JPanel {
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("WeekSheet");
 		CalendarPanel cp = new CalendarPanel();
-		frame.add(cp);
+		frame.setContentPane(cp);
 		frame.setSize(1000,600);
 		frame.setVisible(true);
-		cp.weekSheet.addCalendarEntryView(new CalendarEntryView(new Appointment(new Date(2012, 01, 01, 14, 00), new Date(2012, 01, 01, 15, 30), "M¿te", 0)));
+		cp.weekSheet.addCalendarEntryView(new CalendarEntryView(new Appointment(new Date(2012, 01, 01, 14, 00), new Date(2012, 01, 01, 15, 30), "Mï¿½te", 0)));
 	}
 
 }
