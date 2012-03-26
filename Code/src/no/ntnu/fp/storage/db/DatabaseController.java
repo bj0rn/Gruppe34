@@ -753,7 +753,8 @@ public class DatabaseController {
 	/**
 	 * Saves a {@code Room} to the database.
 	 * A non-existing {@code Room} will be created,
-	 * a existing will be updated
+	 * a existing will be updated.
+	 * Currently allowing for room names to be changed post-creation.
 	 * 
 	 * @param user
 	 * 		  the {@code Room} to created/change
@@ -766,45 +767,22 @@ public class DatabaseController {
 		//it also has a location ID
 		DbConnection dbc = getConnection();
 		String sql = "";
-		String sqlCreateLoc = "INSERT INTO Location VALUES ()";
-		String sqlGetLastLocID = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM Location";
-		
 		if (room.getName() == null || room.getID() == -1) {
-			//okay, create a new room/location yayyy.
-			
-			dbc.executeUpdate(sqlCreateLoc);
-			int locID = Integer.parseInt(getLastInsertedID("Location"));
+			int locID = createLocation(dbc);
+			//SQL-query string
 			sql = "INSERT INTO Room (RoomName, Description, Capacity, LocationID) "
 				 +" VALUES('" + room.getName() + "', '" + room.getDescription() +"', '"
 				 +room.getCapacity() + "', " + locID + ")";
 			dbc.executeUpdate(sql);
 			return locID;
 		}//end new room
-		
 		//update existing room
 		sql = "UPDATE Room SET "
+			 +"RoomName='"+room.getName()+"', "
 			 +"Description='"+room.getDescription()+"', "
 			 +"Capacity="+room.getCapacity()
 			 +"WHERE LocationID="+room.getID()+" AND RoomName='"+room.getName()+"'";
 		return room.getID();
-	}
-	/**
-	 * Gets the ID of the last inserted element in the given table.
-	 * @param table
-	 * 		  the name of the table to get the last inserted ID from
-	 * @return
-	 * 		  the last inserted ID in the given table
-	 */
-	public String getLastInsertedID(String table) throws SQLException {
-		String result = "-1";
-		String sql = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM " + table +";";
-		DbConnection dbc = getConnection();
-		ResultSet rs = dbc.query(sql);
-		if (rs.first()) {
-			result = rs.getString("ID");
-		}
-		dbc.close();
-		return result;
 	}
 	/**
 	 * Saves a {@code Place} to the database.
@@ -816,9 +794,32 @@ public class DatabaseController {
 	 * 
 	 * @return the {@code Place}s database id
 	 */
-	public int savePlace(Place place) {
-		return 0;
-		
+	public int savePlace(Place place) throws SQLException {
+		DbConnection dbc = getConnection();
+		String sql = "";
+		if (place.getID() == -1) {//begin new place
+			int locID = createLocation(dbc);
+			sql = "INSERT INTO Place (Description, LocationID) VALUES ("
+			     +"Description='"+place.getDescription()+"', "
+			     +"LocationID()="+locID+")";
+		}//end new place
+		//begin update of existing place
+		sql = "UPDATE Place SET "
+			 +"Description='"+place.getDescription()+"' "
+			 +"WHERE LocationID="+place.getID();
+		return place.getID();
+	}
+	/**
+	 * Creates a new location in the database through the given connection
+	 * and returns its ID.
+	 * 
+	 * @return
+	 * 		Returns the ID of the newly created location.
+	 */
+	private int createLocation(DbConnection dbc) throws SQLException {
+		String sql = "INSERT INTO Location VALUES ()";
+		dbc.executeUpdate(sql);
+		return Integer.parseInt(getLastInsertedID("Location", dbc));
 	}
 	
 	/**
@@ -942,4 +943,22 @@ public class DatabaseController {
 	public DbConnection getConnection() {
 		return new DbConnection(props);
 	}
+	/**
+	 * Gets the ID of the last inserted element in the given table.
+	 * @param table
+	 * 		  the name of the table to get the last inserted ID from
+	 * @return
+	 * 		  the last inserted ID in the given table
+	 */
+	public String getLastInsertedID(String table, DbConnection dbc) throws SQLException {
+		String result = "-1";
+		String sql = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM " + table +";";
+		ResultSet rs = dbc.query(sql);
+		if (rs.first()) {
+			result = rs.getString("ID");
+		}
+		dbc.close();
+		return result;
+	}
+	
 }
