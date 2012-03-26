@@ -155,6 +155,7 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		getContentPane().add(labelUsers, "North");
 		getContentPane().add(p, "Center");
 		getContentPane().add(participantButtons, "South");
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
