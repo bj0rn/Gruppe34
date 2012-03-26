@@ -2,6 +2,8 @@ package no.ntnu.fp.model;
 
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,10 @@ public class Meeting extends CalendarEntry implements Serializable{
 	private ModelChangeListener modelChangeListener;
 	
 	private Map<User, State> participants;
+	
+	public Meeting() {
+		this(-1);
+	}
 	
 	public Meeting(int id) {
 		super(id);
@@ -74,6 +80,12 @@ public class Meeting extends CalendarEntry implements Serializable{
 		return participants.keySet();
 	}
 	
+	public List getParticipantsSorted() {
+		List list = new ArrayList(getParticipants());
+		Collections.sort(list);
+		return list;
+	}
+	
 	public State getState(User user) {
 		return participants.get(user);
 	}
@@ -90,6 +102,7 @@ public class Meeting extends CalendarEntry implements Serializable{
 	public boolean removeParticipant(User user){
 		if (participants.containsKey(user)) {
 			participants.remove(user);
+			pcs.firePropertyChange(PARTICIPANTS_PROPERTY, user, null);
 			return true;
 		} else {
 			return false;
