@@ -2,6 +2,8 @@ package no.ntnu.fp.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -16,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -38,6 +42,7 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	private CommunicationController cCtrl;
 	private DefaultListModel listModel;
 	protected PropertyChangeSupport pcs;
+	boolean showRooms = true, showPlaces = true;
 	
 	public final static transient String LOCATIONC_PROPERTY = "Location Change";
 	
@@ -64,7 +69,6 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			cbRooms.setSelected(true);
 		this.cbPlaces = new JCheckBox("Steder");
 			cbPlaces.setSelected(true);
-		
 		this.descComp = new JTextField(10);
 			descComp.setEditable(false);
 		this.capComp = new JTextField(10);
@@ -82,11 +86,11 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		Location loc1 = new Room(23, "Room1", "The first room", 44);
 		Location loc2 = new Place(22, "strangewhere");
 		Location loc3 = new Room(34, "SPACE.", "Spaaaaaace", Integer.MAX_VALUE);
+		locs = new ArrayList<Location>();
+		locs.add(loc1);
+		locs.add(loc2);
+		locs.add(loc3);
 		this.listModel = new DefaultListModel();
-		listModel.addElement(loc1);
-		listModel.addElement(loc2);
-		listModel.addElement(loc3);
-		this.locList.setModel(listModel);
 		
 		grid = new GridBagLayout();
 		constraints = new GridBagConstraints();
@@ -109,7 +113,6 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		//Begin listeners
 		
 		locList.addListSelectionListener(new ListSelectionListener() {
-			
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
@@ -119,9 +122,24 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 					//this is probably not a very clever way\
 					//of going about doing this kind of thing\
 					//then again I've never been much of a wise man.
+					
 					pcs.firePropertyChange(LOCATIONC_PROPERTY, oldLoc, selectedLoc);
 				}
 				
+			}
+		});
+		cbPlaces.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				showPlaces = !showPlaces;
+				updatePanel();
+			}
+		});
+		cbRooms.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				showRooms = !showRooms;
+				updatePanel();
 			}
 		});
 	}
@@ -137,16 +155,36 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 				nameComp.setText("N/A");
 			}
 		}
-		
+		setListOfLocations(locs);
 		
 	}
 	public void setLocation(Location loc) {
 		this.selectedLoc = loc;
 		updatePanel();
 	}
-	public void setListOfLocations(List<Location> list) {
-		this.listModel.clear();
-		for (Location l : list) this.listModel.addElement(l);
+	public void setListOfLocations(ArrayList<Location> list) {
+		System.out.println("..");
+		if (listModel == null) { 
+			listModel = new DefaultListModel();
+		}
+		
+		listModel.removeAllElements();
+		if (list.size() < 1) {
+			listModel.addElement("Nothing's available.");
+			locList.setEnabled(false);
+			return;
+		}
+		//locList.setEnabled(true);
+		int i = 0;
+		for (Location l : list) {
+			System.out.println(l.getDescription());
+			System.out.println((l instanceof Room) + " - " + showRooms);
+			System.out.println((l instanceof Room) && showRooms); 
+			if (((l instanceof Room) && showRooms) || ((l instanceof Place) && showPlaces)) {
+				this.listModel.addElement(l);
+			}
+		}
+		locList.setModel(listModel);
 	}
 	
 	private ArrayList<Room> getAvailableRooms() {
@@ -157,7 +195,12 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	private Location getSelectedLocation() {
 		return this.selectedLoc;
 	}
-	
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		if (pcs == null) {
+			pcs = new PropertyChangeSupport(this);
+		}
+		pcs.addPropertyChangeListener(l);
+	}
 	
 	
 
