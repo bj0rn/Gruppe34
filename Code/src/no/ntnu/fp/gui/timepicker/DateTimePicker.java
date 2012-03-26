@@ -212,5 +212,6 @@ public class DateTimePicker extends JPanel implements PropertyChangeListener {
 	private void update() {
 		updatePanel();
 		updateField();
+		
 	}
 }
