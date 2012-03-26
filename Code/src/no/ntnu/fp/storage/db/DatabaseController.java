@@ -310,7 +310,8 @@ public class DatabaseController {
 		+	"	LEFT JOIN Contains AS OWNCO ON CE.CalendarEntryID = OWNCO.CalendarEntryID " 
 		+	"		AND OWNCO.Role = 'Owner' "
 		+	"	LEFT JOIN Calendar AS OWNCA ON OWNCO.CalendarID = OWNCA.CalendarID "
-		+	"WHERE C.Username = '" + username + "'";
+		+	"WHERE C.Username = '" + username + "' " 
+		+	"ORDER BY start ASC";
 
 		DbConnection db = getConnection();
 		

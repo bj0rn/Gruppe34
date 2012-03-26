@@ -21,6 +21,9 @@ import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
+import no.ntnu.fp.net.network.Request;
+import no.ntnu.fp.net.network.Request.Method;
+import no.ntnu.fp.model.Room;
 
 
 
@@ -109,6 +112,21 @@ public class CommunicationController {
 		return instance;
 	}
 	
+	
+	public void send(Socket socket, Object obj){
+		DataOutputStream os;
+		try {
+			os = new DataOutputStream(socket.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(obj);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 	public void inspect(){
 		//When notifications arrive we need to be ready
 		//How can we handle them ?
@@ -122,33 +140,26 @@ public class CommunicationController {
 	 * **/
 	public boolean authenticate(Authenticate auth){
 		try {
-			oos = new ObjectOutputStream(os);
+			Request request = new Request(auth, null);
+			request.setMethod(Request.Method.AUTHENTICATE);
+			send(mySocket, request);
 			setAuthunticate(auth);
-			oos.writeObject(auth);
 			//Wait for response
 			boolean good = false;
 			int i = 0;
 			while(!good){
-				Object obj = testQueue.takeFirst();
+				Request response = (Request)testQueue.takeFirst();
 				System.out.println("Number of tries: "+i++);
-				if(obj instanceof String){
-					String status = XmlHandler.inspectStatus((String)obj);
-					if(status.equals("200")){
-						return true;
-					}else if(status.equals("401")){
-						return false;
-					}
+				if(response.getMethod() == Request.Method.LOGIN_SUCCEDED){
+					return true;
+				}else if(response.getMethod() == Request.Method.LOGIN_FAILED){
+					return false;
 				}
 				else {
-					//Wrong data, put it back
-					testQueue.putLast(obj);
+					testQueue.putLast((Object)response);
 				}
 				
 			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -171,44 +182,25 @@ public class CommunicationController {
 	/**
 	 * This method will get all the users from the server
 	 * **/
-	public List <User> getUsers(String username, String password){
+	public List <User> getUsers(){
 		try {
-			os = new DataOutputStream(mySocket.getOutputStream());
-			oos = new ObjectOutputStream(os);
-			oos.writeObject(new String(XmlHandler.generateRequest(username, password, "getUsers")));
+			Request request = new Request(auth, null);
+			request.setMethod(Request.Method.GET_USERS);
+			send(mySocket, request);
 			int i = 0;
 			while(true){
 				System.out.println("Number of tries: "+i++);
-				Object obj = testQueue.takeFirst();
-				System.out.println("ObjectName: "+obj.getClass().getName());
-				if(obj instanceof List){
-					//I  know this a list, but what does it contain ? 
-					//Jada jada : P eg vett :P 
-					List tmp = (List)obj;
-					Object test = tmp.get(0);
-					System.out.println("Object name: "+test.getClass().getSimpleName());
-					if(test.getClass().getSimpleName().equals("User")){
-						System.out.println("heisan");
-						return (List <User>) obj;
-					}
-				}else if(obj instanceof String){
-					if(XmlHandler.inspectStatus((String)obj).equals("401")){
-						return null;
-					}
-				}else {
-					//This should not happen
-					System.out.println("W00t");
-					testQueue.putLast(obj);
+				Request response = (Request) testQueue.takeFirst();
+				if(response.getMethod() == Request.Method.GET_USERS_RESPONSE){
+					return (List<User>)response.getObject();
+				}else if (response.getMethod() == Request.Method.LOGIN_FAILED){
+					return null;
+				}else{
+					//Put it back and try again
+					testQueue.putLast((Object)response);
 				}
 				
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,42 +210,27 @@ public class CommunicationController {
 	}
 	
 	
-	public void send(Socket socket, Object obj){
-		DataOutputStream os;
-		try {
-			os = new DataOutputStream(socket.getOutputStream());
-			ObjectOutputStream oos = new ObjectOutputStream(os);
-			System.out.println(obj);
-			oos.writeObject(obj);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
 	public User getFullUser(String user){
 		
-		String myUsername = auth.getUsername();
-		String myPassword = auth.getPassword();
+		
 		
 		try {
-			send(mySocket, XmlHandler.getFullUserToXMl(myUsername, myPassword, user, "getFullUser"));
+			Request request = new Request(auth, user);
+			request.setMethod(Request.Method.GET_FULL_USER);
+			send(mySocket, request);
 			int i = 0;
 			while(true){
 				System.out.println("Number of tries: "+i++);
-				Object obj = testQueue.takeFirst();
-				if(obj instanceof User) {
-					return (User)obj;
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Request.Method.GET_FULL_USER_RESPONSE){
+					return (User)response.getObject();
 				}
-				else if(obj instanceof String){
-					if(XmlHandler.inspectStatus((String)obj).equals("401")){
-						//Not authenticated
-						return null;
-					}
+				else if(response.getMethod() == Request.Method.LOGIN_FAILED){
+					return null;
+				}else {
+					testQueue.putLast((Object)response);
 				}
-				//Not the message we were looking for
-				testQueue.putLast(obj);
+				
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -266,22 +243,24 @@ public class CommunicationController {
 	
 	public boolean saveMeeting(Meeting meeting){
 		try{
-		send(mySocket, meeting);
+			Request request = new Request(auth, meeting);
+			request.setMethod(Request.Method.SAVE_MEETING);
+			send(mySocket, request);
 			int i = 0;
 			while(true){
 				System.out.println("Number of tries: "+i++);
 				//This should be a response containing the key
-				Object obj = testQueue.takeFirst();
-				if(obj instanceof String){
-					//Check if this is the correct one; the method field should be saveUser
-					if(XmlHandler.inspectMethod((String)obj).equals("saveMeeting")){
-						//Correct  message
-						String key = XmlHandler.inspectKey((String)obj);
-						meeting.setID(Integer.parseInt(key));
-						return true;
-					}
-				System.out.println("Put it back");
-				testQueue.putLast(obj);
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Request.Method.SAVE_MEETING_RESPONSE){
+					Integer key = (Integer)response.getObject();
+					System.out.println("Got key "+key);
+					meeting.setID(key);
+					return true;
+				}else if(response.getMethod() == Request.Method.LOGIN_FAILED){
+					return false;
+				}
+				else {
+					testQueue.putLast((Object)response);
 				}
 			}		
 		}catch(InterruptedException e){
@@ -291,31 +270,27 @@ public class CommunicationController {
 		return false;
 	}
 	
+	
 	public boolean saveAppointment(Appointment appointment){
 		try{
-		//Does saveAppointment return a key
-			send(mySocket, appointment);
+			Request request = new Request(auth, appointment);
+			request.setMethod(Request.Method.SAVE_APPOINTMENT);
+			//Does saveAppointment return a key
+			send(mySocket, request);
 			int i = 0;
 			while(true){
 				System.out.println("Number of tries ");
 				//This response should contain a key
-				Object obj = testQueue.takeFirst();
-				if(obj instanceof String){
-					String key = XmlHandler.inspectKey((String)obj);
-					if(key != null){
-						appointment.setID(Integer.parseInt(key));
-						return true;
-					}
-					else if(XmlHandler.inspectStatus((String)obj).equals("401")){
-						System.out.println("Failed to authenticate");
-						return false;
-					}else{
-						System.out.println("You are really fucked up this time");
-						return false;
-					}
-				}else {
-					//Not the packet I�m waiting for
-					testQueue.putLast(obj);
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Request.Method.SAVE_APPOINTMENT_RESPONSE){
+					Integer id = (Integer)response.getObject();
+					appointment.setID(id);
+					return true;
+				}else if(response.getMethod() == Request.Method.LOGIN_FAILED){
+					return false;
+				}
+				else {
+					testQueue.putLast((Object)response);
 				}
 			}
 		} catch(InterruptedException e) {
@@ -328,8 +303,8 @@ public class CommunicationController {
 	
 	
 	
-	
 public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
+	try{
 		//Gather information 
 		String userInfo[] = {
 			user.getUsername(),
@@ -343,33 +318,58 @@ public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
 		};
 		//Pack and send
 		String xml = XmlHandler.dispatchMeetingReplyToXml(userInfo, dataValues, "dispatchMeetingReply");
-		send(mySocket, xml);
+		Request request = new Request(auth, xml);
+		request.setMethod(Request.Method.DISPATCH_MEETING_REPLY);
+		send(mySocket, request);
 		int i = 0;
 		//Wait for response
 		while(true){
-			try {
-				Object obj = testQueue.takeFirst();
-				if(obj instanceof String){
-					String status = XmlHandler.inspectStatus((String)obj);
-					if(status != null){
-						if(status.equals("200")){
-							return true;
-						}
-						else {
-							return false;
-						}
-					}
-				}
-				//Put it back
-				testQueue.putLast(obj);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			Request response = (Request)testQueue.takeFirst();
+			if(response.getMethod() == Method.SAVE_APPOINTMENT_RESPONSE){
+				return true;
+				
+			}else if(response.getMethod() == Method.LOGIN_FAILED){
+				return false;
+			}else {
+				testQueue.putLast((Object)response);
 			}
-			
 		}
-		
+	
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+			
+		return false;
 }
+
+
+public List <Room> getListOfRooms(){
+	try{
+		Request request = new Request(auth, null);
+		request.setMethod(Method.GET_LIST_OF_ROOMS);
+		send(mySocket, request);
+		int i = 0;
+		while(true){
+			Request response = (Request)testQueue.takeFirst();
+			if(response.getMethod() == Method.GET_LIST_OF_ROOMS_RESPONSE){
+				return (List <Room>)response.getObject();
+			}else if(response.getMethod() == Method.LOGIN_FAILED){
+				return null;
+			}else {
+				testQueue.putLast((Object)response);
+			}
+		}
+	}catch(InterruptedException e){
+		e.printStackTrace();
+	}
+	
+	
+	return null;
+	
+}
+
+
 
 public boolean deleteMeeting(){
 	return true;
@@ -386,10 +386,7 @@ public boolean deleteUser(){
 
 
 
-public ArrayList<Location> getListOfRooms() {
-	// TODO Auto-generated method stub
-	return null;
-}
+
 	
 	
 }

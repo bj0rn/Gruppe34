@@ -55,6 +55,10 @@ public class Meeting extends CalendarEntry implements Serializable {
 		super(description, start, end, id);
 	}
 	
+	public Meeting(Date start, Date end, String description, int id, Location location) {
+		super(description, start, end, id, location);	
+	}
+	
 	public void addParticipant(User user, State state){
 		participants.put(user, state);
 		pcs.firePropertyChange(PARTICIPANTS_PROPERTY, null, null);
@@ -106,18 +110,34 @@ public class Meeting extends CalendarEntry implements Serializable {
 		}
 	}
 	
+	public boolean removeAllParticipants() {
+		participants.clear();
+		return true;
+	}
+	
+	public Meeting shallowCopy() {
+		Meeting meeting = new Meeting(startDate, endDate, description, id, location);
+		meeting.setOwner(new User(getOwner().getUsername()));
+		
+		for (User user : getParticipants()) {
+			meeting.addParticipant(new User(user.getUsername()), getState(user));
+		}
+		
+		return meeting;
+	}
+	
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append("Description: " + getDescription() + "\n");
-		builder.append("Start: " + getStartDate() + "\n");
-		builder.append("End: " + getEndDate() + "\n");
-		builder.append("Sted: " + getLocation() + "\n");
-		builder.append("Owner: " + getOwner().getName() + "\n");
+		if (description != null) builder.append("Description: " + getDescription() + "\n");
+		if (startDate != null) builder.append("Start: " + getStartDate() + "\n");
+		if (endDate != null) builder.append("End: " + getEndDate() + "\n");
+		if (location != null) builder.append("Sted: " + getLocation() + "\n");
+		if (owner != null) builder.append("Owner: " + getOwner().getName() + "\n");
 		
 		builder.append("Participants: \n");
 		for (User user : getParticipants()) {
-			builder.append("\t" + user.getName() + ": " + getState(user) + "\n");
+			builder.append("\t" + user.getName() + ": " + (user) + "\n");
 		}
 		
 		return builder.toString();

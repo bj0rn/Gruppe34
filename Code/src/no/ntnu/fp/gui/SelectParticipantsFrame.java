@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -17,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -48,6 +51,8 @@ public class SelectParticipantsFrame implements ListCellRenderer {
 		m.addParticipant(new User("andy"), State.Pending);
 		
 		JFrame frame = new ListRenderingFrame(m);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
 		frame.show();
 	}
 }
@@ -58,6 +63,8 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 	 * 
 	 */
 	private Meeting model;
+	private ListModel listModel;
+	private ListSelectionModel selectionModel;
 
 	public ListRenderingFrame(Meeting meeting) {
 		
@@ -73,12 +80,13 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		participantButtons.add(cancelButton);
 		
 		setTitle("Oversikt over brukere");
-		setSize(400,300);
+		setSize(380,360);
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
 		});
+		
 		
 		
 		JList list = new JList(getListOfAllUsers());
@@ -103,6 +111,9 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		    }
 		});
 		
+		listModel = list.getModel();
+		selectionModel = list.getSelectionModel();
+		
 		for(int i = 0; i < list.getModel().getSize(); i++) {
 			User user = (User)list.getModel().getElementAt(i);
 			if (meeting.getParticipants().contains(user)) {
@@ -115,7 +126,27 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		
 		JPanel p = new JPanel();
 		p.add(scrollPane);
-		list.addListSelectionListener(this);
+		list.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (!arg0.getValueIsAdjusting()) {
+					int index = selectionModel.getAnchorSelectionIndex();
+					if (selectionModel.isSelectedIndex(index)) {
+						User user = (User)listModel.getElementAt(index);
+						model.addParticipant(user, State.Pending);
+					}
+					else if (!selectionModel.isSelectedIndex(index)) {
+						User user = (User)listModel.getElementAt(index);
+						model.removeParticipant(user);
+					}
+					System.out.println(model);
+					System.out.println("------------------------------");
+				}
+				
+				
+			}
+		});
 		
 		getContentPane().add(labelUsers, "North");
 		getContentPane().add(p, "Center");
@@ -139,14 +170,14 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		p4.setName("Eivind Kvissel");
 		User p5 = new User("tina");
 		p5.setName("Tina Syversen");
-		
-		
+
 		users.add(user);
 		users.add(p1);
 		users.add(p2);
 		users.add(p3);
 		users.add(p4);
 		users.add(p5);
+
 		return users;
 	}
 	//Action for lagring av skjema
@@ -161,7 +192,7 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
         public void actionPerformed(ActionEvent arg0) {
 
         	System.out.println("Lagre");
-        	System.out.println(model.getParticipants());
+        	dispose();
         }
     }
     
@@ -171,15 +202,27 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 
         private Meeting model;
         
+        private Map<User, State> savedState = new HashMap<User, State>();
+        
         public cancelAction(String text, Meeting model) {
         	super(text, null);
         	this.model = model;
+        	for(User user :model.getParticipants()) {
+        		savedState.put(user, model.getState(user));
+        	}
         }
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
+        	this.model.removeAllParticipants();
+        	
+        	for(User user : savedState.keySet()) {
+        		this.model.addParticipant(user, State.Pending);
+        	
+        	}
         	System.out.println("Avbryt");
-            System.out.println(model.getParticipants());
+        	System.out.println(model);
+        	dispose();
         }
     }
 

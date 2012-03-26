@@ -195,6 +195,7 @@ public abstract class CalendarEntry implements Serializable {
 		return startDate.getHours()*60+startDate.getMinutes();
 	}
 
+
 	/**
 	 * Set the database id
 	 * @param id 
