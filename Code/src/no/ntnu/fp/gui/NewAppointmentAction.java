@@ -17,7 +17,7 @@ public class NewAppointmentAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		new AppointmentPanel(new Appointment("blah"));
+		new AppointmentPanel(new Appointment("derp"));
 	}
 
 }

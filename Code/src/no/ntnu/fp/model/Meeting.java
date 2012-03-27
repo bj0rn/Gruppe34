@@ -115,6 +115,10 @@ public class Meeting extends CalendarEntry implements Serializable {
 		return true;
 	}
 	
+	public void updateWith(Meeting meeting) {
+		
+	}
+	
 	public Meeting shallowCopy() {
 		Meeting meeting = new Meeting(startDate, endDate, description, id, location);
 		meeting.setOwner(new User(getOwner().getUsername()));

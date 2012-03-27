@@ -61,10 +61,9 @@ public class ClientWorker implements Runnable {
 		Request response = (Request) data;
 		if (response.getMethod() == Method.MEETING_NOTIFICATION) {
 			Meeting meeting = (Meeting)response.getObject();
-			//communication.updateMeeting(meeting);
+			communication.updateMeeting(meeting);
 			System.out.println("We have a notification");
 			return true;
-		
 		} else if(response.getMethod() == Method.CHANGE_MEETING_NOTFICATION) {
 			Meeting meeting = (Meeting)response.getObject();
 			communication.updateMeeting(meeting);
@@ -74,6 +73,10 @@ public class ClientWorker implements Runnable {
 			Appointment appointment = (Appointment)response.getObject();
 			communication.updateAppointment(appointment);
 			System.out.println("Someone changed an appointment (views)");
+			return true;
+		}else if(response.getMethod() == Method.MEETING_REPLY){
+			Meeting meeting = (Meeting)response.getObject();
+			communication.updateMeetingState(meeting);
 			return true;
 		}else {
 			return false;

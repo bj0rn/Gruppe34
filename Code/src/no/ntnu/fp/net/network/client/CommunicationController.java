@@ -18,6 +18,8 @@ import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Calendar;
+import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
@@ -48,7 +50,7 @@ import no.ntnu.fp.model.Room;
 
 public class CommunicationController {
 	
-	public final static String HOST = "127.0.0.1";
+	public String host = "78.91.22.12"; // "127.0.0.1"; // 
 	public final static int PORT = 1337;
 
 	private static CommunicationController instance;
@@ -124,7 +126,7 @@ public class CommunicationController {
 		
 		LinkedBlockingDeque<Object> testQueue = new LinkedBlockingDeque<Object>();
 		//CommunicationController communicationController = new CommunicationController(mySocket, testQueue)
-		Client c = new Client(HOST, PORT, testQueue, this);
+		Client c = new Client(host, PORT, testQueue, this);
 		
 		try {
 			this.mySocket = c.getSocket();
@@ -213,8 +215,6 @@ public class CommunicationController {
 	public Authenticate getAuthenticate() {
 		return auth;
 	}
-
-
 	
 	/**
 	 * Retrieves the full {@code List} of {@code User}s once from the server.
@@ -321,7 +321,7 @@ public class CommunicationController {
 	}
 	
 	
-	public boolean saveMeeting(Meeting meeting){
+	public int saveMeeting(Meeting meeting){
 		try{
 			Request request = new Request(auth, meeting);
 			request.setMethod(Request.Method.SAVE_MEETING);
@@ -334,10 +334,9 @@ public class CommunicationController {
 				if(response.getMethod() == Request.Method.SAVE_MEETING_RESPONSE){
 					Integer key = (Integer)response.getObject();
 					System.out.println("Got key "+key);
-					meeting.setID(key);
-					return true;
+					return key;
 				}else if(response.getMethod() == Request.Method.LOGIN_FAILED){
-					return false;
+					return -1;
 				}
 				else {
 					System.out.println("Put back");
@@ -348,7 +347,7 @@ public class CommunicationController {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return -1;
 	}
 	
 	
@@ -528,12 +527,93 @@ public class CommunicationController {
 		return true;
 	}
 	
+
+	
 	/**
 	 * This method is called by the {@code ClientWorker} when a 
 	 * {@code Meeting} update is received from the Server. 
 	 * @param meeting
 	 */
-	public void updateMeeting(Meeting meeting) {
+	public synchronized void updateMeeting(Meeting updatedMeeting) {
+		
+		User owner = updatedMeeting.getOwner();
+		Calendar calendar = user.getCalendar();
+		
+		Meeting meeting = null;
+		
+		if (owner.equals(user)) {
+			for (CalendarEntry entry : user.getCalendar()) {
+				
+				if (entry.getID() == updatedMeeting.getID()) {
+					meeting = (Meeting)entry;
+					
+					continue;
+				}
+			}
+		} else {
+			for (User participant : updatedMeeting.getParticipants()) {
+				if (participant.equals(user)) {
+					
+					for (CalendarEntry entry : participant.getCalendar()) {
+						if (entry.getID() == updatedMeeting.getID()) {
+							meeting = (Meeting) entry;
+							continue;
+						}
+					}
+					
+					if (meeting == null ) {
+						calendar.addMeeting(updatedMeeting);
+					}
+				}
+			}
+		}
+		
+		if (meeting != null) {
+			calendar.addMeeting(updatedMeeting);
+		}
+		
+	}
+
+	public synchronized void updateMeetingState(Meeting updatedMeeting) {
+		
+		User owner = updatedMeeting.getOwner();
+		Calendar calendar = user.getCalendar();
+		
+		Meeting meeting = null;
+		
+		if (owner.equals(user)) {
+			for (CalendarEntry entry : user.getCalendar()) {
+				
+				if (entry.getID() == updatedMeeting.getID()) {
+					meeting = (Meeting)entry;
+					
+					continue;
+				}
+			}
+		} else {
+			for (User participant : updatedMeeting.getParticipants()) {
+				if (participant.equals(user)) {
+					
+					for (CalendarEntry entry : participant.getCalendar()) {
+						if (entry.getID() == updatedMeeting.getID()) {
+							meeting = (Meeting) entry;
+							continue;
+						}
+					}
+				}
+			}
+		}
+		
+		if (meeting != null) {
+			for (User user : meeting.getParticipants()) {
+				State state = meeting.getState(user); 
+				State updatedState = updatedMeeting.getState(user); 
+				
+				if (state != updatedState) {
+					meeting.setState(user, updatedState);
+				}
+			}
+		}
 		
 	}
 	
@@ -541,7 +621,16 @@ public class CommunicationController {
 	 * 
 	 * @param appointment
 	 */
-	public void updateAppointment(Appointment appointment) {
+	public synchronized void updateAppointment(Appointment appointment) {
+		User user = appointment.getOwner();
+		for(User u : shows){
+			if(u.equals(user)){
+				Calendar c = u.getCalendar();
+				c.removeAppointment(appointment);
+				c.addAppointment(appointment);
+			}
+		}
+		
 		
 	}
 

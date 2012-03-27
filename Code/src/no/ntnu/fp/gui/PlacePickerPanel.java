@@ -60,8 +60,6 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			capComp.setText((b ? ((Room) l).getCapacity()+"" : "N/A"));
 			
 			descComp.setText(l.getDescription());
-			System.out.println(l);
-			System.out.println("@@");
 			}
 		if (evt.getPropertyName() == CalendarEntry.START_PROPERTY
 				|| evt.getPropertyName() == CalendarEntry.END_PROPERTY) {

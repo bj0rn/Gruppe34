@@ -107,6 +107,7 @@ public class ServerController {
 				send(data.x, response);
 				System.out.println("Login completed");
 			} else {
+				System.out.println("Login failed");
 				Request response = new Request(null, null);
 				response.setMethod(Request.Method.LOGIN_FAILED);
 				send(data.x, response);
@@ -318,6 +319,14 @@ public class ServerController {
 	// }
 	// }
 
+	private void sendMeeting(String user, Meeting meeting){
+		if(connectedClients.containsKey(user)){
+			Request response = new Request(null, meeting);
+			response.setMethod(Method.MEETING_REPLY);
+			send(connectedClients.get(user), response);
+			
+		}
+	}
 	public void dispatchMeetingReply(Tuple<Socket, Object> data) {
 		try {
 			Request request = (Request) data.y;
@@ -339,6 +348,16 @@ public class ServerController {
 					Request response = new Request(null, null);
 					response.setMethod(Method.SAVE_APPOINTMENT_RESPONSE);
 					send(data.x, response);
+					
+					Meeting meeting = databaseController.getMeeting(Integer.parseInt(meetingId));
+					String owner = meeting.getOwner().getUsername();
+					sendMeeting(owner, meeting);
+					Set <User> participants = meeting.getParticipants();
+					for(User p: participants){
+						sendMeeting(p.getUsername(), meeting);
+					}
+					
+					
 				} else {
 					Request response = new Request(null, null);
 					response.setMethod(Method.LOGIN_FAILED);
@@ -351,6 +370,7 @@ public class ServerController {
 			sq.printStackTrace();
 		}
 	}
+	
 
 	public void getListOfRooms(Tuple<Socket, Object> data) {
 		try {
@@ -462,6 +482,12 @@ public class ServerController {
 			System.out.println("Ready for magic; cancelView");
 			System.out.println("Not tested yet");
 			cancelView(data);
+		}else if(requestType == Method.DELETE_MEETING){
+			System.out.println("Enter delete meeting");
+			deleteMeeting(data);
+		}else if(requestType == Method.DELETE_APPOINTMENT){
+			System.out.println("Enter delete appointment");
+			deleteAppointment(data);
 		}
 
 	}

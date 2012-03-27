@@ -45,7 +45,7 @@ public class ApplicationFrame extends JFrame {
 	public ApplicationFrame(String user) {
 		
 		//testSetUser();
-		setModel(c.getFullUser(user));
+		setModel(c.getClientFullUser());
 		
 		JPanel panel = new JPanel();
 		
@@ -84,8 +84,27 @@ public class ApplicationFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
+		//testUpdate();
 	}
 	
+	private void testUpdate() {
+		User user = new User("havard");
+		user.setName("Håvard Wormdal Høiby");
+		
+		User p1 = new User("bjorn");
+		p1.setName("Bjørn Åge Tungesvik");
+		
+		Meeting m1 = new Meeting("UppdateTestMeeting");
+		m1.setID(20);
+		m1.setDate(new Date(112, 2, 1, 12, 0, 0), new Date(112, 2, 1, 13, 0, 0));
+		m1.setOwner(p1);
+		m1.addParticipant(user, State.Pending);
+		m1.setLocation(new Place(1,"Plass"));
+		
+		c.updateMeeting(m1);
+		
+	}
+
 	private void testSetUser() {
 		User user = new User("havard");
 		user.setName("Håvard Wormdal Høiby");
