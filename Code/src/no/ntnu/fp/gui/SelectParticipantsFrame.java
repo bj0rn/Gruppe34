@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -27,6 +28,7 @@ import javax.swing.event.ListSelectionListener;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.Meeting.State;
+import no.ntnu.fp.net.network.client.CommunicationController;
 
 
 public class SelectParticipantsFrame implements ListCellRenderer {
@@ -162,7 +164,7 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 	
 	}
 	private Vector getListOfAllUsers() {
-		Vector users = new Vector();
+		/*Vector users = new Vector();
 	
 		User user = new User("havard");
 		user.setName("Håvard Wormdal Høiby");
@@ -182,9 +184,12 @@ class ListRenderingFrame extends JFrame implements ListSelectionListener {
 		users.add(p2);
 		users.add(p3);
 		users.add(p4);
-		users.add(p5);
+		users.add(p5);*/
+		
+		CommunicationController c = CommunicationController.getInstance();
+		List<User> users = c.getListOfUsers();
 
-		return users;
+		return new Vector(users);
 	}
 	//Action for lagring av skjema
 	private class SaveAction extends AbstractAction {
