@@ -32,8 +32,6 @@ public class CalendarPanel extends JPanel implements PropertyChangeListener {
 
 	public CalendarPanel(DateModel dateModel, User user) {
 		setLayout(new BorderLayout(12, 12));
-
-		dateModel.setWeek(10);
 		
 		this.user = user;
 		this.dateModel = dateModel;
