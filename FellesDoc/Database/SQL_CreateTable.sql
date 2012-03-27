@@ -5,10 +5,11 @@ Name Varchar(50) NOT NULL,
 Age Int NOT NULL,
 PhoneNumber Int NOT NULL,
 Email Varchar(30) NOT NULL,
+PwSalt Char(20),
 PRIMARY KEY(Username));
 
 CREATE TABLE Calendar
-(CalendarID Int NOT NULL,
+(CalendarID Int NOT NULL AUTO_INCREMENT,
 Username Varchar(20),
 PRIMARY KEY(CalendarID),
 FOREIGN KEY(Username) references User(Username)
@@ -24,11 +25,11 @@ FOREIGN KEY(CalendarID) references Calendar(CalendarID)
         ON UPDATE CASCADE ON DELETE CASCADE);
 
 CREATE TABLE Location
-(LocationID int NOT NULL,
+(LocationID int NOT NULL AUTO_INCREMENT,
 PRIMARY KEY(LocationID));
 
 CREATE TABLE CalendarEntry
-(CalendarEntryID Int NOT NULL,
+(CalendarEntryID Int AUTO_INCREMENT NOT NULL,
 TimeStart Datetime,
 TimeEnd Datetime,
 TimeCreated Datetime,
