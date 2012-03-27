@@ -26,6 +26,7 @@ import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Person;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
+import no.ntnu.fp.net.network.client.CommunicationController;
 import no.ntnu.fp.util.GridBagHelper;
 import no.ntnu.fp.util.TimeLord;
 
@@ -150,6 +151,13 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//button is clicked, run code that will save the model
+				CommunicationController c = CommunicationController.getInstance();
+				if (model != null) {
+					if (model.getOwner() == null) 
+						model.setOwner(c.getUser());
+					c.saveAppointment(model);
+				}
+				//close window if successfull.
 			}
 		});
 		this.delete.addActionListener(new ActionListener() {
@@ -157,6 +165,11 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				//button is clicked DELETE EVERYTHING.
 				//wait _where_ are we keeping the code to send the DB-req to delete something?
+				CommunicationController c = CommunicationController.getInstance();
+				if (model != null) {
+					c.deleteAppointment(model);
+				}
+				//close window.
 			}
 		});
 	}
@@ -170,8 +183,9 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	    			   (model.getLocation() != null) ? 
 	    			    model.getLocation().getID()+"" :
 	    				"");
-	    	   locComp.setText(model.getLocation().getID() + "");
-	    		   
+	    	   locComp.setText((model.getLocation() != null) ?
+	    			   			model.getLocation().getDescription() :
+	    			   				"");
 	    	   plPickPanel.updatePanel();
 	       }
 	    }

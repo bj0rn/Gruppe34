@@ -1,3 +1,4 @@
+
 package no.ntnu.fp.net.network.client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -548,3 +549,4 @@ public class CommunicationController {
 	
 	
 }
+>>>>>>> branch 'master' of https://otron@github.com/bj0rn/Gruppe34.git
