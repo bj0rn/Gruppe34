@@ -18,6 +18,8 @@ import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Calendar;
+import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
@@ -533,7 +535,40 @@ public class CommunicationController {
 	 * {@code Meeting} update is received from the Server. 
 	 * @param meeting
 	 */
-	public void updateMeeting(Meeting meeting) {
+	public void updateMeeting(Meeting updatedmeeting) {
+		//User owner = meeting.getOwner();
+		
+		/*Calendar calendar = null;
+		Meeting meeting = null;
+		
+		if (owner.equals(user)) {
+			for (CalendarEntry entry : user.getCalendar()) {
+				
+				if (entry.getID() == meeting.getID()) {
+					Meeting m = (Meeting)entry;
+					
+					user.getCalendar().removeMeeting(m);
+					user.getCalendar().addMeeting(meeting);
+					
+					continue;
+				}
+			}
+		}
+		
+		for (User participant : meeting.getParticipants()) {
+			if (participant.equals(user)) {
+				
+				for (CalendarEntry entry : participant.getCalendar()) {
+					Meeting m = (Meeting) entry;
+					
+					m.updateWith(meeting);
+				}
+				
+				continue;
+			}
+		}
+		
+		*/
 		
 	}
 	
@@ -541,12 +576,18 @@ public class CommunicationController {
 	 * 
 	 * @param appointment
 	 */
-	public void updateAppointment(Appointment appointment) {
-		
+	public synchronized void updateAppointment(Appointment appointment) {
+		User user = appointment.getOwner();
+		for(User u : shows){
+			if(u.getUsername().equals(user)){
+				Calendar c = u.getCalendar();
+				c.removeAppointment(appointment);
+				c.addAppointment(appointment);
+			}
+		}
 	}
 
 
 	
 	
 }
->>>>>>> branch 'master' of https://otron@github.com/bj0rn/Gruppe34.git
