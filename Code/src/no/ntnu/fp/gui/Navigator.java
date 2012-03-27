@@ -12,11 +12,12 @@ import javax.swing.JPanel;
 
 public class Navigator extends JPanel implements ActionListener{
 	public JButton previousButton, nextButton;
-	private JLabel numberLabel;
+	private JLabel numberLabel, label;
 	private int value,max,min;
-	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	
 	public final static String VALUE_PROPERTY = "Value";
+	
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	
 	public Navigator(String label, int current, int min, int max) {
 		super();
@@ -29,7 +30,7 @@ public class Navigator extends JPanel implements ActionListener{
 		nextButton.addActionListener(this);
 		previousButton.addActionListener(this);
 		
-		add(new JLabel(label), BorderLayout.NORTH);
+		add(this.label = new JLabel(label), BorderLayout.NORTH);
 		add(previousButton, BorderLayout.WEST);
 		add(numberLabel, BorderLayout.CENTER);
 		add(nextButton, BorderLayout.EAST);
@@ -37,16 +38,6 @@ public class Navigator extends JPanel implements ActionListener{
 		setValue(current);
 	}
 
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener(listener);
-	}
-	
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		pcs.removePropertyChangeListener(listener);
-	}
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(nextButton)){
@@ -58,8 +49,7 @@ public class Navigator extends JPanel implements ActionListener{
 
 	public void previous() {
 		if(value>min){
-			value--;
-			setValue(value);
+			setValue(value-1);
 		}else{
 			value=min;
 		}
@@ -68,8 +58,7 @@ public class Navigator extends JPanel implements ActionListener{
 
 	public void next() {
 		if(value<max){
-			value++;
-			setValue(value);
+			setValue(value+1);
 		}else{
 			value=max;
 		}
@@ -83,5 +72,14 @@ public class Navigator extends JPanel implements ActionListener{
 	
 	public int getValue(){
 		return value;
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener l ) {
+		pcs.addPropertyChangeListener(l);
+	}
+	
+	@Override
+	public String toString() {
+		return "Navigator: " + label.getText();
 	}
 }

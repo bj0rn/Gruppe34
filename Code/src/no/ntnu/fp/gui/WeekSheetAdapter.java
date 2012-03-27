@@ -7,7 +7,6 @@ import java.util.List;
 import no.ntnu.fp.gui.timepicker.DateModel;
 import no.ntnu.fp.model.Calendar;
 import no.ntnu.fp.model.CalendarEntry;
-import no.ntnu.fp.util.TimeLord;
 
 public class WeekSheetAdapter implements Iterable<CalendarEntryView>{
 	List<Calendar> calendars = new ArrayList<Calendar>();
@@ -30,7 +29,6 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>{
 		List<CalendarEntryView> entries = new ArrayList<CalendarEntryView>();
 		for(Calendar calendar: calendars){
 			for(CalendarEntry calendarEntry: calendar){
-				System.out.println(calendarEntry.getWeek() + " " + calendarEntry.getYear());
 					if((calendarEntry.getYear()+1900) == dateModel.getYear() && calendarEntry.getWeek() == dateModel.getWeek()){
 						entries.add(new CalendarEntryView(calendarEntry));
 					}
@@ -63,5 +61,4 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>{
 			
 		};
 	}
-	
 }
