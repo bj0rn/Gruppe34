@@ -23,17 +23,22 @@ import no.ntnu.fp.model.Authenticate;
 
 public class LoginFrame extends JFrame implements PropertyChangeListener, KeyListener{
 
+	public static final String DEFAULT_IP = "127.0.0.1";
+	
 	public static final String LOGIN_TITLE = "Login";
 	public static final String USERNAME_LABEL = "Brukernavn";
 	public static final String PASSWORD_LABEL = "Passord";
+	public static final String IP_LABEL = "IP";
 	public static final String LOGIN_BUTTON_LABEL = "Logg inn";
 	
 	private JTextField usernameField; 
 	private JPasswordField passwordField;
+	private JTextField ipField;
 	
 	private JButton loginButton;
 	
 	private Authenticate model;
+	private String ip = DEFAULT_IP;
 	
 	public LoginFrame() {
 		
@@ -69,6 +74,14 @@ public class LoginFrame extends JFrame implements PropertyChangeListener, KeyLis
 		passwordField.addActionListener(loginAction);
 		content.add(passwordField);
 		
+		JLabel ipLabel = new JLabel(IP_LABEL);
+		//content.add(ipLabel);
+		
+		ipField = new JTextField();
+		ipField.setText(DEFAULT_IP);
+		ipField.addKeyListener(this);
+		//content.add(ipField);
+		
 		panel.add(content, BorderLayout.CENTER);
 		
 		loginButton = new JButton(LOGIN_BUTTON_LABEL);
@@ -82,6 +95,10 @@ public class LoginFrame extends JFrame implements PropertyChangeListener, KeyLis
 		setLocationRelativeTo(null);
 		setVisible(true);
 		
+	}
+	
+	public String getIP() {
+		return ip;
 	}
 	
 	public static void main(String[] args) {
@@ -111,6 +128,8 @@ public class LoginFrame extends JFrame implements PropertyChangeListener, KeyLis
 			model.setUsername(usernameField.getText());
 		} else  if (e.getSource() == passwordField) {
 			model.setPassword(new String(passwordField.getPassword()));
+		} else if (e.getSource() == ipField) {
+			ip = ipField.getText();
 		}
 	}
 

@@ -50,6 +50,10 @@ public class Client implements Runnable {
 		return mySocket;
 	}
 	
+	public void setHost(String ip) {
+		this.host = ip;
+	}
+	
 	//TODO: Stop these threads
 	@Override
 	public void run() {

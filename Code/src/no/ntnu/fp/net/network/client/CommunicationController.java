@@ -50,8 +50,7 @@ import no.ntnu.fp.model.Room;
 
 public class CommunicationController {
 	
-	public final static String HOST = "127.0.0.1"; 
-			//"78.91.22.12"; //
+	public String host = "127.0.0.1"; // "78.91.22.12"; //
 	public final static int PORT = 1337;
 
 	private static CommunicationController instance;
@@ -127,7 +126,7 @@ public class CommunicationController {
 		
 		LinkedBlockingDeque<Object> testQueue = new LinkedBlockingDeque<Object>();
 		//CommunicationController communicationController = new CommunicationController(mySocket, testQueue)
-		Client c = new Client(HOST, PORT, testQueue, this);
+		Client c = new Client(host, PORT, testQueue, this);
 		
 		try {
 			this.mySocket = c.getSocket();
@@ -216,8 +215,6 @@ public class CommunicationController {
 	public Authenticate getAuthenticate() {
 		return auth;
 	}
-
-
 	
 	/**
 	 * Retrieves the full {@code List} of {@code User}s once from the server.
@@ -531,12 +528,14 @@ public class CommunicationController {
 		return true;
 	}
 	
+
+	
 	/**
 	 * This method is called by the {@code ClientWorker} when a 
 	 * {@code Meeting} update is received from the Server. 
 	 * @param meeting
 	 */
-	public void updateMeeting(Meeting updatedMeeting) {
+	public synchronized void updateMeeting(Meeting updatedMeeting) {
 		
 		User owner = updatedMeeting.getOwner();
 		Calendar calendar = user.getCalendar();
@@ -572,6 +571,49 @@ public class CommunicationController {
 		
 		if (meeting != null) {
 			calendar.addMeeting(updatedMeeting);
+		}
+		
+	}
+
+	public synchronized void updateMeetingState(Meeting updatedMeeting) {
+		
+		User owner = updatedMeeting.getOwner();
+		Calendar calendar = user.getCalendar();
+		
+		Meeting meeting = null;
+		
+		if (owner.equals(user)) {
+			for (CalendarEntry entry : user.getCalendar()) {
+				
+				if (entry.getID() == meeting.getID()) {
+					meeting = (Meeting)entry;
+					
+					continue;
+				}
+			}
+		} else {
+			for (User participant : updatedMeeting.getParticipants()) {
+				if (participant.equals(user)) {
+					
+					for (CalendarEntry entry : participant.getCalendar()) {
+						if (entry.getID() == meeting.getID()) {
+							meeting = (Meeting) entry;
+							continue;
+						}
+					}
+				}
+			}
+		}
+		
+		if (meeting != null) {
+			for (User user : meeting.getParticipants()) {
+				State state = meeting.getState(user); 
+				State updatedState = updatedMeeting.getState(user); 
+				
+				if (state != updatedState) {
+					meeting.setState(user, updatedState);
+				}
+			}
 		}
 		
 	}
