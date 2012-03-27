@@ -8,6 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -33,7 +34,7 @@ import no.ntnu.fp.util.GridBagHelper;
 
 
 public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
-	private ArrayList<Location> locs;
+	private List<Room> locs;
 	private JLabel desc, cap, roomName, misc;
 	private JTextField descComp, capComp, nameComp;
 	private Location selectedLoc;
@@ -59,7 +60,17 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			capComp.setText((b ? ((Room) l).getCapacity()+"" : "N/A"));
 			descComp.setText(l.getDescription());
 			}
+		if (evt.getPropertyName() == CalendarEntry.START_PROPERTY
+				|| evt.getPropertyName() == CalendarEntry.END_PROPERTY) {
+			Date e = model.getEndDate();
+			Date s = model.getStartDate();
+			if (e != null && s != null) {
+				drawListOfLocations();
+			}
+			
 		}
+			
+	}//end propertyChange
 
 	public PlacePickerPanel(CalendarEntry model) {
 		this();
@@ -71,8 +82,9 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	 * 		The CalendarEntry for which to select a location
 	 */
 	public PlacePickerPanel() {
-		//this.cCtrl = CommunicationController.getInstance();
-		//this.locs = cCtrl.getListOfRooms();
+		this.cCtrl = CommunicationController.getInstance();
+		this.locs = cCtrl.getListOfRooms();
+		
 		this.desc = new JLabel("Rombeskrivelse:");
 		this.cap = new JLabel("Romkapasitet:");
 		this.misc = new JLabel("Velg et rom");
@@ -142,13 +154,13 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			}
 		});
 		//TEST CODE
-		this.locs = new ArrayList<Location>();
-		Location loc1 = new Room(23, "Room1", "The first room", 44);
-		Location loc2 = new Place(22, "strangewhere");
-		Location loc3 = new Room(34, "SPACE.", "Spaaaaaace", Integer.MAX_VALUE);
-		locs.add(loc1);
-		locs.add(loc2);
-		locs.add(loc3);
+//		this.locs = new ArrayList<Location>();
+//		Location loc1 = new Room(23, "Room1", "The first room", 44);
+//		Location loc2 = new Place(22, "strangewhere");
+//		Location loc3 = new Room(34, "SPACE.", "Spaaaaaace", Integer.MAX_VALUE);
+//		locs.add(loc1);
+//		locs.add(loc2);
+//		locs.add(loc3);
 		
 		
 		updatePanel();
@@ -171,7 +183,7 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		this.selectedLoc = loc;
 		updatePanel();
 	}
-	public void setListOfLocations(ArrayList<Location> list) {
+	public void setListOfRooms(List<Room> list) {
 		this.locs = list;
 		updatePanel();
 	}
