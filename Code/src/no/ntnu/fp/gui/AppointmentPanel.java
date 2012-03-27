@@ -48,7 +48,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	public AppointmentPanel(Appointment appmnt) {
 		this();
 		setModel(appmnt);
-		plPickPanel.setModel(appmnt);
+		model.setOwner(CommunicationController.getInstance().getUser());
+		plPickPanel.setModel(this.model);
 	}
 	public AppointmentPanel() {
 		appointment = new JLabel("Avtale");
@@ -155,7 +156,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				if (model != null) {
 					if (model.getOwner() == null) 
 						model.setOwner(c.getUser());
-					c.saveAppointment(model);
+					
+					c.saveAppointment(model.shallowCopy());
 				}
 				//close window if successfull.
 			}
@@ -173,7 +175,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		});
 		
 		this.setLocationRelativeTo(null); //center a frame
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setVisible(true); //display the frame
 		
 		this.pack();
