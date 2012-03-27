@@ -841,7 +841,7 @@ public class DatabaseController {
 		
 		String role = "Owner";
 		String state = "Accepted";
-		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "'";
+		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "')";
 		int CalendarEntryID = id;
 		
 		builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
@@ -849,7 +849,7 @@ public class DatabaseController {
 		role = "Participant";
 		for (User user : meeting.getParticipants()) {
 			state = meeting.getState(user).toString();
-			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "'";
+			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "')";
 			
 			builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
 		}
@@ -1072,10 +1072,7 @@ public class DatabaseController {
 		dbc.close();
 		return result;
 	}
-
-
-	
-	public void subscribeToCalendar(String username, String requestedUserName) throws SQLException{
+		public void subscribeToCalendar(String username, String requestedUserName) throws SQLException{
 		DbConnection db = getConnection();
 		
 		String sql = "INSERT INTO Shows (Username,CalendarID) " 
@@ -1093,19 +1090,13 @@ public class DatabaseController {
 	}
 	
 	
-	public List <Tuple <String, String>> getSubscribers(){
-		DbConnection db = getConnection();
+	public List <Tuple <String, String>> getSubscribers() throws SQLException{		DbConnection db = getConnection();
 		ArrayList<Tuple<String, String>> res =  new ArrayList<Tuple <String, String>>();
 		
 		String sql = "SELECT Shows.Username, Calendar.Username"
 				+"FROM Shows" 
 				+"LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";
-		
-		
+		ResultSet rs = db.query(sql);		rs.beforeFirst();		while(rs.next()){			String user = rs.getString("Shows.Username");			String views = rs.getString("Calendar.Username");			res.add(new Tuple <String, String>(user, views) );		}		
 		
 		return res;
-	}
-
-
-	
-}
+	}	}
