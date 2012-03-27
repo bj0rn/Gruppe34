@@ -13,13 +13,9 @@ public class Appointment extends CalendarEntry{
 	}
 	
 	public Appointment shallowCopy() {
-		System.out.println(startDate);
-		System.out.println(endDate);
-		System.out.println(description);
-		System.out.println(id);
 		Appointment andeplan = new Appointment(startDate, endDate, description, id);
-		System.out.println(andeplan);
 		andeplan.setOwner(new User(getOwner().getUsername()));
+		andeplan.setLocation(getLocation());
 		return andeplan;
 	}
 

@@ -259,7 +259,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         public void actionPerformed(ActionEvent arg0) {
         	System.out.println(model);
         	CommunicationController c = CommunicationController.getInstance();
-        	c.saveMeeting(model.shallowCopy());
+        	int id = c.saveMeeting(model.shallowCopy());
+        	model.setID(id);
         }
     }
     
@@ -285,8 +286,11 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	
     	@Override
     	public void actionPerformed(ActionEvent e) {
-    		// TODO Auto-generated method stub
-    		
+    		int id = model.getID();
+    		if (id != -1) {
+    			CommunicationController c = CommunicationController.getInstance();
+    			c.deleteMeeting(model);
+    		}
     	}
     	
     }
