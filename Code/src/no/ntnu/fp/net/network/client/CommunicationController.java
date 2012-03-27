@@ -18,6 +18,7 @@ import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.Calendar;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
@@ -542,7 +543,14 @@ public class CommunicationController {
 	 * @param appointment
 	 */
 	public void updateAppointment(Appointment appointment) {
-		
+		User user = appointment.getOwner();
+		for(User u : shows){
+			if(u.getUsername().equals(user)){
+				Calendar c = u.getCalendar();
+				c.removeAppointment(appointment);
+				c.addAppointment(appointment);
+			}
+		}
 	}
 
 

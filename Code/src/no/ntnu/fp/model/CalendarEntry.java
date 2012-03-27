@@ -203,4 +203,17 @@ public abstract class CalendarEntry implements Serializable {
 	public void setID(int id){
 		this.id = id;
 	}
+	
+	
+	public boolean equals(Object obj){
+		if(obj instanceof CalendarEntry){
+			CalendarEntry e = (CalendarEntry)obj;
+			if(this.id == e.getID()){
+				return true;
+			}else {
+				return false;
+			}
+		}
+		return false;
+	}
 }
