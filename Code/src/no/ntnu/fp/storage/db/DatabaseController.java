@@ -19,7 +19,7 @@ package no.ntnu.fp.storage.db;import java.io.File;import java.io.FileInputStr
 			+	"	OWNCA.Username as owner, "
 			+	"	CE.TimeStart AS start, " 
 			+	"	CE.TimeEnd AS end, " 
-			+	"	CE.Description AS description, " 
+			+	"	CE.Description AS description " 
 			+	"FROM CalendarEntry AS CE "
 			+	"	LEFT JOIN Location AS L ON CE.LocationID = L.LocationID "
 			+	"	LEFT JOIN Contains AS OWNCO ON CE.CalendarEntryID = OWNCO.CalendarEntryID " 

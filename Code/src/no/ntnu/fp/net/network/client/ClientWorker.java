@@ -64,7 +64,6 @@ public class ClientWorker implements Runnable {
 			communication.updateMeeting(meeting);
 			System.out.println("We have a notification");
 			return true;
-		
 		} else if(response.getMethod() == Method.CHANGE_MEETING_NOTFICATION) {
 			Meeting meeting = (Meeting)response.getObject();
 			communication.updateMeeting(meeting);
