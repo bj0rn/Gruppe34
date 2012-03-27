@@ -447,13 +447,13 @@ public class ServerController {
 			System.out.println("Ready for magic saveMeeting");
 			saveMeeting(data);
 		} else if (requestType == Request.Method.SAVE_APPOINTMENT) {
-			System.out.println("Ready for magic");
+			System.out.println("Ready for magic; save appointment");
 			saveAppointment(data);
 		} else if (requestType == Method.DISPATCH_MEETING_REPLY) {
-			System.out.println("Ready for magic DispatchMeetingReply");
+			System.out.println("Ready for magic; DispatchMeetingReply");
 			dispatchMeetingReply(data);
 		}else if(requestType == Method.GET_LIST_OF_ROOMS){
-			System.out.println("Talk to me baby");
+			System.out.println("Ready for magic; getListOfRooms");
 			getListOfRooms(data);
 		}
 
