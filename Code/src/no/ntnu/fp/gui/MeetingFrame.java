@@ -70,10 +70,13 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private JEditableList participantList;
     private JButton addParticipantButton = new JButton(new addParticipantAction("Legg til Deltaker"));
     private JTextField locationField = new JTextField(20);
-    //private PlacePickerPanel placePickerPanel = new PlacePickerPanel();
+    private PlacePickerPanel placePickerPanel = new PlacePickerPanel();
     private JButton saveButton = new JButton(new SaveAction("Lagre"));
     private JButton cancelButton = new JButton(new CancelAction("Avbryt"));
     private JButton deleteButton = new JButton(new DeleteAction("Slett"));
+    
+    private TimePickableFieldListener startListener = new TimePickableFieldListener(startField, this);
+    private TimePickableFieldListener endListener = new TimePickableFieldListener(endField, this);
     
     private Meeting model;
     private ParticipantListModel listModel;
@@ -85,6 +88,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     public MeetingFrame(User user, Meeting model) {
 
         setModel(model);
+        placePickerPanel.setModel(model);
     	JPanel panel = new JPanel();
     	
     	panel.setLayout(new BorderLayout());
@@ -114,12 +118,12 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         addGridBagComponent(center, description, 0, c);
         
         addGridBagLabel(center, START_LABEL, 1, c);
-        startField.addFocusListener(new TimePickableFieldListener(startField, this));
         startField.getDocument().addDocumentListener(new DocumentListener() {
 			
         	public void changedUpdate(DocumentEvent e) {}
 			public void removeUpdate(DocumentEvent e) {}
 			public void insertUpdate(DocumentEvent e) {
+				System.out.println(startField.getText());
 				if (getModel() != null) {
 					getModel().setStartDate(TimeLord.parseDate(startField.getText()));
 				}
@@ -128,7 +132,6 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         addGridBagComponent(center, startField, 1, c);
         
         addGridBagLabel(center, END_LABEL, 2, c);
-        endField.addFocusListener(new TimePickableFieldListener(endField, this));
         endField.getDocument().addDocumentListener(new DocumentListener() {
         	
         	public void changedUpdate(DocumentEvent e) {}
@@ -151,8 +154,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         //addGridBagLabel(center, PLACE_LABEL, 6, c);
         //addGridBagComponent(center, locationField, 6, c);
         
-        //addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
-        //placePickerPanel.addPropertyChangeListener(this);
+        addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
+        placePickerPanel.addPropertyChangeListener(this);
         
         
         panel.add(center, BorderLayout.CENTER);
@@ -177,7 +180,11 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
-        
+       
+        startField.addFocusListener(startListener);
+        startListener.setDate(model.getStartDate());
+        endField.addFocusListener(endListener);
+        endListener.setDate(model.getEndDate());        
     }
 	
 	private void addGridBagLabel(JPanel panel, String s, int row, GridBagConstraints c) {
@@ -314,7 +321,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 	public void updatePanel() {
     	description.setText(model.getDescription());
     	startField.setText(TimeLord.formatDate(model.getStartDate()));
+    	startListener.setDate(model.getStartDate());
     	endField.setText(TimeLord.formatDate(model.getEndDate()));
+    	endListener.setDate(model.getEndDate());
     	//participantList.setListData(model.getParticipants());
     	updateLocation();
     }
@@ -337,9 +346,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         if (name == CalendarEntry.DESC_PROPERTY) {
         	description.setText(model.getDescription());
         } else if (name == CalendarEntry.START_PROPERTY) {
-        	
+        	startListener.setDate(model.getStartDate());
         } else if (name == CalendarEntry.END_PROPERTY) {
-            endField.setText((String) event.getNewValue());
+        	endListener.setDate(model.getEndDate());
         } else if (name == Meeting.PARTICIPANTS_PROPERTY) {
         	
         } else if (name == CalendarEntry.LOC_PROPERTY) {

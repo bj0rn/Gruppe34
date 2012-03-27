@@ -56,8 +56,12 @@ public class Room extends Location implements Serializable{
 	}
 	
 	public boolean isAvailable(Date from, Date to) {
-		Duration duration = new Duration(from, to);
-		return !timeTable.overlaps(duration);
+		if (!(from == null) && !(to == null)) {
+			Duration duration = new Duration(from, to);
+			return !timeTable.overlaps(duration);
+		} else {
+			return true;
+		}
 	}
 
 }
