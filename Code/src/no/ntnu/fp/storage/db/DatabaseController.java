@@ -8,7 +8,7 @@ package no.ntnu.fp.storage.db;import java.io.File;import java.io.FileInputStr
 	 * @return
 	 * @throws SQLException 
 	 */
-	public Meeting getMeeting(int id) throws SQLException {
+	public Meeting getMeeting(String id) throws SQLException {
 		
 		Meeting meeting = null;
 		
