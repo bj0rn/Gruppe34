@@ -1,12 +1,14 @@
 package no.ntnu.fp.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class User extends Model implements Serializable, Comparable {
+public class User extends Model implements Serializable, Comparable, PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -173,6 +175,13 @@ public class User extends Model implements Serializable, Comparable {
 			username.compareTo(((User)o).username);
 		}
 		return -1;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == calendar) {
+			pcs.firePropertyChange(evt);
+		}
 	}
 	
 }

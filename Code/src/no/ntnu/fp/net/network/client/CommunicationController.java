@@ -536,16 +536,16 @@ public class CommunicationController {
 	 * @param meeting
 	 */
 	public void updateMeeting(Meeting updatedMeeting) {
-		User owner = updatedMeeting.getOwner();
 		
-		Calendar calendar = null;
+		User owner = updatedMeeting.getOwner();
+		Calendar calendar = user.getCalendar();
+		
 		Meeting meeting = null;
 		
 		if (owner.equals(user)) {
 			for (CalendarEntry entry : user.getCalendar()) {
 				
 				if (entry.getID() == meeting.getID()) {
-					calendar = user.getCalendar();
 					meeting = (Meeting)entry;
 					
 					continue;
@@ -557,18 +557,19 @@ public class CommunicationController {
 					
 					for (CalendarEntry entry : participant.getCalendar()) {
 						if (entry.getID() == meeting.getID()) {
-							calendar = participant.getCalendar();
 							meeting = (Meeting) entry;
 							continue;
 						}
 					}
 					
+					if (meeting == null ) {
+						calendar.addMeeting(updatedMeeting);
+					}
 				}
 			}
 		}
 		
-		if (calendar != null) {
-			calendar.removeMeeting(meeting);
+		if (meeting != null) {
 			calendar.addMeeting(updatedMeeting);
 		}
 		
