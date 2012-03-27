@@ -138,7 +138,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         	public void removeUpdate(DocumentEvent e) {}
 			public void insertUpdate(DocumentEvent e) {
 				if (getModel() != null) {
-					getModel().setEndDate(TimeLord.parseDate(startField.getText()));
+					getModel().setEndDate(TimeLord.parseDate(endField.getText()));
 				}
 			}
         });
@@ -257,7 +257,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	//System.out.println(model);
+        	System.out.println(model);
         	CommunicationController c = CommunicationController.getInstance();
         	c.saveMeeting(model.shallowCopy());
         }
