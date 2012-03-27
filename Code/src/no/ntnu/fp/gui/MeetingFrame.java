@@ -257,9 +257,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	System.out.println(model);
-        	//CommunicationController c = CommunicationController.getInstance();
-        	//c.saveMeeting(model.shallowCopy());
+        	//System.out.println(model);
+        	CommunicationController c = CommunicationController.getInstance();
+        	c.saveMeeting(model.shallowCopy());
         }
     }
     
