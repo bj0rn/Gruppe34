@@ -19,27 +19,26 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import no.ntnu.fp.gui.timepicker.TimePickableFieldListener;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Person;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
-import no.ntnu.fp.net.network.client.CommunicationController;
 import no.ntnu.fp.util.GridBagHelper;
 import no.ntnu.fp.util.TimeLord;
 
-public class AppointmentPanel extends JPanel implements PropertyChangeListener {
+public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	private JLabel appointment, description, startTime, endTime, location;
 	private JTextField descComp, startComp, endComp;
 	private JTextField locComp;
-	//private JComboBox locComp;
-	//private Room[] rooms =
+	private JPanel panel;
 	private PlacePickerPanel plPickPanel;
 	
 	private JButton save, delete;
 	
-	//fï¿½ det ryddig i boksen
+	//fŒ det ryddig i boksen
 	protected GridBagLayout grid;
 	protected GridBagConstraints constraints;
 	
@@ -56,6 +55,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		startTime = new JLabel("Starttid");
 		endTime = new JLabel("Sluttid");
 		location = new JLabel("Sted");
+		panel = new JPanel();
 		
 		plPickPanel = new PlacePickerPanel();
 		plPickPanel.addPropertyChangeListener(this);
@@ -72,46 +72,48 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		grid = new GridBagLayout();
 		constraints = new GridBagConstraints();
 		
-		setLayout(grid); // gjï¿½r at man faktisk endrer noe(det synes)
+		panel.setLayout(grid); // gj¿r at man faktisk endrer noe(det synes)
 		
 		constraints.gridwidth = constraints.RELATIVE;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		add(appointment, constraints);
+		panel.add(appointment, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 1;
-		add(description, constraints);
+		panel.add(description, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 2;
-		add(startTime, constraints);
+		panel.add(startTime, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 3;
-		add(endTime, constraints);
+		panel.add(endTime, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 4;
-		add(location, constraints);
+		panel.add(location, constraints);
 		constraints.gridx = 3;
 		constraints.gridy = 1;
-		add(descComp, constraints);
+		panel.add(descComp, constraints);
 		constraints.gridx = 3;
 		constraints.gridy = 2;
-		add(startComp, constraints);
+		panel.add(startComp, constraints);
 		constraints.gridx = 3;
 		constraints.gridy = 3;
-		add(endComp, constraints);
+		panel.add(endComp, constraints);
 		constraints.gridx = 3;
 		constraints.gridy = 4;
-		add(locComp, constraints);
+		panel.add(locComp, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 6;
-		add(save, constraints);
+		panel.add(save, constraints);
 		constraints.gridx = 3;
 		constraints.gridy = 6;
-		add(delete, constraints);
+		panel.add(delete, constraints);
 		
 		constraints.gridwidth = constraints.REMAINDER;
 		constraints.gridheight = constraints.RELATIVE;
-		add(plPickPanel, GridBagHelper.setConstraints(constraints, 0, 5));
+		panel.add(plPickPanel, GridBagHelper.setConstraints(constraints, 0, 5));
+		
+		add(panel);
 		
 		descComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
@@ -124,64 +126,15 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 				model.setStartDate(TimeLord.parseDate(startComp.getText()));
 			}
 		});
-		startComp.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				System.out.println("DP");
-				
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		endComp.addKeyListener(new KeyAdapter(){
-			public void keyReleased(KeyEvent e){
+		startComp.addFocusListener(new TimePickableFieldListener(startComp, this));
+		endComp.addFocusListener(new TimePickableFieldListener(endComp, this));
+		
+		endComp.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
 				model.setEndDate(TimeLord.parseDate(endComp.getText()));
 			}
-		}); 
-		endComp.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("I!");
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
 		});
+		
 		
 		locComp.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
@@ -229,16 +182,14 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
     }
 	
 	public static void main(String[] args){
-		JFrame frame = new JFrame("Frame"); //create a frame
 		
 		Appointment app = new Appointment(new Date(0, 0, 0), new Date(2012, 05, 03),
 				"Kill the batman", 35);
 		app.setLocation(new Place(33, "Gotham City"));
 		
-		AppointmentPanel panel = new AppointmentPanel(app);
+		AppointmentPanel frame = new AppointmentPanel(app);
 		
-		frame.add(panel); //adder alt i konstruktï¿½ren
-		panel.setModel(app);
+		frame.setModel(app);
 		
 		frame.setLocationRelativeTo(null); //center a frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
