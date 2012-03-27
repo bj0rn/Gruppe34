@@ -169,9 +169,15 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				if (model != null) {
 					c.deleteAppointment(model);
 				}
-				//close window.
 			}
 		});
+		
+		this.setLocationRelativeTo(null); //center a frame
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true); //display the frame
+		
+		this.pack();
+		
 	}
 	
 	 private void updatePanel() {
