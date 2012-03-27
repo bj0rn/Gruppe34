@@ -53,7 +53,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private static final Dimension LABEL_SIZE = new Dimension(100, 20);
     private static final Dimension TEXT_INPUT_SIZE = new Dimension(260, 20);
     
-    public static final String TITLE_LABEL = "Møte";
+    public static final String TITLE_LABEL = "Mï¿½te";
     public static final String DESCRIPTION_LABEL = "Beskrivelse: ";
     public static final String START_LABEL = "Start:";
     public static final String END_LABEL = "Slutt:";
@@ -70,10 +70,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private JEditableList participantList;
     private JButton addParticipantButton = new JButton(new addParticipantAction("Legg til Deltaker"));
     private JTextField locationField = new JTextField(20);
-    private JButton reserveRoomListButton = new JButton(new roomListAction("Rom"));
-    private JButton saveButton = new JButton(new saveAction("Lagre"));
-    private JButton cancelButton = new JButton(new cancelAction("Avbryt"));
-    private JButton deleteButton = new JButton(new deleteAction("Slett"));
+    //private PlacePickerPanel placePickerPanel = new PlacePickerPanel();
+    private JButton saveButton = new JButton(new SaveAction("Lagre"));
+    private JButton cancelButton = new JButton(new CancelAction("Avbryt"));
+    private JButton deleteButton = new JButton(new DeleteAction("Slett"));
     
     private Meeting model;
     private ParticipantListModel listModel;
@@ -93,16 +93,11 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	participantList = new JEditableList(listModel, new ParticipantListCellRenderer());
     	participantList.setPreferredSize(new Dimension(410, 150));
     	
-<<<<<<< HEAD
-    	JLabel labelMeeting = new JLabel(TITLE_LABEL, JLabel.CENTER);
-        panel.add(labelMeeting);
-=======
     	JLabel labelMeeting = new JLabel(TITLE_LABEL);
 		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
     	labelMeeting.setBorder(padding);
     	labelMeeting.setFont(StylingDefinition.FRAME_TITLE_FONT);
         panel.add(labelMeeting, BorderLayout.NORTH);
->>>>>>> branch 'master' of https://EivindK@github.com/bj0rn/Gruppe34.git
     	
         JPanel center = new JPanel();
         
@@ -153,8 +148,12 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         addGridBagComponent(center, scrollPanel, 4, 0, c, 2);
         addGridBagComponent(center, addParticipantButton, 5, 0, c, 2);
         
-        addGridBagLabel(center, PLACE_LABEL, 6, c);
-        addGridBagComponent(center, locationField, 6, c);
+        //addGridBagLabel(center, PLACE_LABEL, 6, c);
+        //addGridBagComponent(center, locationField, 6, c);
+        
+        //addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
+        //placePickerPanel.addPropertyChangeListener(this);
+        
         
         panel.add(center, BorderLayout.CENTER);
                 
@@ -169,8 +168,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 
         model.setOwner(user);
         
-        panel.setPreferredSize(new Dimension(500, 500));
-        setPreferredSize(new Dimension(500, 500));
+        panel.setPreferredSize(new Dimension(500, 700));
+        setPreferredSize(new Dimension(500, 700));
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(panel);
@@ -228,10 +227,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     }
     
     //Action for Rom reservering
-    private class roomListAction extends AbstractAction {
+    private class RoomListAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public roomListAction(String text) {
+        public RoomListAction(String text) {
         	super(text, null);
         }
 
@@ -242,25 +241,26 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     }
     
     //Action for lagring av skjema
-    private class saveAction extends AbstractAction {
+    private class SaveAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public saveAction(String text) {
+        public SaveAction(String text) {
         	super(text, null);
         }
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	CommunicationController c = CommunicationController.getInstance();
-        	c.saveMeeting(model.shallowCopy());
+        	System.out.println(model);
+        	//CommunicationController c = CommunicationController.getInstance();
+        	//c.saveMeeting(model.shallowCopy());
         }
     }
     
     //Action for ï¿½ avbryte skjema
-    private class cancelAction extends AbstractAction {
+    private class CancelAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public cancelAction(String text) {
+        public CancelAction(String text) {
         	super(text, null);
         }
 
@@ -270,9 +270,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         }
     }
     
-    private class deleteAction extends AbstractAction {
+    private class DeleteAction extends AbstractAction {
     	
-    	public deleteAction(String text) {
+    	public DeleteAction(String text) {
     		super(text);
     	}	
     	
@@ -311,7 +311,6 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	}
     }
     
-    @SuppressWarnings("deprecation")
 	public void updatePanel() {
     	description.setText(model.getDescription());
     	startField.setText(TimeLord.formatDate(model.getStartDate()));
@@ -323,6 +322,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private void updateLocation() {
     	Location location = model.getLocation(); 
     	if (location != null) {
+    		//placePickerPanel.setLocation(location);
     		locationField.setText(model.getLocation().toString());
     	} else {
     		locationField.setText("");
@@ -336,15 +336,17 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         final String name = event.getPropertyName();
         if (name == CalendarEntry.DESC_PROPERTY) {
         	description.setText(model.getDescription());
-        }
-        else if (name == CalendarEntry.START_PROPERTY) {}
-         
-        else if (name == CalendarEntry.END_PROPERTY) {
+        } else if (name == CalendarEntry.START_PROPERTY) {
+        	
+        } else if (name == CalendarEntry.END_PROPERTY) {
             endField.setText((String) event.getNewValue());
-         }
-        else if (name == Meeting.PARTICIPANTS_PROPERTY) {}
-        else if (name == CalendarEntry.LOC_PROPERTY) {
+        } else if (name == Meeting.PARTICIPANTS_PROPERTY) {
+        	
+        } else if (name == CalendarEntry.LOC_PROPERTY) {
         	locationField.setText(model.getLocation().toString());
+        } else if (name == PlacePickerPanel.LOCATIONC_PROPERTY) {
+        	Location l = (Location)event.getNewValue();
+        	model.setLocation(l);
         }
 	}
 	

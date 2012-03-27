@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.XmlHandler;
 import no.ntnu.fp.net.network.Request;
@@ -59,14 +60,20 @@ public class ClientWorker implements Runnable {
 	
 	public boolean handle(Object data){
 		Request response = (Request) data;
-		if(response.getMethod() == Method.MEETING_NOTIFICATION){
+		if (response.getMethod() == Method.MEETING_NOTIFICATION) {
+			Meeting meeting = (Meeting)response.getObject();
+			communication.updateMeeting(meeting);
 			System.out.println("We have a notification");
 			return true;
 		
-		}else if(response.getMethod() == Method.CHANGE_MEETING_NOTFICATION){
+		} else if(response.getMethod() == Method.CHANGE_MEETING_NOTFICATION) {
+			Meeting meeting = (Meeting)response.getObject();
+			communication.updateMeeting(meeting);
 			System.out.println("Someone changed a meeting (views)");
 			return true;
-		}else if(response.getMethod() == Method.CHANGE_APPOINTMENT_NOTIFICATION){
+		}else if(response.getMethod() == Method.CHANGE_APPOINTMENT_NOTIFICATION) {
+			Appointment appointment = (Appointment)response.getObject();
+			communication.updateAppointment(appointment);
 			System.out.println("Someone changed an appointment (views)");
 			return true;
 		}else {

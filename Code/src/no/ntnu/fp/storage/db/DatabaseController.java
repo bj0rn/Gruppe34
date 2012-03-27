@@ -27,6 +27,7 @@ import no.ntnu.fp.model.Notification;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
+import no.ntnu.fp.net.network.Tuple;
 import no.ntnu.fp.util.TimeLord;
 
 /**
@@ -44,13 +45,12 @@ public class DatabaseController {
 	public static void main(String[] args) throws SQLException {
 		DatabaseController dbCtrl = new DatabaseController();
 		
-		User user = dbCtrl.getFullUser("havard");
+		List<Room> rooms = dbCtrl.getListOfRooms();
 		
-		Calendar calendar = user.getCalendar();
-		
-		for (CalendarEntry entry : calendar) {
-			System.out.println(TimeLord.formatDate(entry.getStartDate()));
+		for (Room room : rooms) {
+			System.out.println(room + "\n" + room.getTimeTable() + "\n");
 		}
+		
 	}
 	
 	public DatabaseController() {
@@ -472,21 +472,50 @@ public class DatabaseController {
 	 * 
 	 * @throws SQLException
 	 */
-	public List<Location> getListOfLocations() throws SQLException {
+	public List<Room> getListOfRooms() throws SQLException {
 		
-		List<Location> locs = new ArrayList<Location>();
+		List<Room> rooms = new ArrayList<Room>();
 		DbConnection dbc = getConnection();
 		//hm so first get the rooms I assume, then the 'places'
-		String sqlR = "SELECT RoomName, Description, Capacity FROM Room";
-		ResultSet rs = dbc.query(sqlR);
+		String sql = "SELECT LocationID, RoomName, Description, Capacity FROM Room";
+		ResultSet rs = dbc.query(sql);
 		rs.beforeFirst();
 		
 		while(rs.next()) {
 			
+			int id = rs.getInt("LocationID");
+			String name = rs.getString("RoomName");
+			String desc = rs.getString("Description");
+			int capacity = rs.getInt("Capacity");
+			
+			sql = 
+				"SELECT "
+			+	"	CE.TimeStart AS start, "
+			+	"	CE.TimeEnd AS end "
+			+	"FROM Room AS R "
+			+	"JOIN CalendarEntry AS CE ON R.LocationID = CE.LocationID "
+			+	"WHERE R.LocationID = " + id;
+			
+			ResultSet times = dbc.query(sql);
+			
+			Room room = new Room(id, name, desc, capacity);
+			
+			times.beforeFirst();
+			while(times.next()) {
+				
+				Date from = times.getTimestamp("start");
+				Date to = times.getTimestamp("end");
+				
+				room.addReservedTime(from, to);
+				
+			}
+			times.close();
+			rooms.add(room);
 		}
+		rs.close();
+		dbc.close();
 		
-		//String sqlP = "SELECT LocationID, Description FROM Place";
-		return null;
+		return rooms;
 	}
 	
 	/**
@@ -757,6 +786,23 @@ public class DatabaseController {
 		
 		DbConnection dbc = getConnection();
 		String sql = "";
+		
+		Location location = meeting.getLocation();
+		int locationID = location.getID();
+		
+		if (locationID == -1) {
+			if (location instanceof Room) {
+				Room room = (Room)location;
+				
+				locationID = saveRoom(room);
+				
+			} else { // (location instanceof Place)
+				Place place = (Place)location;
+				
+				locationID = savePlace(place);
+				
+			}
+		}
 
 		int id = -1;
 		if (meeting.getID() == -1) { //it's a brand new meeting.
@@ -767,7 +813,7 @@ public class DatabaseController {
 				TimeLord.changeDateToSQL(meeting.getEndDate())+"', "+
 				"NOW(), '"+meeting.getDescription()+"', '"+
 				CalendarEntryType.MEETING+"', "+
-				meeting.getLocation().getID()+")";
+				locationID+")";
 			dbc.executeUpdate(sql);
 			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
 			ResultSet rs = dbc.query(s);
@@ -781,7 +827,7 @@ public class DatabaseController {
 				TimeLord.changeDateToSQL(meeting.getStartDate())+"', "+
 				"TimeEnd='"+TimeLord.changeDateToSQL(meeting.getEndDate())+
 				"', Description='"+meeting.getDescription()+"', "+
-				"LocationID="+meeting.getLocation().getID()+
+				"LocationID="+locationID+
 				" WHERE CalendarEntryID="+meeting.getID();
 			dbc.executeUpdate(sql);
 		}
@@ -795,7 +841,7 @@ public class DatabaseController {
 		
 		String role = "Owner";
 		String state = "Accepted";
-		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "'";
+		String CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + meeting.getOwner().getUsername() + "')";
 		int CalendarEntryID = id;
 		
 		builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
@@ -803,7 +849,7 @@ public class DatabaseController {
 		role = "Participant";
 		for (User user : meeting.getParticipants()) {
 			state = meeting.getState(user).toString();
-			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "'";
+			CalendarID = "(SELECT CalendarID FROM Calendar WHERE Username = '" + user.getUsername() + "')";
 			
 			builder.append("(" + role + "," + state + "," + CalendarID + "," + CalendarEntryID + ") ");
 		}
@@ -1026,11 +1072,7 @@ public class DatabaseController {
 		dbc.close();
 		return result;
 	}
-	
-
-
-
-	public void subscribeToCalendar(String username, String requestedUserName) throws SQLException{
+		public void subscribeToCalendar(String username, String requestedUserName) throws SQLException{
 		DbConnection db = getConnection();
 		
 		String sql = "INSERT INTO Shows (Username,CalendarID) " 
@@ -1046,4 +1088,16 @@ public class DatabaseController {
 				+" AND CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' ))";
 		db.executeUpdate(sql);
 	}
-}
+	
+	
+	public List <Tuple <String, String>> getSubscribers() throws SQLException{		DbConnection db = getConnection();
+		ArrayList<Tuple<String, String>> res =  new ArrayList<Tuple <String, String>>();
+		
+		String sql = "SELECT Shows.Username, Calendar.Username"
+				+"FROM Shows" 
+				+"LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";
+		ResultSet rs = db.query(sql);		rs.beforeFirst();		while(rs.next()){			String user = rs.getString("Shows.Username");			String views = rs.getString("Calendar.Username");			res.add(new Tuple <String, String>(user, views) );		}		
+		
+		return res;
+	}	}
+

@@ -33,7 +33,7 @@ import no.ntnu.fp.util.GridBagHelper;
 
 
 public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
-	private ArrayList<Location> locs;
+	private List<Room> locs;
 	private JLabel desc, cap, roomName, misc;
 	private JTextField descComp, capComp, nameComp;
 	private Location selectedLoc;
@@ -41,6 +41,7 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	private JCheckBox cbRooms, cbPlaces;
 	private CommunicationController cCtrl;
 	private DefaultListModel listModel;
+	private CalendarEntry model;
 	protected PropertyChangeSupport pcs;
 	boolean showRooms = true, showPlaces = true;
 	
@@ -51,7 +52,18 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		
+		if (evt.getPropertyName() == CalendarEntry.LOC_PROPERTY) {
+			Location l = model.getLocation();
+			boolean b = (l instanceof Room);
+			nameComp.setText((b ? ((Room) l).getName() : "N/A"));
+			capComp.setText((b ? ((Room) l).getCapacity()+"" : "N/A"));
+			descComp.setText(l.getDescription());
+			}
+		}
+
+	public PlacePickerPanel(CalendarEntry model) {
+		this();
+		this.setModel(model);
 	}
 	/**
 	 * 
@@ -59,8 +71,8 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	 * 		The CalendarEntry for which to select a location
 	 */
 	public PlacePickerPanel() {
-		//this.cCtrl = CommunicationController.getInstance();
-		//this.locs = cCtrl.getListOfRooms();
+		this.cCtrl = CommunicationController.getInstance();
+		this.locs = cCtrl.getListOfRooms();
 		this.desc = new JLabel("Rombeskrivelse:");
 		this.cap = new JLabel("Romkapasitet:");
 		this.misc = new JLabel("Velg et rom");
@@ -75,24 +87,15 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			capComp.setEditable(false);
 		this.nameComp = new JTextField(10);
 			nameComp.setEditable(false);
-		
-		
 			
 		this.pcs = new PropertyChangeSupport(this);
-			
-		this.locList = new JList();
-		this.locList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.listModel = new DefaultListModel();
-		this.locList.setModel(listModel);
 		
+		this.locList = new JList();
+			this.locList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			this.locList.setModel(listModel);
+		//this.locs = new ArrayList<Location>();
 		
-		Location loc1 = new Room(23, "Room1", "The first room", 44);
-		Location loc2 = new Place(22, "strangewhere");
-		Location loc3 = new Room(34, "SPACE.", "Spaaaaaace", Integer.MAX_VALUE);
-		locs = new ArrayList<Location>();
-		locs.add(loc1);
-		locs.add(loc2);
-		locs.add(loc3);
 		
 		
 		grid = new GridBagLayout();
@@ -112,24 +115,16 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		add(desc, GridBagHelper.setConstraints(constraints, 0, 6));
 		add(descComp, GridBagHelper.setConstraints(constraints, 1, 6));
 		
-		updatePanel();
-		//Begin listeners
 		
+		//Begin listeners
 		locList.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
-					if (locList.getSelectedValue() == null)
-						return;
-					Location oldLoc = selectedLoc;
-					selectedLoc = (Location) locList.getSelectedValue();
-					System.out.println("YEH");
-					//this is probably not a very clever way\
-					//of going about doing this kind of thing\
-					//then again I've never been much of a wise man.
-					pcs.firePropertyChange(LOCATIONC_PROPERTY, oldLoc, locList.getSelectedValue());
+					Location newLoc = (Location) locList.getSelectedValue();
+					if (newLoc != null)
+						model.setLocation(newLoc);
 				}
-				
 			}
 		});
 		cbPlaces.addActionListener(new ActionListener() {
@@ -146,6 +141,16 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 				updatePanel();
 			}
 		});
+		//TEST CODE
+		/*Location loc1 = new Room(23, "Room1", "The first room", 44);
+		Location loc2 = new Place(22, "strangewhere");
+		Location loc3 = new Room(34, "SPACE.", "Spaaaaaace", Integer.MAX_VALUE);
+		locs.add(loc1);
+		locs.add(loc2);
+		locs.add(loc3);*/
+		
+		
+		updatePanel();
 	}
 	
 	public void updatePanel() {
@@ -160,29 +165,37 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			}
 		}
 		drawListOfLocations();
-		
 	}
 	public void setLocation(Location loc) {
 		this.selectedLoc = loc;
 		updatePanel();
 	}
-	public void setListOfLocations(ArrayList<Location> list) {
+	public void setListOfLocations(List<Room> list) {
 		this.locs = list;
 		updatePanel();
 	}
-	
-	public void drawListOfLocations() {
+	/**
+	 * redraws the current available locations.
+	 */
+	private void drawListOfLocations() {
 		if (listModel == null)
 			listModel = new DefaultListModel();
+		
 		this.listModel.clear();
+		
 		if (this.locs == null) {
 			listModel.addElement("Nothing's available");
 			locList.setEnabled(false);
 			return;
 		}
+		
 		locList.setEnabled(true);
+		if (this.model == null)
+			return;
+		
 		for (Location l : locs) {
-			if (((l instanceof Room) && showRooms) || ((l instanceof Place) && showPlaces)) {
+			if (((l instanceof Room) && showRooms && ((Room) l).isAvailable(model.getStartDate(), model.getEndDate()) 
+					|| ((l instanceof Place) && showPlaces))) {
 				this.listModel.addElement(l);
 			}
 		}
@@ -200,11 +213,29 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	private Location getSelectedLocation() {
 		return this.selectedLoc;
 	}
+	
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		if (pcs == null) {
 			pcs = new PropertyChangeSupport(this);
 		}
 		pcs.addPropertyChangeListener(l);
+	}
+	/**
+	 * 
+	 * @param ce
+	 * 		this is just the model of the panel this 'belongs' to.
+	 * 
+	 */
+	public void setModel(CalendarEntry ce) {
+		if (ce != null) {
+			if (this.model != null) {
+				this.model.removePropertyChangeListener(this);
+			}
+		this.model = ce;
+		this.selectedLoc = model.getLocation();
+		model.addPropertyChangeListener(this);
+		updatePanel();
+		}	
 	}
 	
 	

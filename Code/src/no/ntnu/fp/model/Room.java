@@ -7,6 +7,8 @@ public class Room extends Location implements Serializable{
 	
 	private static final long serialVersionUID = -63886587424231393L;
 	
+	private SortedDistinctTimeList<Duration> timeTable = new SortedDistinctTimeList<Duration>();
+	
 	private String name; //id/pk
 	private int capacity;
 	
@@ -15,18 +17,23 @@ public class Room extends Location implements Serializable{
 		this.name = name;
 		this.capacity = capacity;
 	}
+	
 	public String getName() {
 		return name;
 	}
+	
 	public int getLocationID() {
 		return getID();
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public int getCapacity() {
 		return capacity;
 	}
+	
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
@@ -34,9 +41,23 @@ public class Room extends Location implements Serializable{
 	public String toString() {
 		return "Rom: " + name;
 	}
-	public boolean isAvailable(Date from, Date to) {
+	
+	public String getTimeTable() {
 		
-		return false;
+		StringBuilder builder = new StringBuilder();
+		for (Duration d : timeTable) {
+			builder.append(d + "\n");
+		}
+		return builder.toString();
+	}
+	
+	public void addReservedTime(Date from, Date to) {
+		timeTable.add(new Duration(from, to));
+	}
+	
+	public boolean isAvailable(Date from, Date to) {
+		Duration duration = new Duration(from, to);
+		return !timeTable.overlaps(duration);
 	}
 
 }
