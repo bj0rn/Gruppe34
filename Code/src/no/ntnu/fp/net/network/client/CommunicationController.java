@@ -190,6 +190,7 @@ public class CommunicationController {
 					return false;
 				}
 				else {
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 				
@@ -245,6 +246,7 @@ public class CommunicationController {
 					//return null;
 				}else{
 					//Put it back and try again
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 				
@@ -295,6 +297,7 @@ public class CommunicationController {
 				else if(response.getMethod() == Request.Method.LOGIN_FAILED){
 					return null;
 				}else {
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 				
@@ -335,6 +338,7 @@ public class CommunicationController {
 					return false;
 				}
 				else {
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 			}		
@@ -365,6 +369,7 @@ public class CommunicationController {
 					return false;
 				}
 				else {
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 			}
@@ -402,6 +407,7 @@ public class CommunicationController {
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					return false;
 				}else {
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 			}
@@ -441,6 +447,7 @@ public class CommunicationController {
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					//return null;
 				}else {
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 			}
@@ -487,6 +494,7 @@ public class CommunicationController {
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					return false;
 				}else {
+					System.out.println("Put back");
 					testQueue.putLast((Object)response);
 				}
 				

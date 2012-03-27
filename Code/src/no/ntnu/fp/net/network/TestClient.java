@@ -30,12 +30,12 @@ public class TestClient {
 //			System.out.println("Yeey");
 //		}
 		
-		User user = communicationController.getFullUser("havard");
-		
-		List <Room> list = communicationController.getListOfRooms();
-		if(list != null){
-			System.out.println("Batman is alive");
-		}
+//		User user = communicationController.getFullUser("havard");
+//		
+//		List <Room> list = communicationController.getListOfRooms();
+//		if(list != null){
+//			System.out.println("Batman is alive");
+//		}
 		
 		
 //		User user = communicationController.getFullUser("havard");

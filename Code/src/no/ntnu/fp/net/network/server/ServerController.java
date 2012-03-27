@@ -253,6 +253,7 @@ public class ServerController {
 					String user = u.getUsername();
 					System.out.println("Participant: " + user);
 					if (connectedClients.containsKey(user)) {
+						System.out.println("Works");
 						Socket sockfd = connectedClients.get(username);
 						Request r = new Request(null, meeting);
 						r.setMethod(Request.Method.MEETING_NOTIFICATION);
@@ -455,6 +456,10 @@ public class ServerController {
 		}else if(requestType == Method.GET_LIST_OF_ROOMS){
 			System.out.println("Ready for magic; getListOfRooms");
 			getListOfRooms(data);
+		}else if(requestType == Method.CANCEL_VIEW){
+			System.out.println("Ready for magic; cancelView");
+			System.out.println("Not tested yet");
+			cancelView(data);
 		}
 
 	}
