@@ -319,6 +319,14 @@ public class ServerController {
 	// }
 	// }
 
+	private void sendMeeting(String user, Meeting meeting){
+		if(connectedClients.containsKey(user)){
+			Request response = new Request(null, meeting);
+			response.setMethod(Method.MEETING_REPLY);
+			send(connectedClients.get(user), response);
+			
+		}
+	}
 	public void dispatchMeetingReply(Tuple<Socket, Object> data) {
 		try {
 			Request request = (Request) data.y;
@@ -340,6 +348,16 @@ public class ServerController {
 					Request response = new Request(null, null);
 					response.setMethod(Method.SAVE_APPOINTMENT_RESPONSE);
 					send(data.x, response);
+					
+					Meeting meeting = databaseController.getMeeting(meetingId);
+					String owner = meeting.getOwner().getUsername();
+					sendMeeting(owner, meeting);
+					Set <User> participants = meeting.getParticipants();
+					for(User p: participants){
+						sendMeeting(p.getUsername(), meeting);
+					}
+					
+					
 				} else {
 					Request response = new Request(null, null);
 					response.setMethod(Method.LOGIN_FAILED);
@@ -352,6 +370,7 @@ public class ServerController {
 			sq.printStackTrace();
 		}
 	}
+	
 
 	public void getListOfRooms(Tuple<Socket, Object> data) {
 		try {
