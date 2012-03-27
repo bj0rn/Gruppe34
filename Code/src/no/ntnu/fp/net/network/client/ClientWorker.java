@@ -75,6 +75,10 @@ public class ClientWorker implements Runnable {
 			communication.updateAppointment(appointment);
 			System.out.println("Someone changed an appointment (views)");
 			return true;
+		}else if(response.getMethod() == Method.MEETING_REPLY){
+			Meeting meeting = (Meeting)response.getObject();
+			
+			return true;
 		}else {
 			return false;
 		}
