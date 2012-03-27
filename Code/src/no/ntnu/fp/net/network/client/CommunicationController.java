@@ -516,10 +516,19 @@ public class CommunicationController {
 		return true;
 	}
 	
+	/**
+	 * This method is called by the {@code ClientWorker} when a 
+	 * {@code Meeting} update is received from the Server. 
+	 * @param meeting
+	 */
 	public void updateMeeting(Meeting meeting) {
 		
 	}
 	
+	/**
+	 * 
+	 * @param appointment
+	 */
 	public void updateAppointment(Appointment appointment) {
 		
 	}

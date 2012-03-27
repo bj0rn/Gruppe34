@@ -25,7 +25,7 @@ public class MeetingInviteAcceptButtonAction extends AbstractAction {
 		State state = State.Accepted;
 		
 		CommunicationController c = CommunicationController.getInstance();
-		//c.dispatchMeetingReply(user, meeting, state);
+		c.dispatchMeetingReply(user, meeting, state);
 		
 		meeting.setState(user, state);
 	}
