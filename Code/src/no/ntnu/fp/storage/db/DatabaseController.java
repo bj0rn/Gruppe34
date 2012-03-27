@@ -786,6 +786,23 @@ public class DatabaseController {
 		
 		DbConnection dbc = getConnection();
 		String sql = "";
+		
+		Location location = meeting.getLocation();
+		int locationID = location.getID();
+		
+		if (locationID == -1) {
+			if (location instanceof Room) {
+				Room room = (Room)location;
+				
+				locationID = saveRoom(room);
+				
+			} else { // (location instanceof Place)
+				Place place = (Place)location;
+				
+				locationID = savePlace(place);
+				
+			}
+		}
 
 		int id = -1;
 		if (meeting.getID() == -1) { //it's a brand new meeting.
@@ -796,7 +813,7 @@ public class DatabaseController {
 				TimeLord.changeDateToSQL(meeting.getEndDate())+"', "+
 				"NOW(), '"+meeting.getDescription()+"', '"+
 				CalendarEntryType.MEETING+"', "+
-				meeting.getLocation().getID()+")";
+				locationID+")";
 			dbc.executeUpdate(sql);
 			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";
 			ResultSet rs = dbc.query(s);
@@ -810,7 +827,7 @@ public class DatabaseController {
 				TimeLord.changeDateToSQL(meeting.getStartDate())+"', "+
 				"TimeEnd='"+TimeLord.changeDateToSQL(meeting.getEndDate())+
 				"', Description='"+meeting.getDescription()+"', "+
-				"LocationID="+meeting.getLocation().getID()+
+				"LocationID="+locationID+
 				" WHERE CalendarEntryID="+meeting.getID();
 			dbc.executeUpdate(sql);
 		}

@@ -360,9 +360,8 @@ public class ServerController {
 			Request request =  (Request)data.y;
 			Authenticate auth = request.getAuth();
 			if(connectedClients.containsKey(auth.getUsername())){
-				//List <Room> listRoom = databaseController.getListOfRooms();
-				List <Room> list = null;
-				Request response = new Request(null, list);
+				List <Room> listRooms = databaseController.getListOfRooms();
+				Request response = new Request(null, listRooms);
 				response.setMethod(Method.GET_LIST_OF_ROOMS_RESPONSE);
 				send(data.x, response);
 			}else {
