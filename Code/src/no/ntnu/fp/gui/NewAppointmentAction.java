@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
+import no.ntnu.fp.model.Appointment;
+
 public class NewAppointmentAction extends AbstractAction {
 
 	private ApplicationFrame panel;
@@ -15,9 +17,7 @@ public class NewAppointmentAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		
-		// TODO Auto-generated method stub
-		
+		new AppointmentPanel(new Appointment("blah"));
 	}
 
 }
