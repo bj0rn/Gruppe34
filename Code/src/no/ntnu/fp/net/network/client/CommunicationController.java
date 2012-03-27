@@ -138,7 +138,8 @@ public class CommunicationController {
 		new Thread(c).start();
 	}
 	
-	public static CommunicationController getInstance() {
+	//TODO: Test if this approach works ? 
+	public static synchronized CommunicationController getInstance() {
 		if (instance == null) {
 			instance = new CommunicationController();
 		}
