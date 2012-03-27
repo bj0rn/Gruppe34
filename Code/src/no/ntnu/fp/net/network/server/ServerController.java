@@ -482,6 +482,12 @@ public class ServerController {
 			System.out.println("Ready for magic; cancelView");
 			System.out.println("Not tested yet");
 			cancelView(data);
+		}else if(requestType == Method.DELETE_MEETING){
+			System.out.println("Enter delete meeting");
+			deleteMeeting(data);
+		}else if(requestType == Method.DELETE_APPOINTMENT){
+			System.out.println("Enter delete appointment");
+			deleteAppointment(data);
 		}
 
 	}
