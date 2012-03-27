@@ -545,7 +545,7 @@ public class CommunicationController {
 		if (owner.equals(user)) {
 			for (CalendarEntry entry : user.getCalendar()) {
 				
-				if (entry.getID() == meeting.getID()) {
+				if (entry.getID() == updatedMeeting.getID()) {
 					meeting = (Meeting)entry;
 					
 					continue;
@@ -556,7 +556,7 @@ public class CommunicationController {
 				if (participant.equals(user)) {
 					
 					for (CalendarEntry entry : participant.getCalendar()) {
-						if (entry.getID() == meeting.getID()) {
+						if (entry.getID() == updatedMeeting.getID()) {
 							meeting = (Meeting) entry;
 							continue;
 						}
@@ -585,7 +585,7 @@ public class CommunicationController {
 		if (owner.equals(user)) {
 			for (CalendarEntry entry : user.getCalendar()) {
 				
-				if (entry.getID() == meeting.getID()) {
+				if (entry.getID() == updatedMeeting.getID()) {
 					meeting = (Meeting)entry;
 					
 					continue;
@@ -596,7 +596,7 @@ public class CommunicationController {
 				if (participant.equals(user)) {
 					
 					for (CalendarEntry entry : participant.getCalendar()) {
-						if (entry.getID() == meeting.getID()) {
+						if (entry.getID() == updatedMeeting.getID()) {
 							meeting = (Meeting) entry;
 							continue;
 						}
