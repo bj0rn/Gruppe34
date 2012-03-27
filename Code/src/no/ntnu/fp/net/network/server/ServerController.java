@@ -349,7 +349,7 @@ public class ServerController {
 					response.setMethod(Method.SAVE_APPOINTMENT_RESPONSE);
 					send(data.x, response);
 					
-					Meeting meeting = databaseController.getMeeting(meetingId);
+					Meeting meeting = databaseController.getMeeting(Integer.parseInt(meetingId));
 					String owner = meeting.getOwner().getUsername();
 					sendMeeting(owner, meeting);
 					Set <User> participants = meeting.getParticipants();
