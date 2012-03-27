@@ -549,4 +549,3 @@ public class CommunicationController {
 	
 	
 }
->>>>>>> branch 'master' of https://otron@github.com/bj0rn/Gruppe34.git
