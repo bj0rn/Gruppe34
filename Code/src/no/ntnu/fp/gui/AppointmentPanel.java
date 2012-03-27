@@ -152,7 +152,11 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent arg0) {
 				//button is clicked, run code that will save the model
 				CommunicationController c = CommunicationController.getInstance();
-				c.saveAppointment(model);
+				if (model != null) {
+					if (model.getOwner() == null) 
+						model.setOwner(c.getUser());
+					c.saveAppointment(model);
+				}
 				//close window if successfull.
 			}
 		});
@@ -163,8 +167,6 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				//wait _where_ are we keeping the code to send the DB-req to delete something?
 				CommunicationController c = CommunicationController.getInstance();
 				if (model != null) {
-					if (model.getOwner() == null) 
-						model.setOwner(c.getUser());
 					c.deleteAppointment(model);
 				}
 				//close window.
