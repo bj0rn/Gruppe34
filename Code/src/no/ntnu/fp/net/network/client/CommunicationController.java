@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
@@ -16,9 +17,11 @@ import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
+import no.ntnu.fp.model.ListenList;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
+import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.XmlHandler;
 import no.ntnu.fp.net.network.Request;
@@ -55,8 +58,40 @@ public class CommunicationController {
 	private UpdateHandler updateHandler;
 	private LinkedBlockingDeque<Object> testQueue;
 	
+	// Models
+	
+	/**
+	 * The authentication used throughout the session. 
+	 * Created by the {@code LoginFrame} 
+	 */
 	private Authenticate auth;
 
+	/**
+	 * The {@code User} for the client own {@code User} 
+	 */
+	private User user;
+	
+	/**
+	 * A complete {@code List} of all {@code User}s 
+	 */
+	private List<User> users;
+	
+	/**
+	 * A {@code List} of {@code User}s which the {@code user} shows.
+	 */
+	private List<User> shows;
+	
+	/**
+	 * The complete {@code List} of {@code Room}s. 
+	 */
+	private List<Room> rooms;
+	
+	/**
+	 * A {@code List} of {@code Place}s.
+	 */
+	private List<Place> places;
+	
+	
 	
 	private DataOutputStream os;
 	private ObjectOutputStream oos;
@@ -178,11 +213,24 @@ public class CommunicationController {
 	}
 
 
+	
+	/**
+	 * Retrieves the full {@code List} of {@code User}s once from the server.
+	 * Returns the {@code List}.
+	 * 
+	 * @return
+	 */
+	public List<User> getListOfUsers() {
+		if (users == null) {
+			updateListOfUsers();
+		}
+		return users;
+	}
 
 	/**
 	 * This method will get all the users from the server
 	 * **/
-	public List <User> getUsers(){
+	public void updateListOfUsers() {
 		try {
 			Request request = new Request(auth, null);
 			request.setMethod(Request.Method.GET_USERS);
@@ -192,9 +240,9 @@ public class CommunicationController {
 				System.out.println("Number of tries: "+i++);
 				Request response = (Request) testQueue.takeFirst();
 				if(response.getMethod() == Request.Method.GET_USERS_RESPONSE){
-					return (List<User>)response.getObject();
+					users = (List<User>)response.getObject();
 				}else if (response.getMethod() == Request.Method.LOGIN_FAILED){
-					return null;
+					//return null;
 				}else{
 					//Put it back and try again
 					testQueue.putLast((Object)response);
@@ -205,15 +253,34 @@ public class CommunicationController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return null;
+	}
+	
+	/**
+	 * Retrieves the current connected {@code User} from the Server.
+	 * Stores the {@code User} and returns it to the caller
+	 *  
+	 * @return the current connected {@code User}
+	 */
+	public User getClientFullUser() {
+		return (user = getFullUser(auth.getUsername()));
 	}
 	
 	
+	/**
+	 * Retrieves the requested {@code User} from the Server.
+	 * Stores the {@code User} in {@code shows} and returns it to the caller.
+	 * @param username
+	 * @return
+	 */
+	public User getOtherFullUser(String username) {
+		User user = getFullUser(username);
+		
+		//shows.put(user.getUsername(), user);
+		
+		return user;
+	}
+	
 	public User getFullUser(String user){
-		
-		
-		
 		try {
 			Request request = new Request(auth, user);
 			request.setMethod(Request.Method.GET_FULL_USER);
@@ -239,6 +306,14 @@ public class CommunicationController {
 		return null;
 	}
 	
+	/**
+	 * Returns the current connected {@code User}
+	 * 
+	 * @return
+	 */
+	public User getUser() {
+		return user;
+	}
 	
 	
 	public boolean saveMeeting(Meeting meeting){
@@ -298,123 +373,157 @@ public class CommunicationController {
 		}
 		return false;
 	}
-	
-	
-	
-	
-	
-public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
-	try{
-		//Gather information 
-		String userInfo[] = {
-			user.getUsername(),
-			"",
-		};
 		
-		String dataValues[] = {
-			user.getId(),
-			String.valueOf(meeting.getID()),
-			state.toString()
-		};
-		//Pack and send
-		String xml = XmlHandler.dispatchMeetingReplyToXml(userInfo, dataValues, "dispatchMeetingReply");
-		Request request = new Request(auth, xml);
-		request.setMethod(Request.Method.DISPATCH_MEETING_REPLY);
-		send(mySocket, request);
-		int i = 0;
-		//Wait for response
-		while(true){
-			Request response = (Request)testQueue.takeFirst();
-			if(response.getMethod() == Method.SAVE_APPOINTMENT_RESPONSE){
-				return true;
+	public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {
+		try{
+			//Gather information 
+			String userInfo[] = {
+				user.getUsername(),
+				"",
+			};
+			
+			String dataValues[] = {
+				user.getId(),
+				String.valueOf(meeting.getID()),
+				state.toString()
+			};
+			//Pack and send
+			String xml = XmlHandler.dispatchMeetingReplyToXml(userInfo, dataValues, "dispatchMeetingReply");
+			Request request = new Request(auth, xml);
+			request.setMethod(Request.Method.DISPATCH_MEETING_REPLY);
+			send(mySocket, request);
+			int i = 0;
+			//Wait for response
+			while(true){
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Method.SAVE_APPOINTMENT_RESPONSE){
+					return true;
+					
+				}else if(response.getMethod() == Method.LOGIN_FAILED){
+					return false;
+				}else {
+					testQueue.putLast((Object)response);
+				}
+			}
+		
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 				
-			}else if(response.getMethod() == Method.LOGIN_FAILED){
-				return false;
-			}else {
-				testQueue.putLast((Object)response);
-			}
-		}
-	
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+			return false;
 	}
-			
+	
+	/**
+	 * Retrieves the full {@code List} of {@code Room}s once from the server.
+	 * Returns the {@code List}.
+	 * 
+	 * @return
+	 */
+	public List<Room> getListOfRooms() {
+		if (rooms == null) {
+			updateListOfRooms();
+		}
+		return rooms;
+	}
+	
+	public void updateListOfRooms() {
+		try{
+			Request request = new Request(auth, null);
+			request.setMethod(Method.GET_LIST_OF_ROOMS);
+			send(mySocket, request);
+			int i = 0;
+			while(true){
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Method.GET_LIST_OF_ROOMS_RESPONSE){
+					rooms = (List <Room>)response.getObject();
+				}else if(response.getMethod() == Method.LOGIN_FAILED){
+					//return null;
+				}else {
+					testQueue.putLast((Object)response);
+				}
+			}
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/*public List <Room> getListOfRooms(){
+		try{
+			Request request = new Request(auth, null);
+			request.setMethod(Method.GET_LIST_OF_ROOMS);
+			send(mySocket, request);
+			int i = 0;
+			while(true){
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Method.GET_LIST_OF_ROOMS_RESPONSE){
+					return (List <Room>)response.getObject();
+				}else if(response.getMethod() == Method.LOGIN_FAILED){
+					return null;
+				}else {
+					testQueue.putLast((Object)response);
+				}
+			}
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
+		
+		return null;
+	}*/
+	
+	
+	public boolean cancelView(String username){
+		try {
+			Request request = new Request(auth, username);
+			request.setMethod(Method.CANCEL_VIEW);
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries: "+i++);
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Method.CANCEL_VIEW_SUCCEDED){
+					return true;
+				}else if(response.getMethod() == Method.LOGIN_FAILED){
+					return false;
+				}else {
+					testQueue.putLast((Object)response);
+				}
+				
+			}
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
 		return false;
-}
-
-
-public List <Room> getListOfRooms(){
-	try{
-		Request request = new Request(auth, null);
-		request.setMethod(Method.GET_LIST_OF_ROOMS);
+	}
+	
+	
+	
+	public void deleteMeeting(Meeting meeting){
+		Integer id = meeting.getID();
+		Request request = new Request(auth, id);
+		request.setMethod(Method.DELETE_MEETING);
 		send(mySocket, request);
-		int i = 0;
-		while(true){
-			Request response = (Request)testQueue.takeFirst();
-			if(response.getMethod() == Method.GET_LIST_OF_ROOMS_RESPONSE){
-				return (List <Room>)response.getObject();
-			}else if(response.getMethod() == Method.LOGIN_FAILED){
-				return null;
-			}else {
-				testQueue.putLast((Object)response);
-			}
-		}
-	}catch(InterruptedException e){
-		e.printStackTrace();
+	}
+		
+	public void deleteAppointment(Appointment appointment){
+		Integer id = appointment.getID();
+		Request request = new Request(auth, id);
+		request.setMethod(Method.DELETE_APPOINTMENT);
+		send(mySocket, request);
 	}
 	
 	
-	return null;
-	
-}
-
-
-public boolean cancelView(String username){
-	try {
-		Request request = new Request(auth, username);
-		request.setMethod(Method.CANCEL_VIEW);
-		int i = 0;
-		while(true){
-			System.out.println("Number of tries: "+i++);
-			Request response = (Request)testQueue.takeFirst();
-			if(response.getMethod() == Method.CANCEL_VIEW_SUCCEDED){
-				return true;
-			}else if(response.getMethod() == Method.LOGIN_FAILED){
-				return false;
-			}else {
-				testQueue.putLast((Object)response);
-			}
-			
-		}
-	}catch(InterruptedException e){
-		e.printStackTrace();
+	public boolean deleteUser(){
+		return true;
 	}
-	return false;
-}
-
-
-
-public void deleteMeeting(Meeting meeting){
-	Integer id = meeting.getID();
-	Request request = new Request(auth, id);
-	request.setMethod(Method.DELETE_MEETING);
-	send(mySocket, request);
-}
 	
-public void deleteAppointment(Appointment appointment){
-	Integer id = appointment.getID();
-	Request request = new Request(auth, id);
-	request.setMethod(Method.DELETE_APPOINTMENT);
-	send(mySocket, request);
-}
-
-
-public boolean deleteUser(){
-	return true;
-}
-
-
+	public void updateMeeting(Meeting meeting) {
+		
+	}
+	
+	public void updateAppointment(Appointment appointment) {
+		
+	}
 
 
 	

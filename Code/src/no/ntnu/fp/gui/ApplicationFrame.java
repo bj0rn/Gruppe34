@@ -52,8 +52,8 @@ public class ApplicationFrame extends JFrame {
 		panel.setLayout(new BorderLayout());
 		
 		// Add Calendar Panel
-		calendarPanel = new CalendarPanel(getModel());
-		panel.add(calendarPanel, BorderLayout.CENTER);
+		//calendarPanel = new CalendarPanel(getModel());
+		//panel.add(calendarPanel, BorderLayout.CENTER);
 		
 		// Add Notification Panel
 		notificationPanel = new NotificationPanel(model);

@@ -129,11 +129,11 @@ public class Meeting extends CalendarEntry implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		
-		if (description != null) builder.append("Description: " + getDescription() + "\n");
-		if (startDate != null) builder.append("Start: " + getStartDate() + "\n");
-		if (endDate != null) builder.append("End: " + getEndDate() + "\n");
-		if (location != null) builder.append("Sted: " + getLocation() + "\n");
-		if (owner != null) builder.append("Owner: " + getOwner().getName() + "\n");
+		if (description != null) builder.append("Description: " + getDescription() + "\n"); else builder.append("Description is null\n");
+		if (startDate != null) builder.append("Start: " + getStartDate() + "\n"); 			else builder.append("Start is null\n");
+		if (endDate != null) builder.append("End: " + getEndDate() + "\n");					else builder.append("End is null\n");
+		if (location != null) builder.append("Sted: " + getLocation() + "\n");				else builder.append("Location is null\n");
+		if (owner != null) builder.append("Owner: " + getOwner().getName() + "\n");			else builder.append("Owner is null\n");
 		
 		builder.append("Participants: \n");
 		for (User user : getParticipants()) {
