@@ -8,6 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -59,7 +60,17 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			capComp.setText((b ? ((Room) l).getCapacity()+"" : "N/A"));
 			descComp.setText(l.getDescription());
 			}
+		if (evt.getPropertyName() == CalendarEntry.START_PROPERTY
+				|| evt.getPropertyName() == CalendarEntry.END_PROPERTY) {
+			Date e = model.getEndDate();
+			Date s = model.getStartDate();
+			if (e != null && s != null) {
+				drawListOfLocations();
+			}
+			
 		}
+			
+	}//end propertyChange
 
 	public PlacePickerPanel(CalendarEntry model) {
 		this();
