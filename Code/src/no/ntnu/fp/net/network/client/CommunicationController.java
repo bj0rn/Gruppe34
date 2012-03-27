@@ -240,6 +240,7 @@ public class CommunicationController {
 				Request response = (Request) testQueue.takeFirst();
 				if(response.getMethod() == Request.Method.GET_USERS_RESPONSE){
 					users = (List<User>)response.getObject();
+					return;
 				}else if (response.getMethod() == Request.Method.LOGIN_FAILED){
 					//return null;
 				}else{
@@ -436,6 +437,7 @@ public class CommunicationController {
 				Request response = (Request)testQueue.takeFirst();
 				if(response.getMethod() == Method.GET_LIST_OF_ROOMS_RESPONSE){
 					rooms = (List <Room>)response.getObject();
+					return;
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					//return null;
 				}else {
