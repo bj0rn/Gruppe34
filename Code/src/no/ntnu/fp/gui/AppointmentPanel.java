@@ -183,8 +183,9 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	    			   (model.getLocation() != null) ? 
 	    			    model.getLocation().getID()+"" :
 	    				"");
-	    	   locComp.setText(model.getLocation().getID() + "");
-	    		   
+	    	   locComp.setText((model.getLocation() != null) ?
+	    			   			model.getLocation().getDescription() :
+	    			   				"");
 	    	   plPickPanel.updatePanel();
 	       }
 	    }
