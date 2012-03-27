@@ -588,6 +588,8 @@ public class CommunicationController {
 				c.addAppointment(appointment);
 			}
 		}
+		
+		
 	}
 
 

@@ -107,6 +107,7 @@ public class ServerController {
 				send(data.x, response);
 				System.out.println("Login completed");
 			} else {
+				System.out.println("Login failed");
 				Request response = new Request(null, null);
 				response.setMethod(Request.Method.LOGIN_FAILED);
 				send(data.x, response);

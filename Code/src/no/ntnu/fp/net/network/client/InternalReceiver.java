@@ -33,12 +33,6 @@ public class InternalReceiver implements Runnable {
 				DataInputStream is = new DataInputStream(mySocket.getInputStream());
 				ObjectInputStream ios = new ObjectInputStream(is);
 				Object obj = ios.readObject();
-				Request request = (Request)obj;
-				if(request.getMethod() == Method.MEETING_NOTIFICATION){
-					System.out.println("Yess");
-				}
-				
-				
 				System.out.println("Got data");
 				testQueue.putFirst(obj);
 			} catch (IOException e) {
