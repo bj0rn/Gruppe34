@@ -92,11 +92,10 @@ public abstract class CalendarEntry implements Serializable {
 	/**
 	 * Returns the duration of the entry
 	 * 
-	 * @return the duration of this entry in milliseconds
+	 * @return the duration of this entry in minutes
 	 */
 	public int getDuration() {
-		return (endDate.getHours() * 60 + endDate.getMinutes())
-				- (startDate.getHours() * 60 - startDate.getMinutes());
+		return (int) ((endDate.getTime()-startDate.getTime())/60000);
 	}
 
 	public void setLocation(Location location) {
