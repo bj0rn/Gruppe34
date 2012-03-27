@@ -25,6 +25,7 @@ import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Person;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
+import no.ntnu.fp.net.network.client.CommunicationController;
 import no.ntnu.fp.util.GridBagHelper;
 import no.ntnu.fp.util.TimeLord;
 
@@ -38,7 +39,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 	
 	private JButton save, delete;
 	
-	//fŒ det ryddig i boksen
+	//fï¿½ det ryddig i boksen
 	protected GridBagLayout grid;
 	protected GridBagConstraints constraints;
 	
@@ -71,7 +72,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		grid = new GridBagLayout();
 		constraints = new GridBagConstraints();
 		
-		setLayout(grid); // gj¿r at man faktisk endrer noe(det synes)
+		setLayout(grid); // gjï¿½r at man faktisk endrer noe(det synes)
 		
 		constraints.gridwidth = constraints.RELATIVE;
 		constraints.gridx = 0;
@@ -236,7 +237,7 @@ public class AppointmentPanel extends JPanel implements PropertyChangeListener {
 		
 		AppointmentPanel panel = new AppointmentPanel(app);
 		
-		frame.add(panel); //adder alt i konstrukt¿ren
+		frame.add(panel); //adder alt i konstruktï¿½ren
 		panel.setModel(app);
 		
 		frame.setLocationRelativeTo(null); //center a frame

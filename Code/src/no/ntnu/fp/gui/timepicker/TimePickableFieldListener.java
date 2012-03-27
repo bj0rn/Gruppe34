@@ -2,6 +2,7 @@ package no.ntnu.fp.gui.timepicker;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,6 +20,12 @@ public class TimePickableFieldListener implements FocusListener {
 		this.glassPane.setLayout(null);
 		picker = new DateTimePicker(field);
 		picker.setVisible(false);
+	}
+	
+	public void setDate(Date date) {
+		if (date != null) { 
+			picker.setDate(date);
+		}
 	}
 	
 	@Override

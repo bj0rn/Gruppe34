@@ -181,7 +181,9 @@ public class DateTimePicker extends JPanel implements PropertyChangeListener {
 		return model;
 	}
 	
-	
+	public void setDate(Date date) {
+		model.setDate(date);
+	}
 	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
