@@ -542,7 +542,7 @@ public class CommunicationController {
 	 * 
 	 * @param appointment
 	 */
-	public void updateAppointment(Appointment appointment) {
+	public synchronized void updateAppointment(Appointment appointment) {
 		User user = appointment.getOwner();
 		for(User u : shows){
 			if(u.getUsername().equals(user)){
