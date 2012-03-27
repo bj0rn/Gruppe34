@@ -535,40 +535,42 @@ public class CommunicationController {
 	 * {@code Meeting} update is received from the Server. 
 	 * @param meeting
 	 */
-	public void updateMeeting(Meeting updatedmeeting) {
-		//User owner = meeting.getOwner();
+	public void updateMeeting(Meeting updatedMeeting) {
+		User owner = updatedMeeting.getOwner();
 		
-		/*Calendar calendar = null;
+		Calendar calendar = null;
 		Meeting meeting = null;
 		
 		if (owner.equals(user)) {
 			for (CalendarEntry entry : user.getCalendar()) {
 				
 				if (entry.getID() == meeting.getID()) {
-					Meeting m = (Meeting)entry;
-					
-					user.getCalendar().removeMeeting(m);
-					user.getCalendar().addMeeting(meeting);
+					calendar = user.getCalendar();
+					meeting = (Meeting)entry;
 					
 					continue;
 				}
 			}
-		}
-		
-		for (User participant : meeting.getParticipants()) {
-			if (participant.equals(user)) {
-				
-				for (CalendarEntry entry : participant.getCalendar()) {
-					Meeting m = (Meeting) entry;
+		} else {
+			for (User participant : updatedMeeting.getParticipants()) {
+				if (participant.equals(user)) {
 					
-					m.updateWith(meeting);
+					for (CalendarEntry entry : participant.getCalendar()) {
+						if (entry.getID() == meeting.getID()) {
+							calendar = participant.getCalendar();
+							meeting = (Meeting) entry;
+							continue;
+						}
+					}
+					
 				}
-				
-				continue;
 			}
 		}
 		
-		*/
+		if (calendar != null) {
+			calendar.removeMeeting(meeting);
+			calendar.addMeeting(updatedMeeting);
+		}
 		
 	}
 	
@@ -579,7 +581,7 @@ public class CommunicationController {
 	public synchronized void updateAppointment(Appointment appointment) {
 		User user = appointment.getOwner();
 		for(User u : shows){
-			if(u.getUsername().equals(user)){
+			if(u.equals(user)){
 				Calendar c = u.getCalendar();
 				c.removeAppointment(appointment);
 				c.addAppointment(appointment);
