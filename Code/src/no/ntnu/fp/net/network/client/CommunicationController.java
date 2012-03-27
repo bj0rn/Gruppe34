@@ -50,7 +50,7 @@ import no.ntnu.fp.model.Room;
 
 public class CommunicationController {
 	
-	public String host = "127.0.0.1"; // "78.91.22.12"; // 
+	public String host = "78.91.22.12"; // "127.0.0.1"; // 
 	public final static int PORT = 1337;
 
 	private static CommunicationController instance;
@@ -321,7 +321,7 @@ public class CommunicationController {
 	}
 	
 	
-	public boolean saveMeeting(Meeting meeting){
+	public int saveMeeting(Meeting meeting){
 		try{
 			Request request = new Request(auth, meeting);
 			request.setMethod(Request.Method.SAVE_MEETING);
@@ -334,10 +334,9 @@ public class CommunicationController {
 				if(response.getMethod() == Request.Method.SAVE_MEETING_RESPONSE){
 					Integer key = (Integer)response.getObject();
 					System.out.println("Got key "+key);
-					meeting.setID(key);
-					return true;
+					return key;
 				}else if(response.getMethod() == Request.Method.LOGIN_FAILED){
-					return false;
+					return -1;
 				}
 				else {
 					System.out.println("Put back");
@@ -348,7 +347,7 @@ public class CommunicationController {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return -1;
 	}
 	
 	
