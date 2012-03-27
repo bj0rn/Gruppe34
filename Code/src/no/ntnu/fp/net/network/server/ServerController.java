@@ -350,11 +350,11 @@ public class ServerController {
 	}
 
 	public void getListOfRooms(Tuple<Socket, Object> data) {
-//		try {
+		try {
 			Request request = (Request) data.y;
 			Authenticate auth = request.getAuth();
 			if (connectedClients.containsKey(auth.getUsername())) {
-				List<Room> listRooms = null;// databaseController.getListOfRooms();
+				List<Room> listRooms = databaseController.getListOfRooms();
 				if(listRooms == null){
 					System.out.println("Smack! You got served");
 				}
@@ -368,9 +368,9 @@ public class ServerController {
 				send(data.x, response);
 			}
 
-//		} catch (SQLException sq) {
-//			sq.printStackTrace();
-//		}
+		} catch (SQLException sq) {
+			sq.printStackTrace();
+		}
 	}
 
 	public void cancelView(Tuple<Socket, Object> data) {
