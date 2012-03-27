@@ -8,6 +8,7 @@ import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
+import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.net.network.client.Client;
 import no.ntnu.fp.net.network.client.ClientWorker;
@@ -30,6 +31,11 @@ public class TestClient {
 //		}
 		
 		User user = communicationController.getFullUser("havard");
+		
+		List <Room> list = communicationController.getListOfRooms();
+		if(list != null){
+			System.out.println("Batman is alive");
+		}
 		
 		
 //		User user = communicationController.getFullUser("havard");

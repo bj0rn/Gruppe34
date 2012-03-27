@@ -350,13 +350,17 @@ public class ServerController {
 	}
 
 	public void getListOfRooms(Tuple<Socket, Object> data) {
-		try {
+//		try {
 			Request request = (Request) data.y;
 			Authenticate auth = request.getAuth();
 			if (connectedClients.containsKey(auth.getUsername())) {
-				List<Room> listRooms = databaseController.getListOfRooms();
+				List<Room> listRooms = null;// databaseController.getListOfRooms();
+				if(listRooms == null){
+					System.out.println("Smack! You got served");
+				}
 				Request response = new Request(null, listRooms);
 				response.setMethod(Method.GET_LIST_OF_ROOMS_RESPONSE);
+				System.out.println("Boom shakalakka");
 				send(data.x, response);
 			} else {
 				Request response = new Request(null, null);
@@ -364,9 +368,9 @@ public class ServerController {
 				send(data.x, response);
 			}
 
-		} catch (SQLException sq) {
-			sq.printStackTrace();
-		}
+//		} catch (SQLException sq) {
+//			sq.printStackTrace();
+//		}
 	}
 
 	public void cancelView(Tuple<Socket, Object> data) {
@@ -448,6 +452,9 @@ public class ServerController {
 		} else if (requestType == Method.DISPATCH_MEETING_REPLY) {
 			System.out.println("Ready for magic DispatchMeetingReply");
 			dispatchMeetingReply(data);
+		}else if(requestType == Method.GET_LIST_OF_ROOMS){
+			System.out.println("Talk to me baby");
+			getListOfRooms(data);
 		}
 
 	}
