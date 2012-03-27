@@ -57,6 +57,7 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 		events.clear();
 		removeAll();
 		addEvents();
+		addHourLabels();
 		paint(getGraphics());
 	}
 	
