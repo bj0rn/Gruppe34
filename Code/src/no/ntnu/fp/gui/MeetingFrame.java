@@ -70,10 +70,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private JEditableList participantList;
     private JButton addParticipantButton = new JButton(new addParticipantAction("Legg til Deltaker"));
     private JTextField locationField = new JTextField(20);
-    private PlacePickerPanel placePickerPanel = new PlacePickerPanel();
-    private JButton saveButton = new JButton(new saveAction("Lagre"));
-    private JButton cancelButton = new JButton(new cancelAction("Avbryt"));
-    private JButton deleteButton = new JButton(new deleteAction("Slett"));
+    //private PlacePickerPanel placePickerPanel = new PlacePickerPanel();
+    private JButton saveButton = new JButton(new SaveAction("Lagre"));
+    private JButton cancelButton = new JButton(new CancelAction("Avbryt"));
+    private JButton deleteButton = new JButton(new DeleteAction("Slett"));
     
     private Meeting model;
     private ParticipantListModel listModel;
@@ -151,8 +151,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         //addGridBagLabel(center, PLACE_LABEL, 6, c);
         //addGridBagComponent(center, locationField, 6, c);
         
-        addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
-        placePickerPanel.addPropertyChangeListener(this);
+        //addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
+        //placePickerPanel.addPropertyChangeListener(this);
         
         
         panel.add(center, BorderLayout.CENTER);
@@ -227,10 +227,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     }
     
     //Action for Rom reservering
-    private class roomListAction extends AbstractAction {
+    private class RoomListAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public roomListAction(String text) {
+        public RoomListAction(String text) {
         	super(text, null);
         }
 
@@ -241,10 +241,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     }
     
     //Action for lagring av skjema
-    private class saveAction extends AbstractAction {
+    private class SaveAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public saveAction(String text) {
+        public SaveAction(String text) {
         	super(text, null);
         }
 
@@ -257,10 +257,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     }
     
     //Action for � avbryte skjema
-    private class cancelAction extends AbstractAction {
+    private class CancelAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
-        public cancelAction(String text) {
+        public CancelAction(String text) {
         	super(text, null);
         }
 
@@ -270,9 +270,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         }
     }
     
-    private class deleteAction extends AbstractAction {
+    private class DeleteAction extends AbstractAction {
     	
-    	public deleteAction(String text) {
+    	public DeleteAction(String text) {
     		super(text);
     	}	
     	
@@ -311,7 +311,6 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	}
     }
     
-    @SuppressWarnings("deprecation")
 	public void updatePanel() {
     	description.setText(model.getDescription());
     	startField.setText(TimeLord.formatDate(model.getStartDate()));
@@ -323,7 +322,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private void updateLocation() {
     	Location location = model.getLocation(); 
     	if (location != null) {
-    		placePickerPanel.setLocation(location);
+    		//placePickerPanel.setLocation(location);
     		locationField.setText(model.getLocation().toString());
     	} else {
     		locationField.setText("");

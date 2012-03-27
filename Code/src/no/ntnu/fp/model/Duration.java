@@ -1,11 +1,14 @@
 package no.ntnu.fp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.SortedSet;
 
 import no.ntnu.fp.util.TimeLord;
 
-public class Duration implements ContainComparable<Duration> {
+public class Duration implements ContainComparable<Duration>, Serializable {
+
+	private static final long serialVersionUID = -3129242512633880424L;
 
 	private Date from;
 	private Date to;

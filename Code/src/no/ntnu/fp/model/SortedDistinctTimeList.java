@@ -1,11 +1,14 @@
 package no.ntnu.fp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class SortedDistinctTimeList<T extends ContainComparable<T>> implements Iterable<T> {
+public class SortedDistinctTimeList<T extends ContainComparable<T>> implements Iterable<T>, Serializable {
+	
+	private static final long serialVersionUID = 6114746976306369115L;
 	
 	private List<T> list;
 	
