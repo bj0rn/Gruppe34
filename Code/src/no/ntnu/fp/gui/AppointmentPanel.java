@@ -64,7 +64,6 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		startComp = new JTextField(10);
 		endComp = new JTextField(10);
 		locComp = new JTextField(10);
-		//locComp = new JComboBox();
 		
 		save = new JButton("Lagre");
 		delete = new JButton("Slett");
@@ -138,11 +137,15 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		
 		locComp.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
-				//uh, okay, so let's, ah -- uh, get that list of rooms/places, right?
-				//launch placepicker
+				//allow entering of text
+				//update location accordingly
+				
+				model.setLocation(new Place(-1, locComp.getText()));
 			}
 		});
-		//private JButton save, delete;
+		
+		
+		//private JButton save, delete:
 		this.save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -201,7 +204,6 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		frame.setVisible(true); //display the frame
 		
 		frame.pack();
-		System.out.println("!");
 	}
 
 	@Override
@@ -216,7 +218,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 			startComp.setText(TimeLord.formatDate(model.getStartDate()));
 		}
 		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
-		//	if (model.getLocation() != null)
+			if (model.getLocation() != null)
 				locComp.setText(model.getLocation().getDescription());
 		}
 		if (evt.getPropertyName() == PlacePickerPanel.LOCATIONC_PROPERTY) {

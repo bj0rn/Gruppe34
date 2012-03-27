@@ -58,7 +58,10 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			boolean b = (l instanceof Room);
 			nameComp.setText((b ? ((Room) l).getName() : "N/A"));
 			capComp.setText((b ? ((Room) l).getCapacity()+"" : "N/A"));
+			
 			descComp.setText(l.getDescription());
+			System.out.println(l);
+			System.out.println("@@");
 			}
 		if (evt.getPropertyName() == CalendarEntry.START_PROPERTY
 				|| evt.getPropertyName() == CalendarEntry.END_PROPERTY) {
@@ -154,12 +157,12 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 			}
 		});
 		//TEST CODE
-//		this.locs = new ArrayList<Location>();
-//		Location loc1 = new Room(23, "Room1", "The first room", 44);
-//		Location loc2 = new Place(22, "strangewhere");
-//		Location loc3 = new Room(34, "SPACE.", "Spaaaaaace", Integer.MAX_VALUE);
+//		this.locs = new ArrayList<Room>();
+//		Room loc1 = new Room(23, "Room1", "The first room", 44);
+//		//Location loc2 = new Place(22, "strangewhere");
+//		Room loc3 = new Room(34, "SPACE.", "Spaaaaaace", Integer.MAX_VALUE);
 //		locs.add(loc1);
-//		locs.add(loc2);
+//		//locs.add(loc2);
 //		locs.add(loc3);
 		
 		
@@ -183,10 +186,10 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		this.selectedLoc = loc;
 		updatePanel();
 	}
-	public void setListOfRooms(List<Room> list) {
-		this.locs = list;
-		updatePanel();
-	}
+//	public void setListOfRooms(List<Room> list) {
+//		this.locs = list;
+//		updatePanel();
+//	}
 	/**
 	 * redraws the current available locations.
 	 */
@@ -218,11 +221,6 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	private ArrayList<Room> getAvailableRooms() {
-		
-		return null;
-	}
-	
 	private Location getSelectedLocation() {
 		return this.selectedLoc;
 	}
@@ -249,6 +247,9 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		model.addPropertyChangeListener(this);
 		updatePanel();
 		}	
+	}
+	public CalendarEntry getModel() {
+		return this.model;
 	}
 	
 	
