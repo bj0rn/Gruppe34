@@ -52,6 +52,9 @@ public class DatabaseController {
 		for (CalendarEntry entry : calendar) {
 			System.out.println(TimeLord.formatDate(entry.getStartDate()));
 		}
+		
+		List <Tuple <String, String>> list = dbCtrl.getSubscribers();
+		
 	}
 	
 	public DatabaseController() {
@@ -1049,15 +1052,23 @@ public class DatabaseController {
 	}
 	
 	
-	public List <Tuple <String, String>> getSubscribers(){
+	public List <Tuple <String, String>> getSubscribers() throws SQLException{
 		DbConnection db = getConnection();
 		ArrayList<Tuple<String, String>> res =  new ArrayList<Tuple <String, String>>();
 		
 		String sql = "SELECT Shows.Username, Calendar.Username"
-				+"FROM Shows" 
-				+"LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";
+				+" FROM Shows" 
+				+" LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";
 		
-		
+		ResultSet rs = db.query(sql);
+		rs.beforeFirst();
+		while(rs.next()){
+			String user = rs.getString("Shows.Username");
+			System.out.println("User: "+user);
+			String views = rs.getString("Calendar.Username");
+			System.out.println("Views: "+views);
+			res.add(new Tuple <String, String>(user, views));			
+		}
 		
 		return res;
 	}

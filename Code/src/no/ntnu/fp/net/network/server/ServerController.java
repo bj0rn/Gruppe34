@@ -67,8 +67,23 @@ public class ServerController {
 		
 	}
 	
-	
+	//TODO: Call this method when the server starts 
 	private void getSubscribers(){
+		try {
+			List <Tuple <String, String>> list = databaseController.getSubscribers();
+			for (Tuple <String, String> t : list){
+				if(views.containsKey(t.y)){
+					views.get(t.x).add(t.x);
+				}else {
+					ArrayList<String> l = new ArrayList<String>();
+					l.add(t.x);
+					views.put(t.y, l);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
