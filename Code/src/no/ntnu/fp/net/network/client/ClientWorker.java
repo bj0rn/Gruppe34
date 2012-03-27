@@ -61,7 +61,7 @@ public class ClientWorker implements Runnable {
 		Request response = (Request) data;
 		if (response.getMethod() == Method.MEETING_NOTIFICATION) {
 			Meeting meeting = (Meeting)response.getObject();
-			//communication.updateMeeting(meeting);
+			communication.updateMeeting(meeting);
 			System.out.println("We have a notification");
 			return true;
 		

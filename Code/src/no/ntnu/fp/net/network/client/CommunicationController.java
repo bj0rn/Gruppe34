@@ -19,6 +19,7 @@ import org.jdom.adapters.XML4JDOMAdapter;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.model.Calendar;
+import no.ntnu.fp.model.CalendarEntry;
 import no.ntnu.fp.model.Location;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.Meeting.State;
@@ -534,7 +535,42 @@ public class CommunicationController {
 	 * {@code Meeting} update is received from the Server. 
 	 * @param meeting
 	 */
-	public void updateMeeting(Meeting meeting) {
+	public void updateMeeting(Meeting updatedMeeting) {
+		User owner = updatedMeeting.getOwner();
+		
+		Calendar calendar = null;
+		Meeting meeting = null;
+		
+		if (owner.equals(user)) {
+			for (CalendarEntry entry : user.getCalendar()) {
+				
+				if (entry.getID() == meeting.getID()) {
+					calendar = user.getCalendar();
+					meeting = (Meeting)entry;
+					
+					continue;
+				}
+			}
+		} else {
+			for (User participant : updatedMeeting.getParticipants()) {
+				if (participant.equals(user)) {
+					
+					for (CalendarEntry entry : participant.getCalendar()) {
+						if (entry.getID() == meeting.getID()) {
+							calendar = participant.getCalendar();
+							meeting = (Meeting) entry;
+							continue;
+						}
+					}
+					
+				}
+			}
+		}
+		
+		if (calendar != null) {
+			calendar.removeMeeting(meeting);
+			calendar.addMeeting(updatedMeeting);
+		}
 		
 	}
 	
@@ -545,7 +581,7 @@ public class CommunicationController {
 	public synchronized void updateAppointment(Appointment appointment) {
 		User user = appointment.getOwner();
 		for(User u : shows){
-			if(u.getUsername().equals(user)){
+			if(u.equals(user)){
 				Calendar c = u.getCalendar();
 				c.removeAppointment(appointment);
 				c.addAppointment(appointment);
