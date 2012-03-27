@@ -40,15 +40,13 @@ public class ClientWorker implements Runnable {
 			
 			try {
 				Thread.currentThread().sleep(5000);
-				if(!testQueue.isEmpty()){
-					Object obj = testQueue.peekLast();
-					System.out.println("I want my data");
-					if(handle(obj)){
-						obj = testQueue.takeLast();
-						System.out.println("Simply drop it :) ");
-					}
-					//Object data = testQueue.takeFirst();
-				}	//handle(data);
+				
+				Object obj = testQueue.takeFirst();
+				if(handle(obj)){
+					System.out.println("dropped");
+				}else {
+					testQueue.putFirst(obj);
+				}
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -62,18 +60,18 @@ public class ClientWorker implements Runnable {
 		Request response = (Request) data;
 		if (response.getMethod() == Method.MEETING_NOTIFICATION) {
 			Meeting meeting = (Meeting)response.getObject();
-			communication.updateMeeting(meeting);
+			//communication.updateMeeting(meeting);
 			System.out.println("We have a notification");
 			return true;
 		
 		} else if(response.getMethod() == Method.CHANGE_MEETING_NOTFICATION) {
 			Meeting meeting = (Meeting)response.getObject();
-			communication.updateMeeting(meeting);
+			//communication.updateMeeting(meeting);
 			System.out.println("Someone changed a meeting (views)");
 			return true;
 		}else if(response.getMethod() == Method.CHANGE_APPOINTMENT_NOTIFICATION) {
 			Appointment appointment = (Appointment)response.getObject();
-			communication.updateAppointment(appointment);
+			//communication.updateAppointment(appointment);
 			System.out.println("Someone changed an appointment (views)");
 			return true;
 		}else {
