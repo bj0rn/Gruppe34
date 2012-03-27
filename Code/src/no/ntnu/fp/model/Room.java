@@ -55,6 +55,15 @@ public class Room extends Location implements Serializable{
 		timeTable.add(new Duration(from, to));
 	}
 	
+	/**
+	 * Assuming timeTa
+	 * @param from
+	 * 		start date
+	 * @param to
+	 * 		end date
+	 * @return
+	 * 		availability
+	 */
 	public boolean isAvailable(Date from, Date to) {
 		if (!(from == null) && !(to == null)) {
 			Duration duration = new Duration(from, to);
