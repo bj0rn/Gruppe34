@@ -19,6 +19,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import no.ntnu.fp.gui.timepicker.TimePickableFieldListener;
 import no.ntnu.fp.model.Appointment;
@@ -40,19 +42,20 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	
 	private JButton save, delete;
 	
+	private TimePickableFieldListener startListener;
+	private TimePickableFieldListener endListener;
+	
 	//få det ryddig i boksen
 	protected GridBagLayout grid;
 	protected GridBagConstraints constraints;
 	
 	private Appointment model;
 	
+
 	public AppointmentPanel(Appointment appmnt) {
-		this();
-		setModel(appmnt);
-		model.setOwner(CommunicationController.getInstance().getUser());
-		plPickPanel.setModel(this.model);
-	}
-	public AppointmentPanel() {
+		plPickPanel = new PlacePickerPanel();
+		
+		
 		appointment = new JLabel("Avtale");
 		description = new JLabel("Beskrivelse");
 		startTime = new JLabel("Starttid");
@@ -60,8 +63,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		location = new JLabel("Sted");
 		panel = new JPanel();
 		
-		plPickPanel = new PlacePickerPanel();
-		plPickPanel.addPropertyChangeListener(this);
+		
 		Dimension ps = new Dimension(150, 25);
 		descComp = new JTextField();
 			descComp.setPreferredSize(ps);
@@ -71,6 +73,11 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 			endComp.setPreferredSize(ps);
 		locComp = new JTextField();
 			locComp.setPreferredSize(ps);
+		
+		plPickPanel.addPropertyChangeListener(this);
+		
+		startListener = new TimePickableFieldListener(startComp, this);
+		endListener = new TimePickableFieldListener(endComp, this);
 		
 		save = new JButton("Lagre");
 		delete = new JButton("Slett");
@@ -122,14 +129,43 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		
 		add(panel);
 		
+		setModel(appmnt);
+		model.setOwner(CommunicationController.getInstance().getUser());
+		plPickPanel.setModel(this.model);
+		
+		
 		descComp.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
 				model.setDescription(descComp.getText());
 			}
 		});
 		
-		startComp.addFocusListener(new TimePickableFieldListener(startComp, this));
-		endComp.addFocusListener(new TimePickableFieldListener(endComp, this));
+		startComp.addFocusListener(startListener);
+		startListener.setDate(model.getStartDate());
+		endComp.addFocusListener(endListener);
+		endListener.setDate(model.getEndDate());
+		endComp.getDocument().addDocumentListener(new DocumentListener() {
+			public void removeUpdate(DocumentEvent arg0) {}
+			public void changedUpdate(DocumentEvent arg0){}
+			@Override
+			public void insertUpdate(DocumentEvent arg0)
+			 {
+				if (model != null) {
+					//System.out.println("end date changed");
+					model.setEndDate(TimeLord.parseDate(endComp.getText()));
+				}
+			}});
+		startComp.getDocument().addDocumentListener(new DocumentListener() {
+			public void removeUpdate(DocumentEvent e) {}
+			public void changedUpdate(DocumentEvent e) {}
+			public void insertUpdate(DocumentEvent e)
+			 {
+				if (model != null) {
+					//System.out.println("start date changed");
+					model.setStartDate(TimeLord.parseDate(startComp.getText()));
+				}
+			}});
+		
 		
 		locComp.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
@@ -150,8 +186,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				if (model != null) {
 					if (model.getOwner() == null) 
 						model.setOwner(c.getUser());
-					System.out.println(model.getStartDate());
-					System.out.println(model.getEndDate());
+//					System.out.println(model.getStartDate());
+//					System.out.println(model.getEndDate());
 					c.saveAppointment(model.shallowCopy());
 				}
 				//close window if successfull.
@@ -168,8 +204,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				}
 			}
 		});
-		panel.setPreferredSize(new Dimension(400,400));
-		this.setPreferredSize(new Dimension(400, 400));
+		panel.setPreferredSize(new Dimension(400, 500));
+		this.setPreferredSize(new Dimension(400, 500));
 		this.setLocationRelativeTo(null); //center a frame
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setVisible(true); //display the frame
@@ -183,6 +219,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	    	   descComp.setText(model.getDescription());
 	    	   startComp.setText(TimeLord.formatDate(model.getStartDate()));
 	    	   endComp.setText(TimeLord.formatDate(model.getEndDate()));
+	    	   endListener.setDate(model.getEndDate());
+	    	   startListener.setDate(model.getStartDate());
 	    	   locComp.setText(
 	    			   (model.getLocation() != null) ? 
 	    			    model.getLocation().getID()+"" :
@@ -230,10 +268,12 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 			descComp.setText(model.getDescription());
 		}
 		if(evt.getPropertyName() == Appointment.END_PROPERTY){
-			endComp.setText(TimeLord.formatDate(model.getEndDate()));
+			//endComp.setText(TimeLord.formatDate(model.getEndDate()));
+			endListener.setDate(model.getEndDate());
 		}
 		if(evt.getPropertyName() == Appointment.START_PROPERTY){
-			startComp.setText(TimeLord.formatDate(model.getStartDate()));
+			//startComp.setText(TimeLord.formatDate(model.getStartDate()));
+			startListener.setDate(model.getStartDate());
 		}
 		if(evt.getPropertyName() == Appointment.LOC_PROPERTY){
 			if (model.getLocation() != null)
