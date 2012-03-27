@@ -33,12 +33,10 @@ public class CalendarPanel extends JPanel implements PropertyChangeListener {
 	public CalendarPanel(DateModel dateModel, User user) {
 		setLayout(new BorderLayout(12, 12));
 
+		dateModel.setWeek(10);
+		
 		this.user = user;
-		//TEST
-		dateModel.setWeek(12);
-		//TEST END
 		this.dateModel = dateModel;
-		dateModel.addPropertyChangeListener(this);
 
 		weekNavigator = new Navigator("Week",dateModel.getWeek(), 1, 52);
 		weekNavigator.addPropertyChangeListener(this);
@@ -50,9 +48,10 @@ public class CalendarPanel extends JPanel implements PropertyChangeListener {
 		top.add(weekNavigator);
 		top.add(yearNavigator);
 
-		weekSheetAdapter = new WeekSheetAdapter(dateModel);
+		weekSheetAdapter = new WeekSheetAdapter(this.dateModel);
 		weekSheetAdapter.addCalendar(user.getCalendar());
 		weekSheet = new WeekSheet(weekSheetAdapter);
+		this.dateModel.addPropertyChangeListener(weekSheet);
 		scrollArea = new JScrollPane(weekSheet);
 		scrollArea.setPreferredSize(new Dimension(600, 300));
 		scrollArea.setRowHeaderView(new JLabel(" "));
@@ -61,13 +60,19 @@ public class CalendarPanel extends JPanel implements PropertyChangeListener {
 		add(scrollArea, BorderLayout.CENTER);
 	}
 
-	@Override
 	public void propertyChange(PropertyChangeEvent pce) {
-		if (pce.getSource().equals(weekNavigator)) {
-			dateModel.setWeek(weekNavigator.getValue());
-			System.out.println("Select week: " + weekNavigator.getValue());
-		} else if (pce.getSource().equals(yearNavigator)) {
-			dateModel.setYear(yearNavigator.getValue());
+		if (pce.getPropertyName().equals(Navigator.VALUE_PROPERTY)) {
+			if (pce.getSource().equals(weekNavigator)) {
+				dateModel.setWeek((Integer) pce.getNewValue());
+			} else if (pce.getSource().equals(yearNavigator)) {
+				dateModel.setYear((Integer) pce.getNewValue());
+			}
+			scrollArea.getVerticalScrollBar().setValue(400);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "CalendarPanel";
 	}
 }

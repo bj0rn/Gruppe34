@@ -1,29 +1,34 @@
 package no.ntnu.fp.gui;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import no.ntnu.fp.gui.timepicker.DateModel;
+
 /**
  * Shows a grid representing 7days (cols) and 24 hour (rows) with CalendarEnties
- * placed on the sheet corresponding to their weekday, startTime and duration
+ * placed on the sheet with x, y and height corresponding to their weekday, startTime and duration
  * 
  * @author andrephilipp
  * 
  */
 
-public class WeekSheet extends JPanel {
+public class WeekSheet extends JPanel implements PropertyChangeListener{
 
 	final Color GRID_COLOR = Color.LIGHT_GRAY;
 	final Color HOURLABELS_COLOR = Color.LIGHT_GRAY;
 	private ArrayList<JLabel> hours = new ArrayList<JLabel>();
-
+	
 	public ArrayList<CalendarEntryView> events = new ArrayList<CalendarEntryView>();
 	
 	private WeekSheetAdapter adapter;
@@ -35,6 +40,7 @@ public class WeekSheet extends JPanel {
 
 	public WeekSheet(WeekSheetAdapter adapter) {
 		this.adapter = adapter;
+		setBackground(Color.GRAY);
 		addHourLabels();
 		addEvents();
 		setPreferredSize(new Dimension(600, 1500));
@@ -44,10 +50,16 @@ public class WeekSheet extends JPanel {
 		for(CalendarEntryView cev: adapter){
 			events.add(cev);
 			add(cev);
-			System.out.println(events.size());
 		}
 	}
-
+	
+	public void updateSheet() {
+		events.clear();
+		removeAll();
+		addEvents();
+		paint(getGraphics());
+	}
+	
 	public int getCellHeight() {
 		return cellHeight;
 	}
@@ -108,6 +120,8 @@ public class WeekSheet extends JPanel {
 	 *            object to paint to
 	 */
 	private void paintGrid(Graphics g) {
+		g.setColor(Color.WHITE);
+		g.drawRect(0, 0, getWidth(), getHeight());
 		g.setColor(GRID_COLOR);
 		for (int i = 0; i < 24; i++) {
 			g.drawLine(0, i * cellHeight, getWidth(), i * cellHeight);
@@ -117,5 +131,10 @@ public class WeekSheet extends JPanel {
 			g.drawLine(i * cellWidth + hourColWidth, 0, i * cellWidth
 					+ hourColWidth, getHeight());
 		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent arg0) {
+		updateSheet();
 	}
 }

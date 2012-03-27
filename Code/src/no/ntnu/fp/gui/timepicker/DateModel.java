@@ -17,6 +17,7 @@ public class DateModel {
 	public final static String YEAR_PROPERTY = "Year";
 	public final static String MONTH_PROPERTY = "Month";
 	public final static String DAY_PROPERTY = "Day";
+	public final static String WEEK_PROPERTY = "Week";
 	public final static String HOURS_PROPERTY = "Hour";
 	public final static String MINUTES_PROPERTY = "Minute";
 	public final static String SECONDS_PROPERTY = "Seconds";
@@ -141,9 +142,11 @@ public class DateModel {
 	}	
 	
 	public void setWeek(int week){
+		int old = getWeek();
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, getYear());
+		cal.setTime(getDate());
 		cal.set(Calendar.WEEK_OF_YEAR, week);
 		date = cal.getTime();
+		pcs.firePropertyChange(WEEK_PROPERTY, old ,week);
 	}
 }
