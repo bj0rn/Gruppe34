@@ -163,7 +163,12 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	    	   descComp.setText(model.getDescription());
 	    	   startComp.setText(TimeLord.formatDate(model.getStartDate()));
 	    	   endComp.setText(TimeLord.formatDate(model.getEndDate()));
+	    	   locComp.setText(
+	    			   (model.getLocation() != null) ? 
+	    			    model.getLocation().getID()+"" :
+	    				"");
 	    	   locComp.setText(model.getLocation().getID() + "");
+	    		   
 	    	   plPickPanel.updatePanel();
 	       }
 	    }
@@ -196,6 +201,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		frame.setVisible(true); //display the frame
 		
 		frame.pack();
+		System.out.println("!");
 	}
 
 	@Override
