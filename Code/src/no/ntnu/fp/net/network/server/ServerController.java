@@ -254,10 +254,11 @@ public class ServerController {
 					System.out.println("Participant: " + user);
 					if (connectedClients.containsKey(user)) {
 						System.out.println("Works");
-						Socket sockfd = connectedClients.get(username);
+						Socket sockfd = connectedClients.get(user);
 						Request r = new Request(null, meeting);
 						r.setMethod(Request.Method.MEETING_NOTIFICATION);
 						send(sockfd, r);
+						System.out.println("Data is sent");
 					} else {
 						// do some stuff in the db ?
 						System.out.println("Sorry the client is not connected");
