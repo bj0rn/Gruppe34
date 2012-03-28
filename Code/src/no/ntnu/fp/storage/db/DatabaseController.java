@@ -8,7 +8,7 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 		+	"	OWNU.Age AS age, "
 		+	"	OWNU.PhoneNumber AS number, "
 		+	"	OWNU.Email AS email, "		+	"	CE.CalendarEntryID AS id, "		+	"	CE.EntryType AS type, " 		+	"	CE.TimeStart AS start, " 		+	"	CE.TimeEnd AS end, " 		+	"	CE.Description AS description, " 		+	"	L.LocationID AS LocationID "		+	"FROM Calendar AS C "		+	"	LEFT JOIN Contains AS CO ON CO.CalendarID = C.CalendarID "		+	"	LEFT JOIN CalendarEntry AS CE ON CO.CalendarEntryID = CE.CalendarEntryID "		+	"	LEFT JOIN Location AS L ON CE.LocationID = L.LocationID "		+	"	LEFT JOIN Contains AS OWNCO ON CE.CalendarEntryID = OWNCO.CalendarEntryID " 		+	"		AND OWNCO.Role = 'Owner' "		+	"	LEFT JOIN Calendar AS OWNCA ON OWNCO.CalendarID = OWNCA.CalendarID "
-		+	"	LEFT JOIN User AS OWNU ON ONWCA.Username = OWNU.Username "		+	"WHERE C.Username = '" + username + "' " 		+	"ORDER BY start ASC";		DbConnection db = getConnection();				ResultSet rs = db.query(sql);				rs.beforeFirst();		while(rs.next()) {			String owner = rs.getString("owner");
+		+	"	LEFT JOIN User AS OWNU ON OWNCA.Username = OWNU.Username "		+	"WHERE C.Username = '" + username + "' " 		+	"ORDER BY start ASC";		DbConnection db = getConnection();				ResultSet rs = db.query(sql);				rs.beforeFirst();		while(rs.next()) {			String owner = rs.getString("owner");
 			String name = rs.getString("name");
 			int age = rs.getInt("age");
 			int phoneNumber = rs.getInt("number");
@@ -41,7 +41,7 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 			+	"	LEFT JOIN Contains AS OWNCO ON CE.CalendarEntryID = OWNCO.CalendarEntryID " 
 			+	"		AND OWNCO.Role = 'Owner' "
 			+	"	LEFT JOIN Calendar AS OWNCA ON OWNCO.CalendarID = OWNCA.CalendarID "
-			+	"	LEFT JOIN User AS OWNU ON ONWCA.Username = OWNU.Username "
+			+	"	LEFT JOIN User AS OWNU ON OWNCA.Username = OWNU.Username "
 			+	"WHERE CE.CalendarEntryID = " + id;
 		
 		ResultSet rs = db.query(sql);
