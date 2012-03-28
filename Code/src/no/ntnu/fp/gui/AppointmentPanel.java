@@ -60,7 +60,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		description = new JLabel("Beskrivelse");
 		startTime = new JLabel("Starttid");
 		endTime = new JLabel("Sluttid");
-		location = new JLabel("Sted");
+		location = new JLabel("Stedsnavn");
 		panel = new JPanel();
 		
 		

@@ -91,9 +91,10 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		this.misc = new JLabel("Velg et rom");
 		this.roomName = new JLabel("Rom:");
 		this.cbRooms = new JCheckBox("Rom");
-			cbRooms.setSelected(true);
+			 cbRooms.setSelected(true);
 		this.cbPlaces = new JCheckBox("Steder");
 			cbPlaces.setSelected(true);
+			
 		this.descComp = new JTextField(10);
 			descComp.setEditable(false);
 		this.capComp = new JTextField(10);
@@ -119,8 +120,8 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 		add(misc, GridBagHelper.setConstraints(constraints, 0, 0));
 		add(locList, GridBagHelper.setConstraints(constraints, 0, 3));
 		constraints.gridwidth = constraints.RELATIVE;
-		add(cbRooms, GridBagHelper.setConstraints(constraints, 0, 1));
-		add(cbPlaces, GridBagHelper.setConstraints(constraints, 1, 1));
+		//add(cbRooms, GridBagHelper.setConstraints(constraints, 0, 1));
+		//add(cbPlaces, GridBagHelper.setConstraints(constraints, 1, 1));
 		add(roomName, GridBagHelper.setConstraints(constraints, 0, 4));
 		add(nameComp, GridBagHelper.setConstraints(constraints, 1, 4));
 		add(cap, GridBagHelper.setConstraints(constraints, 0, 5));
@@ -169,11 +170,13 @@ public class PlacePickerPanel extends JPanel implements PropertyChangeListener {
 	
 	public void updatePanel() {
 		if (selectedLoc != null) {
-			descComp.setText(selectedLoc.getDescription());
 			if (selectedLoc instanceof Room) {
+				roomName.setText("Rom:");
+				descComp.setText(selectedLoc.getDescription());
 				capComp.setText(((Room) selectedLoc).getCapacity()+"");
 				nameComp.setText(((Room) selectedLoc).getName());
 			} else {
+				descComp.setText("N/A");
 				capComp.setText("N/A");
 				nameComp.setText("N/A");
 			}
