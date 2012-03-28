@@ -1,12 +1,16 @@
 package no.ntnu.fp.gui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import no.ntnu.fp.gui.timepicker.DateModel;
+import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Calendar;
 import no.ntnu.fp.model.CalendarEntry;
+import no.ntnu.fp.model.Meeting;
 
 public class WeekSheetAdapter implements Iterable<CalendarEntryView>{
 	List<Calendar> calendars = new ArrayList<Calendar>();
@@ -18,6 +22,7 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>{
 
 	public void addCalendar(Calendar calendar) {
 		calendars.add(calendar);
+		//calendar.addPropertyChangeListener(this);
 	}
 
 	public void removeCalendar(Calendar calendar) {
@@ -30,7 +35,23 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>{
 		for(Calendar calendar: calendars){
 			for(CalendarEntry calendarEntry: calendar){
 					if((calendarEntry.getYear()+1900) == dateModel.getYear() && calendarEntry.getWeek() == dateModel.getWeek()){
-						entries.add(new CalendarEntryView(calendarEntry));
+						CalendarEntryView view = new CalendarEntryView(calendarEntry);
+						view.addMouseListener(new MouseAdapter() {
+							
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								// TODO Auto-generated method stub
+								super.mouseClicked(e);
+								CalendarEntry ce = ((CalendarEntryView)e.getSource()).getModel();
+								if (ce instanceof Meeting) {
+									new MeetingFrame((Meeting) ce);
+								}
+								if (ce instanceof Appointment) {
+									new AppointmentPanel((Appointment) ce);
+								}
+							}
+						});
+						entries.add(view);
 					}
 				}
 			}
