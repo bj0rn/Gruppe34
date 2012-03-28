@@ -1,0 +1,18 @@
+Navn: Odd
+ Dato: 2012-03-12
+ Aktivitet: Pilottest m/ studass
+ Starttid: 11:00
+ Plan: gjennomføre pilottest av papirprototype med studass
+
+Slutttid: 12:00
+ Fremdrift: Godkjent
+ Gjenstående: NA
+
+Dato: 2012-03-12
+ Aktivitet: UML-diagram, KTN1 F1
+ Starttid: 12:00
+ Plan: jobbe med og diskutere UML design, levere KTN1 F1
+
+Slutttid: 16:00
+ Fremdrift: utkast klart
+ Gjenstående: resten

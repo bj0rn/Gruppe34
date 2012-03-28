@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-19
+ Aktivitet: Brukbarhetsrapportskriving, progging
+ Starttid: 10:00
+ Plan: jobbe med brukbarhetsrapporten
+
+Slutttid: 16:00
+ Fremdrift: skrevet noe kode, diskutert kode, gjort mye på brukbarhetsrapporten
+ Gjenstående: kode, bbhr
+

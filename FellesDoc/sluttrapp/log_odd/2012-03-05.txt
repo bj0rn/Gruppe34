@@ -1,0 +1,9 @@
+Navn: Odd
+ Dato: 2012-03-05
+ Aktivitet: Prosjektplan
+ Starttid: 12:00
+ Plan: utarbeide prosjektplan.
+
+Slutttid: 16:00
+ Fremdrift: identifisert aktiviteter (~90%), funnet siste mulige sluttid (frist), funnet avhengigheter og relasjoner, opprettet LaTeX mal
+ Gjenstående: kostnadsestimat, ganttdiagram, tidsestimering, ansvarsfordeling

@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-23
+ Aktivitet: implementasjon, bug-fiksing, dbc
+ Starttid: 11:00
+ Plan: Programmere.
+
+Slutttid: 17:00
+ Fremdrift: implementert gui
+ Gjenstående: sluttrapport, bugfixing
+

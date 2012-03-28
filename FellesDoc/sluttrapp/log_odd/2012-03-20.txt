@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-20
+ Aktivitet: BBHR, prog
+ Starttid: 10:00
+ Plan: gjøre ferdig BBHR, skrive kode
+
+Slutttid: 15:00
+ Fremdrift: BBHR 99% ferdig, ikke så mye kode.
+ Gjenstående: kode
+
