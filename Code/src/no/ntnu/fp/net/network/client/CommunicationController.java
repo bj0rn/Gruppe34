@@ -314,7 +314,12 @@ public class CommunicationController {
 				Request response = (Request)testQueue.takeFirst();
 				if(response.getMethod() == Method.GET_SUBSCRIBERS_RESPONSE){
 					System.out.println("Yey :) ");
-					shows = Collections.synchronizedList((List<User>)response.getObject());
+					List<User> users = (List<User>)response.getObject();
+					shows = new ArrayList<User>();
+					for(User user : users) {
+						shows.add(getFullUser(user.getUsername()));
+					}
+					
 					return;
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					System.out.println("Not logged inn");
