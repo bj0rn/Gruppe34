@@ -14,6 +14,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
 
+import javax.net.ssl.HostnameVerifier;
+
 import org.jdom.adapters.XML4JDOMAdapter;
 
 import no.ntnu.fp.model.Appointment;
@@ -50,7 +52,7 @@ import no.ntnu.fp.model.Room;
 
 public class CommunicationController {
 	
-	public String host = "78.91.22.12"; //"127.0.0.1"; //
+	public static String host = "78.91.22.12"; //"127.0.0.1"; //
 	public final static int PORT = 1337;
 
 	private static CommunicationController instance;
@@ -81,7 +83,7 @@ public class CommunicationController {
 	/**
 	 * A {@code List} of {@code User}s which the {@code user} shows.
 	 */
-	private List<User> shows;
+	private List<User> shows; 
 	
 	/**
 	 * The complete {@code List} of {@code Room}s. 
@@ -148,6 +150,10 @@ public class CommunicationController {
 		}
 		
 		return instance;
+	}
+	
+	public static void setHost(String ip) {
+		host = ip; 
 	}
 	
 	
@@ -259,6 +265,14 @@ public class CommunicationController {
 		}
 	}
 	
+	public void addSelectedUser(User user) {
+		shows.add(user);
+	}
+	
+	public void removeSelectedUser(User user) {
+		shows.remove(user);
+	}
+	
 	public List<User> getSelectedUsers() {
 		if (shows == null) {
 			updateSelectedUsers();
@@ -267,6 +281,7 @@ public class CommunicationController {
 		return shows;
 	}
 	
+
 	public void updateSelectedUsers(){
 		try{
 			Request request = new Request(auth, null);
@@ -287,6 +302,7 @@ public class CommunicationController {
 		}catch(InterruptedException e){
 			e.printStackTrace();
 		}
+
 	}
 	
 	/**
