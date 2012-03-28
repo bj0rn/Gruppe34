@@ -20,6 +20,10 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 		String sql = 
 				"SELECT " 
 			+	"	OWNCA.Username as owner, "
+			+	"	OWNCA.Name AS name, "
+			+	"	OWNCA.Age AS age, "
+			+	"	OWNCA.PhoneNumber AS number, "
+			+	"	OWNCA.Email AS email, "
 			+	"	CE.TimeStart AS start, " 
 			+	"	CE.TimeEnd AS end, " 
 			+	"	CE.Description AS description " 
@@ -35,6 +39,10 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 		if (rs.first()) {
 			
 			String username = rs.getString("owner");
+			String name = rs.getString("name");
+			int age = rs.getInt("age");
+			int phoneNumber = rs.getInt("number");
+			String email = rs.getString("email");
 			Date start = rs.getTimestamp("start");
 			Date end = rs.getTimestamp("end");
 			String desc = rs.getString("description");
@@ -43,7 +51,7 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 			
 			meeting = new Meeting(start, end, desc, id);
 			meeting.addParticipants(participants);
-			meeting.setOwner(new User(username));
+			meeting.setOwner(new User(username, name, age, phoneNumber, email));
 		}
 		rs.close();
 		db.close();
