@@ -698,11 +698,14 @@ public class CommunicationController {
 	 */
 	public synchronized void updateAppointment(Appointment appointment) {
 		User user = appointment.getOwner();
-		for(User u : shows){
-			if(u.equals(user)){
-				Calendar c = u.getCalendar();
-				c.removeAppointment(appointment);
-				c.addAppointment(appointment);
+		
+		if(shows != null){
+			for(User u : shows){
+				if(u.equals(user)){
+					Calendar c = u.getCalendar();
+					c.removeAppointment(appointment);
+					c.addAppointment(appointment);
+				}
 			}
 		}
 		
@@ -733,12 +736,12 @@ public class CommunicationController {
 		Calendar c = user.getCalendar();
 		deleteHelper(c, id);
 		
-		Iterator <User> it = shows.iterator();
-		if(it.hasNext()){
-			Calendar vc = it.next().getCalendar();
-			deleteHelper(vc, id);
+		if(shows != null){
+			for(User u: shows){
+				Calendar vc = u.getCalendar();
+				deleteHelper(vc, id);
+			}
 		}
-		
 	}
 	
 	/**
