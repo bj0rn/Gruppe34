@@ -259,7 +259,6 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         	CommunicationController c = CommunicationController.getInstance();
         	int id = c.saveMeeting(model.shallowCopy());
         	model.setID(id);
-        	System.out.println(model.getID());
         	c.getUser().getCalendar().addMeeting(model);
         }
     }

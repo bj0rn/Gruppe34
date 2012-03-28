@@ -389,6 +389,7 @@ public class CommunicationController {
 	
 	
 	public int saveMeeting(Meeting meeting){
+		System.out.println(meeting.getID());
 		try{
 			Request request = new Request(auth, meeting);
 			request.setMethod(Request.Method.SAVE_MEETING);
@@ -418,7 +419,7 @@ public class CommunicationController {
 	}
 	
 	
-	public boolean saveAppointment(Appointment appointment){
+	public int saveAppointment(Appointment appointment){
 		try{
 			Request request = new Request(auth, appointment);
 			request.setMethod(Request.Method.SAVE_APPOINTMENT);
@@ -431,10 +432,10 @@ public class CommunicationController {
 				Request response = (Request)testQueue.takeFirst();
 				if(response.getMethod() == Request.Method.SAVE_APPOINTMENT_RESPONSE){
 					Integer id = (Integer)response.getObject();
-					appointment.setID(id);
-					return true;
+					return id;
+					
 				}else if(response.getMethod() == Request.Method.LOGIN_FAILED){
-					return false;
+					return -1;
 				}
 				else {
 					System.out.println("Put back");
@@ -444,7 +445,7 @@ public class CommunicationController {
 		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return -1;
 	}
 		
 	public boolean dispatchMeetingReply(User user, Meeting meeting, State state) {

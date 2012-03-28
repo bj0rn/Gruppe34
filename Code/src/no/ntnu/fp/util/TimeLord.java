@@ -60,5 +60,9 @@ public class TimeLord {
 			return "";
 		}
 	}
+	
+	public static String formatTime(int hour) {
+		return (hour <= 9 ? "0" : "") + hour + ":00";  
+	}
 
 }
