@@ -50,7 +50,7 @@ import no.ntnu.fp.model.Room;
 
 public class CommunicationController {
 	
-	public String host = "127.0.0.1"; // "78.91.22.12"; // 
+	public String host = "78.91.22.12"; //"127.0.0.1"; //
 	public final static int PORT = 1337;
 
 	private static CommunicationController instance;

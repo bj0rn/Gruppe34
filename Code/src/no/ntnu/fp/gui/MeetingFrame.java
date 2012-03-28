@@ -290,6 +290,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     		if (id != -1) {
     			CommunicationController c = CommunicationController.getInstance();
     			c.deleteMeeting(model);
+    			model.setID(-1);
     		}
     	}
     	

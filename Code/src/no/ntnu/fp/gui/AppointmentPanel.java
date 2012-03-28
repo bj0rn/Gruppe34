@@ -40,7 +40,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	private JPanel panel;
 	private PlacePickerPanel plPickPanel;
 	
-	private JButton save, delete;
+	private JButton save, delete, cancel;
 	
 	private TimePickableFieldListener startListener;
 	private TimePickableFieldListener endListener;
@@ -81,49 +81,30 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		
 		save = new JButton("Lagre");
 		delete = new JButton("Slett");
-		
+		cancel = new JButton("Avbryt");
 		grid = new GridBagLayout();
 		constraints = new GridBagConstraints();
 		
 		panel.setLayout(grid); // gj¿r at man faktisk endrer noe(det synes)
-		
-		constraints.gridwidth = constraints.RELATIVE;
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		panel.add(appointment, constraints);
-		constraints.gridx = 0;
-		constraints.gridy = 1;
-		panel.add(description, constraints);
-		constraints.gridx = 0;
-		constraints.gridy = 2;
-		panel.add(startTime, constraints);
-		constraints.gridx = 0;
-		constraints.gridy = 3;
-		panel.add(endTime, constraints);
-		constraints.gridx = 0;
-		constraints.gridy = 4;
-		panel.add(location, constraints);
-		constraints.gridx = 3;
-		constraints.gridy = 1;
-		panel.add(descComp, constraints);
-		constraints.gridx = 3;
-		constraints.gridy = 2;
-		panel.add(startComp, constraints);
-		constraints.gridx = 3;
-		constraints.gridy = 3;
-		panel.add(endComp, constraints);
-		constraints.gridx = 3;
-		constraints.gridy = 4;
-		panel.add(locComp, constraints);
-		constraints.gridx = 0;
-		constraints.gridy = 6;
-		panel.add(save, constraints);
-		constraints.gridx = 3;
-		constraints.gridy = 6;
-		panel.add(delete, constraints);
+		constraints.gridwidth = constraints.REMAINDER;
+		panel.add(appointment, GridBagHelper.setConstraints(constraints, 0, 0));
+		constraints.gridwidth = 1;
+		panel.add(description, GridBagHelper.setConstraints(constraints, 0, 1));
+		panel.add(startTime,   GridBagHelper.setConstraints(constraints, 0, 2));
+		panel.add(endTime,     GridBagHelper.setConstraints(constraints, 0, 3));
+		panel.add(location,    GridBagHelper.setConstraints(constraints, 0, 4));
+		panel.add(save,        GridBagHelper.setConstraints(constraints, 0, 6));
+		panel.add(delete,      GridBagHelper.setConstraints(constraints, 2, 6));
+		panel.add(cancel,      GridBagHelper.setConstraints(constraints, 3, 6));
+		constraints.gridwidth = 2;
+		panel.add(startComp,   GridBagHelper.setConstraints(constraints, 1, 2));
+		panel.add(descComp,    GridBagHelper.setConstraints(constraints, 1, 1));
+		panel.add(endComp,     GridBagHelper.setConstraints(constraints, 1, 3));
+		panel.add(locComp,     GridBagHelper.setConstraints(constraints, 1, 4));
 		
 		constraints.gridwidth = constraints.REMAINDER;
 		constraints.gridheight = constraints.RELATIVE;
+		constraints.fill = constraints.BOTH;
 		panel.add(plPickPanel, GridBagHelper.setConstraints(constraints, 0, 5));
 		
 		
@@ -202,6 +183,11 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				if (model != null) {
 					c.deleteAppointment(model);
 				}
+			}
+		});
+		cancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();				
 			}
 		});
 		panel.setPreferredSize(new Dimension(400, 500));
