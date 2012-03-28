@@ -98,7 +98,7 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 				return false;
 		}
 		return true;
-		
+		/*
 		for (Room r : list) {
 			if (r.getID() == roomID) {
 				return r.isAvailable(dur.getFrom(), dur.getTo());
@@ -106,6 +106,7 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 		}
 		
 		return false;
+		*/
 	}
 	/**
 	 * cowboys in space

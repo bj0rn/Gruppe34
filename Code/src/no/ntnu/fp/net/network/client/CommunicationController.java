@@ -698,11 +698,14 @@ public class CommunicationController {
 	 */
 	public synchronized void updateAppointment(Appointment appointment) {
 		User user = appointment.getOwner();
-		for(User u : shows){
-			if(u.equals(user)){
-				Calendar c = u.getCalendar();
-				c.removeAppointment(appointment);
-				c.addAppointment(appointment);
+		
+		if(shows != null){
+			for(User u : shows){
+				if(u.equals(user)){
+					Calendar c = u.getCalendar();
+					c.removeAppointment(appointment);
+					c.addAppointment(appointment);
+				}
 			}
 		}
 		
