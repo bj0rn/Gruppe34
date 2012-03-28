@@ -222,6 +222,15 @@ public class CommunicationController {
 		return auth;
 	}
 	
+	public void addFullUser(User user) {
+		
+		int index = users.indexOf(user);
+		
+		users.remove(index);
+		users.add(user);
+		
+	}
+	
 	/**
 	 * Retrieves the full {@code List} of {@code User}s once from the server.
 	 * Returns the {@code List}.
