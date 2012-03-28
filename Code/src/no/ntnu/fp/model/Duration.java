@@ -38,10 +38,14 @@ public class Duration implements ContainComparable<Duration>, Serializable {
 		return to;
 	}
 
+	/**
+	 * Compared two durations and returns the difference
+	 * between them as an integer.
+	 */
 	@Override
 	public int compareTo(Duration o) {
 		
-		int startDiff = from.compareTo(o.from);
+		int startDiff = from.compareTo(o.from); 
 		
 		if (startDiff == 0) {
 			 return to.compareTo(o.to);
@@ -49,14 +53,16 @@ public class Duration implements ContainComparable<Duration>, Serializable {
 			return startDiff;
 		}
 	}
-
+	/**
+	 * Checks if a duration is within this duration.
+	 */
 	@Override
-	public boolean contains(Duration o) {
-		
-		boolean isBefore = (to.compareTo(o.from) <= 0);
-		boolean isAfter = (from.compareTo(o.to) >= 0);
+	public boolean contains(Duration dur) {
+		boolean isBefore = (to.compareTo(dur.from) <= 0);
+		boolean isAfter = (from.compareTo(dur.to) >= 0);
 		
 		return !isBefore && !isAfter;
+		
 	}
 	
 	public String toString() {

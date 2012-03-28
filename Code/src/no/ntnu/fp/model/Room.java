@@ -52,7 +52,10 @@ public class Room extends Location implements Serializable{
 	}
 	
 	public void addReservedTime(Date from, Date to) {
-		timeTable.add(new Duration(from, to));
+		if (from != null && to != null)
+			timeTable.add(new Duration(from, to));
+		else
+			return;
 	}
 	
 	/**
