@@ -19,7 +19,7 @@ public class MeetingReplyEditButtonAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new MeetingFrame(user, meeting);
+		new MeetingFrame(meeting);
 	}
 
 }

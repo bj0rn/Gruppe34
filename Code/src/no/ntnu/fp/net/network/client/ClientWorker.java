@@ -77,6 +77,7 @@ public class ClientWorker implements Runnable {
 		}else if(response.getMethod() == Method.MEETING_REPLY){
 			Meeting meeting = (Meeting)response.getObject();
 			communication.updateMeetingState(meeting);
+			System.out.println("Someone changed an meeting status");
 			return true;
 		}else {
 			return false;

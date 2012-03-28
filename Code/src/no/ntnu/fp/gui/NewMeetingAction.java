@@ -18,7 +18,7 @@ public class NewMeetingAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new MeetingFrame(user);
+		new MeetingFrame();
 	}
 	
 }

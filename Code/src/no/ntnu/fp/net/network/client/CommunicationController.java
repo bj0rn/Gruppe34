@@ -276,11 +276,16 @@ public class CommunicationController {
 	}
 	
 	public void addSelectedUser(User user) {
-		shows.add(user);
+		System.out.println("add:" + user.getName());
+		if (!shows.contains(user)) 
+			shows.add(user);
 	}
 	
 	public void removeSelectedUser(User user) {
-		shows.remove(user);
+		System.out.println("remove:" + user.getName());
+		int index = shows.indexOf(user);
+		shows.remove(index);
+		System.out.println(shows.size());
 	}
 	
 	public List<User> getSelectedUsers() {
@@ -547,6 +552,7 @@ public class CommunicationController {
 		try {
 			Request request = new Request(auth, username);
 			request.setMethod(Method.CANCEL_VIEW);
+			send(mySocket, request);
 			int i = 0;
 			while(true){
 				System.out.println("Number of tries: "+i++);
@@ -643,9 +649,12 @@ public class CommunicationController {
 		Meeting meeting = null;
 		
 		if (owner.equals(user)) {
+			System.out.println("my meeting");
 			for (CalendarEntry entry : user.getCalendar()) {
-				
+				System.out.println(entry.getID());
+				System.out.println(updatedMeeting.getID());
 				if (entry.getID() == updatedMeeting.getID()) {
+					System.out.println("found meeting");
 					meeting = (Meeting)entry;
 					
 					continue;
@@ -666,7 +675,9 @@ public class CommunicationController {
 		}
 		
 		if (meeting != null) {
+			
 			for (User user : meeting.getParticipants()) {
+				System.out.println("changing: " + user.getUsername());
 				State state = meeting.getState(user); 
 				State updatedState = updatedMeeting.getState(user); 
 				
@@ -674,6 +685,7 @@ public class CommunicationController {
 					meeting.setState(user, updatedState);
 				}
 			}
+			System.out.println("state changed");
 		}
 		
 	}
