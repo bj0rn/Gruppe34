@@ -293,6 +293,7 @@ public class CommunicationController {
 				Request response = (Request)testQueue.takeFirst();
 				if(response.getMethod() == Method.GET_SUBSCRIBERS_RESPONSE){
 					System.out.println("Yey :) ");
+					shows = (List<User>)response.getObject();
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					System.out.println("Not logged inn");
 				}else{
