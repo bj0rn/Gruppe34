@@ -8,7 +8,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -448,6 +450,39 @@ public class ServerController {
 			sq.printStackTrace();
 		}
 	}
+	
+	
+	public void updateSelectedUsers(Tuple <Socket, Object> data){
+		try {
+			
+		Request request = (Request)data.y;
+		String username = request.getAuth().getUsername();
+		
+		if(connectedClients.containsKey(username)){
+			ArrayList<Tuple <String, String>> list = (ArrayList<Tuple<String, String>>) databaseController.getSubscribers();
+			ArrayList<String> res = new ArrayList<String>();
+			for(Tuple <String, String> t : list){
+				String user = t.x;
+				
+				String views = t.y;
+				if(user.equals(username)){
+					System.out.println("User: "+user);
+					System.out.println("Views: "+views);
+					res.add(views);
+				}
+			}
+			Request response = new Request(null, res);
+			response.setMethod(Method.GET_SUBSCRIBERS_RESPONSE);
+			send(data.x, response);
+		}else {
+			Request response = new Request(null, null);
+			response.setMethod(Method.LOGIN_FAILED);
+			send(data.x, response);
+		}
+		}catch (SQLException sq){
+			sq.printStackTrace();
+		}
+	}
 
 	public void inspectRequest(Tuple<Socket, Object> data) {
 		Class<? extends Object> clazz = data.y.getClass();
@@ -488,6 +523,9 @@ public class ServerController {
 		}else if(requestType == Method.DELETE_APPOINTMENT){
 			System.out.println("Enter delete appointment");
 			deleteAppointment(data);
+		}else if(requestType == Method.GET_SUBSCRIBERS){
+			System.out.println("Get subscribers ");
+			updateSelectedUsers(data);
 		}
 
 	}

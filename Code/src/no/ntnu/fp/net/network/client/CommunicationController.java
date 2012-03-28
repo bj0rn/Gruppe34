@@ -267,6 +267,28 @@ public class CommunicationController {
 		return shows;
 	}
 	
+	public void updateSelectedUsers(){
+		try{
+			Request request = new Request(auth, null);
+			request.setMethod(Method.GET_SUBSCRIBERS);
+			send(mySocket, request);
+			int i = 0;
+			while(true){
+				System.out.println("Number of tries: "+i++);
+				Request response = (Request)testQueue.takeFirst();
+				if(response.getMethod() == Method.GET_SUBSCRIBERS_RESPONSE){
+					System.out.println("Yey :) ");
+				}else if(response.getMethod() == Method.LOGIN_FAILED){
+					System.out.println("Not logged inn");
+				}else{
+					testQueue.putLast((Object)response);
+				}
+			}
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Retrieves the current connected {@code User} from the Server.
 	 * Stores the {@code User} and returns it to the caller
