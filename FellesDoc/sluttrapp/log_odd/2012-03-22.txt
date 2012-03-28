@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-22
+ Aktivitet: prog (dbcontroller)
+ Starttid: 10:00
+ Plan: kode på databaser
+
+Slutttid: 15:30
+ Fremdrift: jobbet med DB, fått saveAppointment til å funke, kan brukes til mal på ganske mye
+ Gjenstående: kode
+

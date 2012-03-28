@@ -1,0 +1,19 @@
+Navn: Odd
+ Dato: 2012-03-14
+ Aktivitet: Brukbarhetstest m/ gr32
+ Starttid: 11:00
+ Plan: gjennomføre brukbarhetstest med gruppe 32
+
+Slutttid: 14:00
+ Fremdrift: Testing ferdig, rapport påbegynt
+ Gjenstående: NA
+
+Starttid: 15:00
+ Aktivitet: Rapporskriving, småtteri
+ Plan: arbeide med brukbarhetstestrapporten
+
+Slutttid: 16:10
+ Fremdrift: sånn ca.
+ Gjenstående: jepp
+
+

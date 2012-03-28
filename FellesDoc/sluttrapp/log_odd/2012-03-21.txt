@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-21
+ Aktivitet: BBHR, prog
+ Starttid: 10:00
+ Plan: kode på databaser
+
+Slutttid: 12:00
+ Fremdrift: ordnet modeller, jobbed med db
+ Gjenstående: kode
+

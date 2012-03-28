@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-23
+ Aktivitet: prog, administrativt
+ Starttid: 10:00
+ Plan: ting!
+
+Slutttid: 16:00
+ Fremdrift: Levert DB2, jobbet med modell, ordnet PlacePickerPanel
+ Gjenstående: derpppp.
+
