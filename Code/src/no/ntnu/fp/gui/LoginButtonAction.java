@@ -21,8 +21,8 @@ public class LoginButtonAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
+		CommunicationController.setHost(frame.getIP());
 		CommunicationController c = CommunicationController.getInstance();
-		//c.setHost(frame.getIP());
 		boolean authenticated = c.authenticate(auth);
 		
 		if (authenticated) {

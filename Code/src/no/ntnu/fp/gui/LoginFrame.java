@@ -75,12 +75,12 @@ public class LoginFrame extends JFrame implements PropertyChangeListener, KeyLis
 		content.add(passwordField);
 		
 		JLabel ipLabel = new JLabel(IP_LABEL);
-		//content.add(ipLabel);
+		content.add(ipLabel);
 		
 		ipField = new JTextField();
 		ipField.setText(DEFAULT_IP);
 		ipField.addKeyListener(this);
-		//content.add(ipField);
+		content.add(ipField);
 		
 		panel.add(content, BorderLayout.CENTER);
 		
