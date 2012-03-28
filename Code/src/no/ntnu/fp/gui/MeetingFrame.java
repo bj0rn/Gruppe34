@@ -75,8 +75,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private JButton cancelButton = new JButton(new CancelAction("Avbryt"));
     private JButton deleteButton = new JButton(new DeleteAction("Slett"));
     
-    private TimePickableFieldListener startListener = new TimePickableFieldListener(startField, this);
-    private TimePickableFieldListener endListener = new TimePickableFieldListener(endField, this);
+    private TimePickableFieldListener startListener;
+    private TimePickableFieldListener endListener;
     
     private Meeting model;
     private ParticipantListModel listModel;
@@ -180,10 +180,14 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         setResizable(false);
         setVisible(true);
        
+        startListener = new TimePickableFieldListener(startField, this);
+        endListener = new TimePickableFieldListener(endField, this);
         startField.addFocusListener(startListener);
         startListener.setDate(model.getStartDate());
         endField.addFocusListener(endListener);
-        endListener.setDate(model.getEndDate());        
+        endListener.setDate(model.getEndDate());   
+        
+        
     }
 	
 	private void addGridBagLabel(JPanel panel, String s, int row, GridBagConstraints c) {

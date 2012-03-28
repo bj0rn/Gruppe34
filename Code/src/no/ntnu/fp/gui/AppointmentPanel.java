@@ -185,6 +185,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				if (model != null) {
 					c.deleteAppointment(model);
 				}
+				c.getUser().getCalendar().removeAppointment(model);
 			}
 		});
 		cancel.addActionListener(new ActionListener() {
@@ -194,11 +195,11 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		});
 		panel.setPreferredSize(new Dimension(400, 500));
 		this.setPreferredSize(new Dimension(400, 500));
+		this.pack();
 		this.setLocationRelativeTo(null); //center a frame
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setVisible(true); //display the frame
 		
-		this.pack();
 		
 	}
 	
