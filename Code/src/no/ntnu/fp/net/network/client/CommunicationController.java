@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -227,7 +228,7 @@ public class CommunicationController {
 		int index = users.indexOf(user);
 		
 		users.remove(index);
-		users.add(user);
+		users.add(index, user);
 		
 	}
 	
@@ -292,6 +293,8 @@ public class CommunicationController {
 	
 
 	public void updateSelectedUsers(){
+		
+		
 		try{
 			Request request = new Request(auth, null);
 			request.setMethod(Method.GET_SUBSCRIBERS);
@@ -302,7 +305,7 @@ public class CommunicationController {
 				Request response = (Request)testQueue.takeFirst();
 				if(response.getMethod() == Method.GET_SUBSCRIBERS_RESPONSE){
 					System.out.println("Yey :) ");
-					shows = (List<User>)response.getObject();
+					shows = Collections.synchronizedList((List<User>)response.getObject());
 					return;
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					System.out.println("Not logged inn");
