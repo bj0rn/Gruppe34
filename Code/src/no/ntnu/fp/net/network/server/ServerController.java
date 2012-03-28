@@ -18,7 +18,9 @@ import java.util.Set;
 
 import org.jdom.adapters.XML4JDOMAdapter;
 
+
 import no.ntnu.fp.storage.db.DatabaseController;
+import no.ntnu.fp.util.Log;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Authenticate;
 import no.ntnu.fp.model.Meeting;
@@ -456,6 +458,7 @@ public class ServerController {
 				Integer id = (Integer) request.getObject();
 				//SO SUE MEE!!!!
 				Meeting meeting = databaseController.getMeeting(id);
+				Log.out(id);
 				databaseController.deleteMeeting(id);
 				// send response ?
 				Request response = new Request(null, id);
