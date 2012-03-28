@@ -121,7 +121,22 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 		for (int i=0; i<24; i++) {
 			g.drawString(TimeLord.formatTime(i), 0, i*cellHeight + 15);
 		}
-		
+	}
+
+	private void paintEvents() {
+		int x, y, width, height;
+		for (CalendarEntryView e : events) {
+			x = hourColWidth + (e.getModel().getDayOfWeek() - 1) * cellWidth;
+			y = (e.getModel().getTimeOfDay() * cellHeight) / 60;
+			width = cellWidth;
+			height = (int) (e.getModel().getDuration() * cellHeight) / 60;
+			System.out.println("X: "+x);
+			System.out.println("Y: "+y);
+			System.out.println("Width: "+width);
+			System.out.println("Height: "+height);
+			
+			e.setBounds(x, y, width, height);
+		}
 	}
 
 	/**

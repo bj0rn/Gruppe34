@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-23
+ Aktivitet: prog (dbcontroller)
+ Starttid: 12:00
+ Plan: kode på databaser
+
+Slutttid: 16:00
+ Fremdrift: Ferdig med saveAppointment/Meeting/Room/Place/User, tester til app/meet/room/place.
+ Gjenstående: derpppp.
+

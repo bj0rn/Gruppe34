@@ -1,0 +1,31 @@
+Navn: Odd
+ Dato: 2012-03-07
+ Aktivitet: Prosjektplan
+ Starttid: 10:00
+ Plan: fortsette arbeidet på prosjektplan
+
+Slutttid: 12:00
+ Fremdrift: Gantt diagram ferdig.
+ Gjenstående: Prosjektplanen.
+
+######
+Navn: Odd
+ Dato: 2012-03-07
+ Aktivitet: Prosjektplan
+ Starttid: 13:00
+ Plan: fortsette arbeidet på prosjektplan
+
+Slutttid: 14:00
+ Fremdrift: Fremdrift.
+ Gjenstående: Prosjektplanen.
+
+######
+Navn: Odd
+ Dato: 2012-03-07
+ Aktivitet: Prosjektplan
+ Starttid: 15:00
+ Plan: fortsette arbeidet på prosjektplan
+
+Slutttid: derp
+ Fremdrift: Prosjektplan klar til levering
+ Gjenstående: 

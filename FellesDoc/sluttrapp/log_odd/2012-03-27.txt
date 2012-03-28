@@ -1,0 +1,10 @@
+Navn: Odd
+ Dato: 2012-03-23
+ Aktivitet: AppointmentPanel, PlacePickerPanel
+ Starttid: 10:30
+ Plan: Programmere.
+
+Slutttid: 19:30
+ Fremdrift: Ordnet mer på PPP, AP
+ Gjenstående: Skrive db-logikk for å sjekke om et møterom er tilgjengelig på en gitt tid
+

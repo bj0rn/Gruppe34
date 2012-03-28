@@ -1,0 +1,9 @@
+Navn: Odd
+ Dato: 2012-03-06
+ Aktivitet: Prosjektplan
+ Starttid: 13:15
+ Plan: fortsette arbeidet på prosjektplan
+
+Slutttid: 15:30
+ Fremdrift: Konvert systemtest til latex og ordnet pdf. Fått gjort desidert lite på prosjektplanen.
+ Gjenstående: Prosjektplanen.

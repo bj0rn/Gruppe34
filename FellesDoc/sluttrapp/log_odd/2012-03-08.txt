@@ -1,0 +1,9 @@
+Navn: Odd
+ Dato: 2012-03-08
+ Aktivitet: DB1
+ Starttid: 13:00
+ Plan: mekke EER
+
+Slutttid: 16:00
+ Fremdrift: greit
+ Gjenstående: EER

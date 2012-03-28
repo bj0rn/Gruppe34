@@ -31,6 +31,14 @@ public class Calendar implements Iterable<CalendarEntry>, Serializable, Property
 		pcs.fireIndexedPropertyChange(ENTRIES_PROPERTY, entries.size()-1, null, meeting);
 	}
 	
+	/**
+	 * Removes a CalenderEntry at the given index
+	 * **/
+	public void removeEntry(int index){
+		entries.remove(index);
+	}
+	
+	
 	public boolean removeMeeting(Meeting meeting){
 		int index = entries.indexOf(meeting);
 		

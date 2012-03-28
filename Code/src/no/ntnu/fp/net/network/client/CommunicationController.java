@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -705,6 +706,46 @@ public class CommunicationController {
 			}
 		}
 		
+		
+	}
+	
+	/**
+	 * Delete helper
+	 * 
+	 * Iterates through all the entries and delete the entry 
+	 * with the given id
+	 * 
+	 * **/
+	private void deleteHelper(Calendar c, int id){
+		for(int i = 0; i < c.getNumEntries(); i++){
+			CalendarEntry e = c.get(i);
+			if(e.getID() == id){
+				c.removeEntry(i);
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Called from clientWorker
+	 * **/
+	public synchronized void deleteEntry(int id){
+		Calendar c = user.getCalendar();
+		deleteHelper(c, id);
+		
+		Iterator <User> it = shows.iterator();
+		if(it.hasNext()){
+			Calendar vc = it.next().getCalendar();
+			deleteHelper(vc, id);
+		}
+		
+	}
+	
+	/**
+	 * Called from clientWorker
+	 * 
+	 * **/
+	public synchronized void deleteAppointment(int id){
 		
 	}
 

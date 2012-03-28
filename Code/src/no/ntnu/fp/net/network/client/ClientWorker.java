@@ -79,6 +79,16 @@ public class ClientWorker implements Runnable {
 			communication.updateMeetingState(meeting);
 			System.out.println("Someone changed an meeting status");
 			return true;
+	
+		}else if(response.getMethod() == Method.DELETE_APPOINTMENT_RESPONSE){
+			//TODO:Handle this
+			System.out.println("SŒ du vil at jeg skal slette en avtale, hmm");
+			communication.deleteEntry((Integer)response.getObject());
+			return true;
+		}else if(response.getMethod() == Method.DELETE_MEETING_RESPONSE){
+			System.out.println("SŒ du vil at jeg skal slette eit m¿te, hmm ");
+			communication.deleteEntry((Integer)response.getObject());
+			return true;
 		}else {
 			return false;
 		}
