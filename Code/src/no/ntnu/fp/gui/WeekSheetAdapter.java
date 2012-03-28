@@ -68,7 +68,7 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 								
 								Meeting m = (Meeting) ce;
 								
-								if (m.getOwner() == CommunicationController.getInstance().getUser()) {
+								if (m.getOwner().equals(CommunicationController.getInstance().getUser())) {
 									new MeetingFrame(m);
 								} else {
 									new MeetingInviteFrame(m);
