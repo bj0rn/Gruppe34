@@ -33,9 +33,6 @@ public class CalendarEntryView extends JTextArea{
 		setFont(new Font("Arial", 0, 9));
 		setText(model.getDescription() +"\nStart: \n" + TimeLord.formatDate(model.getStartDate()) + 
 				"\nEnd: \n" + TimeLord.formatDate(model.getEndDate()));
-		System.out.println(model.getDescription() + "/"+ TimeLord.formatDate(model.getStartDate())
-				+ "/" + TimeLord.formatDate(model.getEndDate()));
-		
 		setLineWrap(true);
 		setMargin(new Insets(PADDING, PADDING, PADDING, PADDING));
 		
