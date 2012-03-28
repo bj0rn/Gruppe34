@@ -45,7 +45,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	private TimePickableFieldListener startListener;
 	private TimePickableFieldListener endListener;
 	
-	//fŒ det ryddig i boksen
+	//fï¿½ det ryddig i boksen
 	protected GridBagLayout grid;
 	protected GridBagConstraints constraints;
 	
@@ -85,7 +85,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		grid = new GridBagLayout();
 		constraints = new GridBagConstraints();
 		
-		panel.setLayout(grid); // gj¿r at man faktisk endrer noe(det synes)
+		panel.setLayout(grid); // gjï¿½r at man faktisk endrer noe(det synes)
 		constraints.gridwidth = constraints.REMAINDER;
 		panel.add(appointment, GridBagHelper.setConstraints(constraints, 0, 0));
 		constraints.gridwidth = 1;
@@ -169,7 +169,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 						model.setOwner(c.getUser());
 //					System.out.println(model.getStartDate());
 //					System.out.println(model.getEndDate());
-					c.saveAppointment(model.shallowCopy());
+					int id = c.saveAppointment(model.shallowCopy());
+					
 				}
 				//close window if successfull.
 			}

@@ -19,7 +19,7 @@ public class MeetingInviteShowButtonAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new MeetingInviteFrame(meeting, user);
+		new MeetingInviteFrame(meeting);
 	}
 
 }

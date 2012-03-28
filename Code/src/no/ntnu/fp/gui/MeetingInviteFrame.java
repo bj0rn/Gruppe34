@@ -38,6 +38,8 @@ import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
 import no.ntnu.fp.model.User;
+import no.ntnu.fp.net.network.client.CommunicationController;
+import no.ntnu.fp.util.Log;
 import no.ntnu.fp.util.StringHelper;
 import no.ntnu.fp.util.TimeLord;
 
@@ -82,7 +84,7 @@ public class MeetingInviteFrame extends JFrame implements PropertyChangeListener
 	private JRadioButton rejectButton;
 
 	
-	public MeetingInviteFrame(Meeting model, User user) {
+	public MeetingInviteFrame(Meeting model) {
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -162,7 +164,7 @@ public class MeetingInviteFrame extends JFrame implements PropertyChangeListener
 
 		JPanel buttons = new JPanel();
 
-		setUser(user);
+		setUser(CommunicationController.getInstance().getUser());
 		setModel(model);
 		
 		okButton = new JButton(OK_BUTTON_LABEL);
@@ -351,7 +353,7 @@ public class MeetingInviteFrame extends JFrame implements PropertyChangeListener
 		model.addParticipant(p4, State.Accepted);
 		model.addParticipant(p5, State.Rejected);
 		
-		MeetingInviteFrame m = new MeetingInviteFrame(model, p2);
+		MeetingInviteFrame m = new MeetingInviteFrame(model);
 		
 		model.setStartDate(new Date(112, 3, 1, 12, 0, 0));
 		model.setEndDate(new Date(112, 3, 1, 13, 0, 0));

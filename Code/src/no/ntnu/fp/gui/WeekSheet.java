@@ -8,12 +8,18 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+
 import no.ntnu.fp.gui.timepicker.DateModel;
+import no.ntnu.fp.model.CalendarEntry;
+import no.ntnu.fp.model.Meeting;
+import no.ntnu.fp.util.Log;
+import no.ntnu.fp.util.TimeLord;
 
 /**
  * Shows a grid representing 7days (cols) and 24 hour (rows) with CalendarEnties
@@ -29,7 +35,7 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 	final Color HOURLABELS_COLOR = Color.LIGHT_GRAY;
 	private ArrayList<JLabel> hours = new ArrayList<JLabel>();
 	
-	public ArrayList<CalendarEntryView> events = new ArrayList<CalendarEntryView>();
+	//public ArrayList<CalendarEntryView> events = new ArrayList<CalendarEntryView>();
 	
 	private WeekSheetAdapter adapter;
 
@@ -39,26 +45,38 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 	private JPanel weekHeader;
 
 	public WeekSheet(WeekSheetAdapter adapter) {
+		
+		cellHeight = 50;
+		cellWidth = 100;
+		hourColWidth = 40;
+		
 		this.adapter = adapter;
-		setBackground(Color.GRAY);
-		addHourLabels();
+		adapter.addPropertyChangeListener(this);
+		setBackground(Color.white);
 		addEvents();
-		setPreferredSize(new Dimension(600, 1500));
+		setPreferredSize(new Dimension(40+(100*7), (24*50)));
+		setLayout(null);
+		updateSheet();
 	}
 	
 	private void addEvents() {
+		
 		for(CalendarEntryView cev: adapter){
-			events.add(cev);
+			cev.setPosition();
 			add(cev);
 		}
 	}
 	
 	public void updateSheet() {
-		events.clear();
-		removeAll();
-		addEvents();
-		addHourLabels();
-		paint(getGraphics());
+		JComponent parent = ((JComponent)getParent());
+		
+		if (parent != null) {
+			Log.out("update");
+			removeAll();
+			addEvents();
+			parent.revalidate();
+			parent.repaint();
+		}
 	}
 	
 	public int getCellHeight() {
@@ -69,7 +87,11 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 		return cellWidth;
 	}
 	
-	private void addHourLabels() {
+	public int getHourColWidth() {
+		return hourColWidth;
+	}
+	
+	/*private void addHourLabels() {
 		JLabel hour;
 		for (int i = 0; i < 24; i++) {
 			hour = new JLabel(i + ":00");
@@ -80,38 +102,26 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 			hours.add(hour);
 			hourColWidth = hour.getWidth() + 2;
 		}
-	}
+	}*/
 
 	public void paint(Graphics g) {
-		cellHeight = getHeight() / 24;
-		cellWidth = (getWidth() - hourColWidth) / 7;
 
+		super.paint(g);
+		
 		paintGrid(g);
-		paintEvents();
-		paintHours();
-
-		super.paintComponents(g);
+		paintHours(g);
+		
+		
+		
+		
 	}
 
-	private void paintHours() {
-		int i = 0;
-		for (JLabel hour : hours) {
-			hour.setBounds(0, i * cellHeight, hour.getPreferredSize().width,
-					hour.getPreferredSize().height);
-			i++;
+	private void paintHours(Graphics g) {
+		
+		for (int i=0; i<24; i++) {
+			g.drawString(TimeLord.formatTime(i), 0, i*cellHeight + 15);
 		}
-	}
-
-	private void paintEvents() {
-		int x, y, width, height;
-		for (CalendarEntryView e : events) {
-			x = hourColWidth + (e.getModel().getDayOfWeek() - 1) * cellWidth;
-			y = (e.getModel().getTimeOfDay() * cellHeight) / 60;
-			width = cellWidth;
-			height = (int) (e.getModel().getDuration() * cellHeight) / 60;
-
-			e.setBounds(x, y, width, height);
-		}
+		
 	}
 
 	/**
@@ -121,16 +131,21 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 	 *            object to paint to
 	 */
 	private void paintGrid(Graphics g) {
+		Log.out("paintGrid");
 		g.setColor(Color.WHITE);
-		g.drawRect(0, 0, getWidth(), getHeight());
+		//g.drawRect(0, 0, getWidth(), getHeight());
 		g.setColor(GRID_COLOR);
 		for (int i = 0; i < 24; i++) {
-			g.drawLine(0, i * cellHeight, getWidth(), i * cellHeight);
+			int x1 = 0;
+			int y1 = i * cellHeight;
+			int x2 = getWidth();
+			int y2 = i * cellHeight;
+			
+			g.drawLine(x1, y1, x2, y2);
 		}
 
 		for (int i = 0; i < 7; i++) {
-			g.drawLine(i * cellWidth + hourColWidth, 0, i * cellWidth
-					+ hourColWidth, getHeight());
+			g.drawLine(i * cellWidth + hourColWidth, 0, i * cellWidth + hourColWidth, getHeight());
 		}
 	}
 

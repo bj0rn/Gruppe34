@@ -183,7 +183,13 @@ public abstract class CalendarEntry implements Serializable {
 	 * @return weekday int corr to {@code Calendar.<DAY>}
 	 */
 	public int getDayOfWeek() {
-		return startDate.getDay();
+		//Calendar c = Calendar.getInstance();
+		
+		//c.set(Calendar.YEAR, startDate.getYear()+1900);
+		//c.set(Calendar.MONTH, startDate.getMonth());
+		//c.set(Calendar.DATE, startDate.)
+		
+		return (startDate.getDay() + 5)%7;
 	}
 
 	/**
