@@ -732,12 +732,12 @@ public class CommunicationController {
 		Calendar c = user.getCalendar();
 		deleteHelper(c, id);
 		
-		Iterator <User> it = shows.iterator();
-		if(it.hasNext()){
-			Calendar vc = it.next().getCalendar();
-			deleteHelper(vc, id);
+		if(shows != null){
+			for(User u: shows){
+				Calendar vc = u.getCalendar();
+				deleteHelper(vc, id);
+			}
 		}
-		
 	}
 	
 	/**
