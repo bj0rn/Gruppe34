@@ -483,8 +483,8 @@ public class ServerController {
 				Integer id = (Integer) request.getObject();
 				databaseController.deleteAppointment(id);
 				Request response = new Request(null, id);
-				send(data.x, id);
-				sendChangesToViewers(username, id, Method.DELETE_MEETING_RESPONSE);
+				send(data.x, response);
+				sendChangesToViewers(username, response, Method.DELETE_MEETING_RESPONSE);
 			} else {
 				// Hmm ?
 			}
