@@ -51,6 +51,8 @@ public class ServerController {
 		connectedClients = clients;
 		this.inQueue = inQueue;
 		views = new HashMap<String, ArrayList<String>>();
+		System.out.println("GetSubscribers");
+		getSubscribers();
 	}
 
 	/**
@@ -404,7 +406,9 @@ public class ServerController {
 			String username = request.getAuth().getUsername();
 			String cancelViewOfUser = (String) request.getObject();
 			if (connectedClients.containsKey(username)) {
+				System.out.println("Remove from cache");
 				views.remove(cancelViewOfUser);
+				System.out.println("Remove from db");
 				databaseController.unsubscribeToCalendar(username,
 						cancelViewOfUser);
 				Request response = new Request(null, null);
