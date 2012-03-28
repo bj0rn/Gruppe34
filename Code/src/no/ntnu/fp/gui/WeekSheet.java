@@ -109,7 +109,11 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 			y = (e.getModel().getTimeOfDay() * cellHeight) / 60;
 			width = cellWidth;
 			height = (int) (e.getModel().getDuration() * cellHeight) / 60;
-
+			System.out.println("X: "+x);
+			System.out.println("Y: "+y);
+			System.out.println("Width: "+width);
+			System.out.println("Height: "+height);
+			
 			e.setBounds(x, y, width, height);
 		}
 	}
