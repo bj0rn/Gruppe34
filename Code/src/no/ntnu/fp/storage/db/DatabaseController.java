@@ -64,7 +64,7 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 			}
 		} else {
 			if (location instanceof Room &&
-					!checkRoomAvailability(locationID,
+					!checkRoomAvailability(locationID, appointment.getID(),
 							new Duration(appointment.getStartDate(),
 									appointment.getEndDate()))) {
 				return -1;
@@ -72,7 +72,8 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 		}
 				if (appointment.getID() == -1) { //need to create a new appointment k			sql = "INSERT INTO CalendarEntry (TimeStart, TimeEnd, TimeCreated"+				", Description, EntryType, LocationID) VALUES ('" +				TimeLord.changeDateToSQL(appointment.getStartDate()) +"', '"+				TimeLord.changeDateToSQL(appointment.getEndDate()) +"', "+				"NOW(), '" + appointment.getDescription() + "', '" +				CalendarEntryType.APPOINTMENT + "', " + 				appointment.getLocation().getID() + ")";			dbc.executeUpdate(sql);			//System.out.println(sql);			String s = "SELECT DISTINCT LAST_INSERT_ID() AS ID FROM CalendarEntry";			ResultSet rs = dbc.query(s);			//System.out.println("herp");		if(rs.first())			return rs.getInt("ID");		}								//ok so the thing exists in the database.		sql = "UPDATE CalendarEntry SET TimeStart='" +				TimeLord.changeDateToSQL(appointment.getStartDate())+"', "+				"TimeEnd='"+TimeLord.changeDateToSQL(appointment.getEndDate())+				"', Description='"+appointment.getDescription()+"', "+				"LocationID="+appointment.getLocation().getID()+				" WHERE CalendarEntryID="+appointment.getID();		dbc.executeUpdate(sql);		System.out.println("derp");		return appointment.getID();	}		/**	 * Saves a {@code Meeting} to the database.	 * A non-existing {@code Meeting} will be created,	 * a existing will be updated	 * 	 * @param user	 * 		  the {@code Meeting} to created/change	 * 	 * @return the {@code Meeting}s database id	 */	public int saveMeeting(Meeting meeting) throws SQLException {				DbConnection dbc = getConnection();		String sql = "";				Location location = meeting.getLocation();		int locationID = location.getID();				if (locationID == -1) {			if (location instanceof Room) {				Room room = (Room)location;								locationID = saveRoom(room);							} else { // (location instanceof Place)				Place place = (Place)location;								locationID = savePlace(place);							}		} else {
 			if (location instanceof Room &&
-					!checkRoomAvailability(locationID, new Duration(
+					!checkRoomAvailability(locationID, meeting.getID(),
+							new Duration(
 							meeting.getStartDate(),
 							meeting.getEndDate()))) {
 				return -1;
@@ -90,33 +91,42 @@ import no.ntnu.fp.model.User;import no.ntnu.fp.net.network.Tuple;import no.ntn
 	}		public void unsubscribeToCalendar(String username, String requestedUserName) throws SQLException{		DbConnection db = getConnection();		String sql = "DELETE FROM Shows WHERE Username = '" + username + "'"				+" AND CalendarID = (SELECT CalendarID FROM Calendar WHERE Username = '" + requestedUserName + "' )";		System.out.println(sql);
 		db.executeUpdate(sql);	}			public List <Tuple <String, String>> getSubscribers() throws SQLException{		DbConnection db = getConnection();		ArrayList<Tuple<String, String>> res =  new ArrayList<Tuple <String, String>>();				String sql = "SELECT Shows.Username, Calendar.Username "				+"FROM Shows " 				+"LEFT JOIN Calendar ON Shows.CalendarID = Calendar.CalendarID";		ResultSet rs = db.query(sql);		rs.beforeFirst();		while(rs.next()){			String user = rs.getString("Shows.Username");			String views = rs.getString("Calendar.Username");			res.add(new Tuple <String, String>(user, views) );		}						return res;	}
 	
-	private boolean checkRoomAvailability(int roomID, Duration dur) throws SQLException {
-		List<Room> list = getListOfRooms();
-		Room room = null;
-		for (Room r : list) {
-			if (r.getID() == roomID) {
-				return r.isAvailable(dur.getFrom(), dur.getTo());
-			}
+	private boolean checkRoomAvailability(int roomID, int ceID, Duration dur) throws SQLException {
+		List<Duration> derp = getRoomSchedule(roomID, ceID);
+		for (Duration d : derp) {
+			if (d.contains(dur))
+				return false;
 		}
-		
-		return false;
-	}	public void getRoomSchedule(Room room) throws SQLException {
+		return true;
+	}
+	/**
+	 * cowboys in space
+	 * @param room
+	 * 	The room which's schedule we're looking for
+	 * @param ceID
+	 * 	the CalendarEntryID to ignore
+	 * @return
+	 * 	
+	 * @throws SQLException
+	 */	private List<Duration> getRoomSchedule(int roomID, int ceID) throws SQLException {
 		DbConnection dbc = getConnection();
+		List<Duration> results = new ArrayList<Duration>();
 		String sql = ""
 				+ "SELECT "
 				+	"CE.TimeStart AS start, "
 				+	"CE.TimeEnd AS end "
 				+ "FROM CalendarEntry AS CE "
-				+	"WHERE CE.LocationID = " + room.getID();
+				+ "WHERE "
+				+ "CE.LocationID = " + roomID
+				+ " AND CE.CalendarEntryID != " + ceID;
 		ResultSet rs = dbc.query(sql);
-		SortedDistinctTimeList res = new SortedDistinctTimeList<Duration>();
 		if (rs.first()) {
 			while(rs.next()) {
-				res.add(new Duration(
+				results.add(new Duration(
 						rs.getTimestamp("start"),
 						rs.getTimestamp("end")
 						));
 			}
 		}
-		//return res;
+		return results;
 	}}
