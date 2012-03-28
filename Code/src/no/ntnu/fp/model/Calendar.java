@@ -36,6 +36,7 @@ public class Calendar implements Iterable<CalendarEntry>, Serializable, Property
 	 * **/
 	public void removeEntry(int index){
 		entries.remove(index);
+		pcs.fireIndexedPropertyChange(ENTRIES_PROPERTY, index, index, null);
 	}
 	
 	

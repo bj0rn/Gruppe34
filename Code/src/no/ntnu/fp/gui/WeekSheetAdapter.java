@@ -33,6 +33,12 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 		this.dateModel = dateModel;
 		this.calendar = calendar;
 		calendar.addPropertyChangeListener(this);
+		
+		CommunicationController c = CommunicationController.getInstance();
+		for (User user : c.getSelectedUsers()) {
+			addCalendar(user.getCalendar());
+		}
+		
 	}
 
 	public void addCalendar(Calendar calendar) {
