@@ -165,7 +165,7 @@ public class ServerController {
 				System.out.println("request From (Value): " + requestFrom);
 				System.out.println("view user (key)" + viewUser);
 			}
-
+			System.out.println("Apply changes");
 			databaseController.subscribeToCalendar(requestFrom, viewUser);
 		}
 	}
