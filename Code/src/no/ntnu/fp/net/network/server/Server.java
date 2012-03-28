@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,13 +36,13 @@ public class Server implements Runnable{
 	private Socket newSockfd;
 	private ServerSocket sockfd;
 	private Map<Object, Socket> mapClient;
-	HashMap<String, Socket> clients;
+	Map<String, Socket> clients;
 	
 	private boolean run = true;
 	//Constructor
 	public Server(){
 		inQueue = new LinkedBlockingDeque<Tuple<Socket, Object>>();
-		clients  = new HashMap<String, Socket>();
+		clients  = new ConcurrentHashMap<String, Socket>();
 	}
 	
 	public void startServer(){

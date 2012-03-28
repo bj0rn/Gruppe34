@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -18,7 +19,7 @@ public class ClientHandler implements Runnable {
 	private Socket mySocket;
 	private Queue<Tuple <Socket, Object>> inQueue;
 	//private DataOutputStream os;
-	private HashMap<String, Socket> clients;
+	private Map<String, Socket> clients;
 	
 	//private DataInputStream is;
 	//private ObjectInputStream ios;
@@ -27,11 +28,10 @@ public class ClientHandler implements Runnable {
 	
 	//Receive messages from the clients
 	//Need some request queue, blocked queue
-	public ClientHandler(Socket socket, Queue<Tuple <Socket, Object>> inQueue, HashMap<String, Socket> clients){
+	public ClientHandler(Socket socket, Queue<Tuple <Socket, Object>> inQueue, Map<String, Socket> clients){
 		this.mySocket = socket;
 		this.inQueue = inQueue;
 		this.clients = clients;
-		//Create new streams
 		}
 	
 	
@@ -54,6 +54,15 @@ public class ClientHandler implements Runnable {
 			} catch (IOException e) {
 				System.out.println("A client closed the connection");
 				//TODO: remove user from auth cache
+				for (Map.Entry<String, Socket> entry : clients.entrySet()) {
+					
+					if (entry.getValue() == mySocket) {
+						clients.remove(entry.getKey());
+						continue;
+					}
+					
+				}
+				
 				running = false;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
