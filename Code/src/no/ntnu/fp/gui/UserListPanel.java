@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -117,7 +118,7 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 	
 	private class OkButtonAction extends AbstractAction {
 
-		private List<User> cachedUsers;
+		private List<User> cachedUsers = new ArrayList<User>();
 		
 		public OkButtonAction() {
 			for (User user : communication.getSelectedUsers()) {
@@ -129,6 +130,7 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 		public void actionPerformed(ActionEvent e) {
 			for (User user : communication.getSelectedUsers()) {
 				if (!cachedUsers.contains(user)) {
+					System.out.println(user.getUsername());
 					User fullUser = communication.getFullUser(user.getUsername());
 					communication.addFullUser(fullUser);
 				}
@@ -137,6 +139,7 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 			for (User user : cachedUsers) {
 				
 				if (!communication.getSelectedUsers().contains(user)) {
+					System.out.println(user.getUsername());
 					communication.cancelView(user.getUsername());
 				}
 			}
@@ -146,7 +149,7 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 	
 	private class CancelButtonAction extends AbstractAction {
 
-		private List<User> cachedUsers;
+		private List<User> cachedUsers = new ArrayList<User>();
 		
 		public CancelButtonAction() {
 			for (User user : communication.getSelectedUsers()) {
