@@ -87,6 +87,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     
     public MeetingFrame(Meeting model) {
 
+    	 startListener = new TimePickableFieldListener(startField, this);
+         endListener = new TimePickableFieldListener(endField, this);
+    	
         setModel(model);
         placePickerPanel.setModel(model);
     	JPanel panel = new JPanel();
@@ -180,8 +183,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         setResizable(false);
         setVisible(true);
        
-        startListener = new TimePickableFieldListener(startField, this);
-        endListener = new TimePickableFieldListener(endField, this);
+       
         startField.addFocusListener(startListener);
         startListener.setDate(model.getStartDate());
         endField.addFocusListener(endListener);
@@ -262,8 +264,10 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         public void actionPerformed(ActionEvent arg0) {
         	CommunicationController c = CommunicationController.getInstance();
         	int id = c.saveMeeting(model.shallowCopy());
-        	model.setID(id);
-        	c.getUser().getCalendar().addMeeting(model);
+        	if (model.getID() == -1) {
+        		model.setID(id);
+        		c.getUser().getCalendar().addMeeting(model);
+        	}
         }
     }
     
