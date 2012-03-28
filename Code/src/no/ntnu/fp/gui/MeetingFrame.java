@@ -81,11 +81,11 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     private Meeting model;
     private ParticipantListModel listModel;
     
-    public MeetingFrame(User user) {    	
-    	this(user, new Meeting());
+    public MeetingFrame() {    	
+    	this(new Meeting());
     }
     
-    public MeetingFrame(User user, Meeting model) {
+    public MeetingFrame(Meeting model) {
 
         setModel(model);
         placePickerPanel.setModel(model);
@@ -167,9 +167,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         buttons.add(deleteButton);
         
         panel.add(buttons, BorderLayout.SOUTH);
-        
 
-        model.setOwner(user);
+        model.setOwner(CommunicationController.getInstance().getUser());
         
         panel.setPreferredSize(new Dimension(500, 700));
         setPreferredSize(new Dimension(500, 700));
@@ -257,10 +256,11 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	System.out.println(model);
         	CommunicationController c = CommunicationController.getInstance();
         	int id = c.saveMeeting(model.shallowCopy());
         	model.setID(id);
+        	System.out.println(model.getID());
+        	c.getUser().getCalendar().addMeeting(model);
         }
     }
     
@@ -424,6 +424,6 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	
     	
     	
-		new MeetingFrame(user, model);
+		new MeetingFrame(model);
     }
 }
