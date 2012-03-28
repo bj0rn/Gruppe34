@@ -170,7 +170,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 //					System.out.println(model.getStartDate());
 //					System.out.println(model.getEndDate());
 					int id = c.saveAppointment(model.shallowCopy());
-					
+					model.setID(id);
+					CommunicationController.getInstance().getUser().getCalendar().addAppointment(model);
 				}
 				//close window if successfull.
 			}

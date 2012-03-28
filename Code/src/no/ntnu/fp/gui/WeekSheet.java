@@ -123,7 +123,7 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 		}
 	}
 
-	private void paintEvents() {
+	/*private void paintEvents() {
 		int x, y, width, height;
 		for (CalendarEntryView e : events) {
 			x = hourColWidth + (e.getModel().getDayOfWeek() - 1) * cellWidth;
@@ -137,7 +137,7 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 			
 			e.setBounds(x, y, width, height);
 		}
-	}
+	}*/
 
 	/**
 	 * Paints a 24x7 grid representing 24 hours and 7 days
