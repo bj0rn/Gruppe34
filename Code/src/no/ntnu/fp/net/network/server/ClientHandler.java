@@ -53,6 +53,7 @@ public class ClientHandler implements Runnable {
 				
 			} catch (IOException e) {
 				System.out.println("A client closed the connection");
+				//TODO: remove user from auth cache
 				running = false;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
