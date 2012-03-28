@@ -56,7 +56,7 @@ public class ServerController {
 	}
 
 	/**
-	 * @author bj0rn Helper method for sending over objects over TCP
+	 * Helper method for sending over objects over TCP
 	 * **/
 	private void send(Socket socket, Object data) {
 		try {
@@ -91,7 +91,7 @@ public class ServerController {
 	}
 
 	/**
-	 * @author bj0rn Authenticate the user by checking the database. Sends a
+	 *         Authenticate the user by checking the database. Sends a
 	 *         login succeded if the login credentials are correct, or login
 	 *         failed otherwise.
 	 * **/
@@ -123,7 +123,7 @@ public class ServerController {
 	}
 
 	/**
-	 * @author bj0rn Get all user from the database. If the user who requested
+	 *         Get all user from the database. If the user who requested
 	 *         the users is authenticated, send the users and a
 	 *         GET_USERS_RESPONSE Flag, otherwise send LOGIN_FAILED Flag
 	 * 
@@ -152,7 +152,11 @@ public class ServerController {
 		}
 
 	}
-
+	
+	/**Whenever a user requests a calendar the owner of the calendar
+	 * is mapped to the user who requested the calendar. 
+	 * **/
+	
 	private void markViewed(String requestFrom, String viewUser)
 			throws SQLException {
 		// a user can view more than on calendar
@@ -172,7 +176,11 @@ public class ServerController {
 		}
 	}
 
-	private void sendChangesToViewers(String username, Object data) {
+	/**
+	 * Sends notfications to the viewers of a calendar whenever
+	 * the owner changes the calendar
+	 * **/
+	private void sendChangesToViewers(String username, Object data, Request.Method method) {
 		if (views.containsKey(username)) {
 			ArrayList<String> list = views.get(username);
 			for (String s : list) {
@@ -180,19 +188,17 @@ public class ServerController {
 					System.out.println("Send changes to: "+s);
 					Socket sockfd = connectedClients.get(s);
 					Request response = new Request(null, data);
-					if (data instanceof Meeting) {
-						response.setMethod(Method.CHANGE_MEETING_NOTFICATION);
-					} else if (data instanceof Appointment) {
-						response.setMethod(Method.CHANGE_APPOINTMENT_NOTIFICATION);
-					}
+					response.setMethod(method);
 					send(sockfd, response);
 				}
 			}
 		}
 	}
-
+	
+	
+	
 	/**
-	 * @author bj0rn Get full user from the database If the user, who requested
+	 * 		   Get full user from the database If the user, who requested
 	 *         the message is authenticated, send the User and a
 	 *         GET_FULL_USERS_RESPONSE message, send a LOGIN_FAILED message
 	 *         otherwise
@@ -251,7 +257,7 @@ public class ServerController {
 				System.out.println("Send data to connected clients");
 
 				// TODO: Does this work
-				sendChangesToViewers(username, meeting);
+				sendChangesToViewers(username, meeting, Method.CHANGE_MEETING_NOTFICATION);
 
 				// also send message to available clients
 				System.out.println("Send data to connected clients");
@@ -299,7 +305,7 @@ public class ServerController {
 				send(data.x, response);
 
 				// TODO: does this work
-				sendChangesToViewers(auth.getUsername(), a);
+				sendChangesToViewers(auth.getUsername(), a, Method.CHANGE_APPOINTMENT_NOTIFICATION);
 
 			} else {
 				// Not authenticated
@@ -313,16 +319,10 @@ public class ServerController {
 		}
 	}
 
-	// public void savePlace(Tuple <Socket, Object> data){
-	// try {
-	// Place place = (Place)data.y;
-	//
-	//
-	//
-	// }catch(SQLException sq){
-	// sq.printStackTrace();
-	// }
-	// }
+	/**
+	 * Helper method for sending meeting reply«s
+	 * Used in dispatchMeetingReply()
+	 * **/
 
 	private void sendMeeting(String user, Meeting meeting){
 		if(connectedClients.containsKey(user)){
@@ -332,6 +332,12 @@ public class ServerController {
 			
 		}
 	}
+	
+	/**
+	 * 
+	 * 
+	 * **/
+	
 	public void dispatchMeetingReply(Tuple<Socket, Object> data) {
 		try {
 			Request request = (Request) data.y;
@@ -376,7 +382,11 @@ public class ServerController {
 		}
 	}
 	
-
+	/**
+	 * Sends a list of rooms to the client who initially made
+	 * the request
+	 * 
+	 * **/
 	public void getListOfRooms(Tuple<Socket, Object> data) {
 		try {
 			Request request = (Request) data.y;
@@ -401,6 +411,12 @@ public class ServerController {
 		}
 	}
 
+	/**
+	 * Cancels the view of a calendar specified by the client who 
+	 * initially made the request. 
+	 * **/
+	
+	
 	public void cancelView(Tuple<Socket, Object> data) {
 		try {
 			Request request = (Request) data.y;
@@ -427,20 +443,38 @@ public class ServerController {
 		}
 	}
 
+	/**
+	 * Delete a meeting from the database. The delete request is
+	 * sent from a client
+	 * 
+	 * */
 	public void deleteMeeting(Tuple<Socket, Object> data) {
 		try {
 			Request request = (Request) data.y;
 			String username = request.getAuth().getUsername();
 			if (connectedClients.containsKey(username)) {
 				Integer id = (Integer) request.getObject();
+				//SO SUE MEE!!!!
+				Meeting meeting = databaseController.getMeeting(id);
 				databaseController.deleteMeeting(id);
 				// send response ?
+				Request response = new Request(null, id);
+				response.setMethod(Method.DELETE_MEETING_RESPONSE);
+				send(data.x, response);
+				Set <User> participants = meeting.getParticipants();
+				sendChangesToViewers(username, data, Method.DELETE_MEETING_RESPONSE);
+				for(User u : participants){
+					if(connectedClients.containsKey(u.getUsername())){
+						send(connectedClients.get(u.getUsername()), response);
+					}
+				}
 			}
 		} catch (SQLException sq) {
 			sq.printStackTrace();
 		}
 	}
 
+	
 	public void deleteAppointment(Tuple<Socket, Object> data) {
 		try {
 			Request request = (Request) data.y;
@@ -448,6 +482,9 @@ public class ServerController {
 			if (connectedClients.containsKey(username)) {
 				Integer id = (Integer) request.getObject();
 				databaseController.deleteAppointment(id);
+				Request response = new Request(null, id);
+				send(data.x, id);
+				sendChangesToViewers(username, data, Method.DELETE_MEETING_RESPONSE);
 			} else {
 				// Hmm ?
 			}
