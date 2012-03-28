@@ -460,7 +460,7 @@ public class ServerController {
 		
 		if(connectedClients.containsKey(username)){
 			ArrayList<Tuple <String, String>> list = (ArrayList<Tuple<String, String>>) databaseController.getSubscribers();
-			ArrayList<String> res = new ArrayList<String>();
+			List<User> res = new ArrayList<User>();
 			for(Tuple <String, String> t : list){
 				String user = t.x;
 				
@@ -468,7 +468,7 @@ public class ServerController {
 				if(user.equals(username)){
 					System.out.println("User: "+user);
 					System.out.println("Views: "+views);
-					res.add(views);
+					res.add(new User(views));
 				}
 			}
 			Request response = new Request(null, res);
