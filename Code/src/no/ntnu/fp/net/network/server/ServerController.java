@@ -177,6 +177,7 @@ public class ServerController {
 			ArrayList<String> list = views.get(username);
 			for (String s : list) {
 				if (connectedClients.containsKey(s)) {
+					System.out.println("Send changes to: "+s);
 					Socket sockfd = connectedClients.get(s);
 					Request response = new Request(null, data);
 					if (data instanceof Meeting) {
