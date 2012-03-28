@@ -87,6 +87,7 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 			User user = (User)listModel.getElementAt(i);
 			if (users.contains(user)) {
 				list.setSelectedIndex(i);
+				
 			}
 		}
 	}
@@ -95,11 +96,12 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 	public void valueChanged(ListSelectionEvent e) {
 		if (!e.getValueIsAdjusting()) { 
 			int index = selectionModel.getAnchorSelectionIndex();
-			
+			User user = (User)listModel.getElementAt(index);
 			if (selectionModel.isSelectedIndex(index)) {
-				communication.addSelectedUser((User)listModel.getElementAt(index));
+				communication.addSelectedUser(user);
 			} else {
-				communication.removeSelectedUser((User)listModel.getElementAt(index));
+				communication.removeSelectedUser(user);
+				System.out.println(user.getName());
 			}
 		}
 	}
@@ -137,12 +139,13 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 			}
 			
 			for (User user : cachedUsers) {
-				
+				System.out.println("user:"+user.getName());
 				if (!communication.getSelectedUsers().contains(user)) {
-					System.out.println(user.getUsername());
+					System.out.println("not:"+user.getName());
 					communication.cancelView(user.getUsername());
 				}
 			}
+			dispose();
 		}
 		
 	}
@@ -159,11 +162,16 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
 			for (User user : communication.getSelectedUsers()) {
+				System.out.println(user.getName());
 				if (!cachedUsers.contains(user)) {
+					System.out.println(user.getName());
 					communication.removeSelectedUser(user);
 				}
 			}
+			dispose();
+			
 		}
 	}
 }
