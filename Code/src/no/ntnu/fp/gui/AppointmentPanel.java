@@ -31,6 +31,7 @@ import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.Room;
 import no.ntnu.fp.net.network.client.CommunicationController;
 import no.ntnu.fp.util.GridBagHelper;
+import no.ntnu.fp.util.Log;
 import no.ntnu.fp.util.TimeLord;
 
 public class AppointmentPanel extends JFrame implements PropertyChangeListener {
@@ -163,15 +164,19 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//button is clicked, run code that will save the model
-				CommunicationController c = CommunicationController.getInstance();
-				if (model != null) {
-					if (model.getOwner() == null) 
-						model.setOwner(c.getUser());
-//					System.out.println(model.getStartDate());
-//					System.out.println(model.getEndDate());
-					int id = c.saveAppointment(model.shallowCopy());
-					model.setID(id);
-					c.getUser().getCalendar().addAppointment(model);
+				if (model.getLocation() != null && model.getDescription() != null && model.getStartDate() != null && model.getEndDate() != null && model.getStartDate().compareTo(model.getEndDate()) < 0) {
+					CommunicationController c = CommunicationController.getInstance();
+					if (model != null) {
+						if (model.getOwner() == null) 
+							model.setOwner(c.getUser());
+	//					System.out.println(model.getStartDate());
+	//					System.out.println(model.getEndDate());
+						int id = c.saveAppointment(model.shallowCopy());
+						model.setID(id);
+						c.getUser().getCalendar().addAppointment(model);
+					}
+				} else {
+					Log.out("missing stuff");
 				}
 				//close window if successfull.
 			}

@@ -2,6 +2,7 @@ package no.ntnu.fp.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -43,6 +44,7 @@ import no.ntnu.fp.model.Place;
 import no.ntnu.fp.model.User;
 import no.ntnu.fp.model.Meeting.State;
 import no.ntnu.fp.net.network.client.CommunicationController;
+import no.ntnu.fp.util.Log;
 import no.ntnu.fp.util.TimeLord;
 
 
@@ -275,12 +277,19 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	CommunicationController c = CommunicationController.getInstance();
-        	int id = c.saveMeeting(model.shallowCopy());
-        	if (model.getID() == -1) {
-        		model.setID(id);
-        		c.getUser().getCalendar().addMeeting(model);
-        	}
+        	
+        	if (model.getLocation() != null && model.getDescription() != null && model.getStartDate() != null && model.getEndDate() != null && model.getStartDate().compareTo(model.getEndDate()) < 0) {
+        	
+	        	CommunicationController c = CommunicationController.getInstance();
+	        	int id = c.saveMeeting(model.shallowCopy());
+	        	if (model.getID() == -1) {
+	        		model.setID(id);
+	        		c.getUser().getCalendar().addMeeting(model);
+	        	}
+	        } else {
+	        	Log.out("missing stuff");
+	        }
+        	
         }
     }
     
