@@ -1,0 +1,393 @@
+Navn: 		Håvard
+Dato: 		05.03.2012
+Aktivitet: 	Prosjektplan
+Starttid: 	12:00
+Plan: 		Starte på prosjektplan.
+
+Slutttid: 	16:00
+Fremdrift: 	Alle aktiviteter er identifisert, slutttid, starttid og avhengiheter er på plass.
+Gjenstående: 	Lage ganttdiagram og kostnadsoversikt.
+
+######################
+
+Navn: 		Håvard
+Dato: 		06.03.2012
+Aktivitet: 	Prosjektplan
+Starttid: 	12:00
+Plan: 		Formalisere ressurser for Prosjektplan
+
+Slutttid: 	13:20
+Fremdrift: 	Nesten ferdig med ressurser
+Gjenstående: 	Lage ganttdiagram og kostnadsoversikt. Fullføre ressurser.
+
+######################
+
+Navn: 		Håvard
+Dato: 		07.03.2012
+Aktivitet: 	Prosjektplan
+Starttid: 	10:10
+Plan: 		Fellesmøte 
+
+Slutttid: 	12:00
+Fremdrift: 	Ferdig med ressurser og aktiviteter for prosjektplan
+Gjenstående: 	Ferdigstille prosjektplan med alt innhold
+
+######################
+
+Navn: 		Håvard
+Dato: 		07.03.2012
+Aktivitet: 	
+Starttid: 	12:00
+Plan: 		Database forelesning
+
+Slutttid: 	13:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		07.03.2012
+Aktivitet: 	Prosjektplan
+Starttid: 	13:00
+Plan: 		Fullføre prosjektplan
+
+Slutttid: 	13:30
+Fremdrift: 	Prosjektplan fullført.
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		07.03.2012
+Aktivitet: 	Konseptuell databasemodell identifisering av data
+Starttid: 	13:30
+Plan: 		Oppdatere databasemodell
+
+Slutttid: 	15:00
+Fremdrift: 	Databasemodell er jobbet med.
+Gjenstående: 	Sende databasemodell på kommentarrunde til alle i prosjektet.
+
+######################
+
+Navn: 		Håvard
+Dato: 		07.03.2012
+Aktivitet: 	KTN1 fase 1 testplan
+Starttid: 	15:00
+Plan: 		Fullføre prosjektplan
+
+Slutttid: 	16:00
+Fremdrift: 	Testplan for ktn er påstartet.
+Gjenstående: 	Fullføre ktn testplan.
+
+######################
+
+Navn: 		Håvard
+Dato: 		08.03.2012
+Aktivitet: 	
+Starttid: 	
+Plan: 		
+
+Slutttid: 	
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		08.03.2012
+Aktivitet: 	
+Starttid: 	
+Plan: 		
+
+Slutttid: 	
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		09.03.2012
+Aktivitet: 	Papirprototype
+Starttid: 	10:30
+Plan: 		Kommentere prototype
+
+Slutttid: 	11:30
+Fremdrift: 	Prototype kommentert
+Gjenstående: 	Oppdatere etter kommentarer
+
+######################
+
+Navn: 		Håvard
+Dato: 		09.03.2012
+Aktivitet: 	KTN1 fase 1 TestPlan
+Starttid: 	11:30
+Plan: 		Jobbe med TestPlan
+
+Slutttid: 	14:00
+Fremdrift: 	TestPlan nesten ferdig
+Gjenstående: 	Fullføre testplan
+
+######################
+
+Navn: 		Håvard
+Dato: 		10.03.2012
+Aktivitet: 	Papirprototype
+Starttid: 	11:20
+Plan: 		Kommentar
+
+Slutttid: 	11:30
+Fremdrift: 	Kommenteret
+Gjenstående: 	Rette opp etter kommentarer
+
+######################
+
+Navn: 		Håvard
+Dato: 		10.03.2012
+Aktivitet: 	Konseptuell datamodelering
+Starttid: 	11:30
+Plan: 		Oppdatere EER modell
+
+Slutttid: 	12:00
+Fremdrift: 	Model oppdatert
+Gjenstående: 	Kommentarer fra gruppen
+
+######################
+
+Navn: 		Håvard
+Dato: 		10.03.2012
+Aktivitet: 	KTN1 fase 1 testplan
+Starttid: 	12:00
+Plan: 		Ferdigstille testplan
+
+Slutttid: 	12:10
+Fremdrift: 	TestPlan ferdigstillt
+Gjenstående: 	LaTeX versjon
+
+######################
+
+Navn: 		Håvard
+Dato: 		12.03.2012
+Aktivitet: 	Papirprototype 
+Starttid: 	10:00
+Plan: 		Pilottest
+
+Slutttid: 	12:00
+Fremdrift: 	Pilottest utført
+Gjenstående: 	na
+
+######################
+
+Navn: 		Håvard
+Dato: 		12.03.2012
+Aktivitet: 	Overordnet system design diagrammer
+Starttid: 	12:00
+Plan: 		Lage UML klassediagram
+
+Slutttid: 	16:00
+Fremdrift: 	Klassediagram på vei
+Gjenstående: 	Fullføre klassediagram
+
+######################
+
+Navn: 		Håvard
+Dato: 		13.03.2012
+Aktivitet: 	Overordnet system design diagrammer
+Starttid: 	09:00
+Plan: 		Fullføre klassediagram
+
+Slutttid: 	16:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		14.03.2012
+Aktivitet: 	Gruppetest
+Starttid: 	10:00
+Plan: 		Gjennomføre gruppetest
+
+Slutttid: 	13:00
+Fremdrift: 	Gruppetest gjennomført
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		14.03.2012
+Aktivitet: 	Overordnet system design diagrammer
+Starttid: 	13:00
+Plan: 		
+
+Slutttid: 	16:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		15.03.2012
+Aktivitet: 	Overordnet system design diagrammer
+Starttid: 	09:00
+Plan: 		
+
+Slutttid: 	16:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		16.03.2012
+Aktivitet: 	Overordnet system design diagrammer
+Starttid: 	08:00
+Plan: 		
+
+Slutttid: 	16:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		19.03.2012
+Aktivitet: 	Implementasjon database
+Starttid: 	08:00
+Plan: 		
+
+Slutttid: 	12:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		19.03.2012
+Aktivitet: 	Implementasjon GUI
+Starttid: 	12:00
+Plan: 		
+
+Slutttid: 	15:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		20.03.2012
+Aktivitet: 	Implementasjon GUI
+Starttid: 	12:00
+Plan: 		
+
+Slutttid: 	16:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		20.03.2012
+Aktivitet: 	Implementasjon kommunikasjon
+Starttid: 	16:00
+Plan: 		
+
+Slutttid: 	17:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		21.03.2012
+Aktivitet: 	Implementasjon GUI
+Starttid: 	08:00
+Plan: 		
+
+Slutttid: 	16:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		22.03.2012
+Aktivitet: 	Implementasjon GUI
+Starttid: 	10:30
+Plan: 		
+
+Slutttid: 	16:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		23.03.2012
+Aktivitet: 	Implementasjon GUI
+Starttid: 	08:00
+Plan: 		
+
+Slutttid: 	14:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		26.03.2012
+Aktivitet: 	Implementasjon
+Starttid: 	08:00
+Plan: 		
+
+Slutttid: 	20:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		27.03.2012
+Aktivitet: 	08:00
+Starttid: 	Implementasjon
+Plan: 		
+
+Slutttid: 	20:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		28.03.2012
+Aktivitet: 	Implementasjon
+Starttid: 	08:00
+Plan: 		
+
+Slutttid: 	23:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		29.03.2012
+Aktivitet: 	Implementasjon/Godkjenning
+Starttid: 	08:30
+Plan: 		
+
+Slutttid: 	11:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		29.03.2012
+Aktivitet: 	Sluttrapport
+Starttid: 	11:00
+Plan: 		
+
+Slutttid: 	?
+Fremdrift: 	
+Gjenstående: 	
