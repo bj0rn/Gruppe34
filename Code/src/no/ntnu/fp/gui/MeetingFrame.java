@@ -154,8 +154,8 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         addGridBagComponent(center, scrollPanel, 4, 0, c, 2);
         addGridBagComponent(center, addParticipantButton, 5, 0, c, 2);
         
-        //addGridBagLabel(center, PLACE_LABEL, 6, c);
-        //addGridBagComponent(center, locationField, 6, c);
+        addGridBagLabel(center, PLACE_LABEL, 6, c);
+        addGridBagComponent(center, locationField, 6, c);
         
         addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
         placePickerPanel.addPropertyChangeListener(this);
@@ -187,10 +187,18 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         startField.addFocusListener(startListener);
         startListener.setDate(model.getStartDate());
         endField.addFocusListener(endListener);
-        endListener.setDate(model.getEndDate());   
+        endListener.setDate(model.getEndDate());
+        
+        locationField.addKeyListener(new KeyAdapter() {
+        	public void keyReleased(KeyEvent e) {
+        		getModel().setLocation(new Place(-1,
+        				locationField.getText()));
+        	}
+		});
         
         
     }
+    
 	
 	private void addGridBagLabel(JPanel panel, String s, int row, GridBagConstraints c) {
 		c.gridx = 0;
