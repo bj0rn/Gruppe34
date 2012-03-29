@@ -157,7 +157,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         addGridBagLabel(center, PLACE_LABEL, 6, c);
         addGridBagComponent(center, locationField, 6, c);
         
-        addGridBagComponent(center, placePickerPanel, 6, 0, c, 2);
+        addGridBagComponent(center, placePickerPanel, 7, 0, c, 2);
         placePickerPanel.addPropertyChangeListener(this);
         
         
@@ -352,7 +352,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	Location location = model.getLocation(); 
     	if (location != null) {
     		//placePickerPanel.setLocation(location);
-    		locationField.setText(model.getLocation().toString());
+    		locationField.setText(location.getDescription());
     	} else {
     		locationField.setText("");
     	}
@@ -372,7 +372,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         } else if (name == Meeting.PARTICIPANTS_PROPERTY) {
         	
         } else if (name == CalendarEntry.LOC_PROPERTY) {
-        	locationField.setText(model.getLocation().toString());
+        	locationField.setText(model.getLocation().getDescription());
         } else if (name == PlacePickerPanel.LOCATIONC_PROPERTY) {
         	Location l = (Location)event.getNewValue();
         	model.setLocation(l);
