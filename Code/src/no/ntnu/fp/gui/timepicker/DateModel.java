@@ -134,6 +134,16 @@ public class DateModel {
 	public void removePropertyChangeListener(PropertyChangeListener l) {
 		pcs.removePropertyChangeListener(l);
 	}
+	
+	public int getDayOfWeek() {
+		Calendar c = Calendar.getInstance();
+		
+		c.set(Calendar.YEAR, getYear());
+		c.set(Calendar.MONTH, getMonth());
+		c.set(Calendar.DATE, getDay());
+		
+		return c.get(Calendar.DAY_OF_WEEK);		
+	}
 
 	public int getWeek() {
 		Calendar cal = Calendar.getInstance();
@@ -146,6 +156,7 @@ public class DateModel {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(getDate());
 		cal.set(Calendar.WEEK_OF_YEAR, week);
+		cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
 		date = cal.getTime();
 		pcs.firePropertyChange(WEEK_PROPERTY, old ,week);
 	}

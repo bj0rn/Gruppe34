@@ -146,7 +146,6 @@ public class WeekSheet extends JPanel implements PropertyChangeListener{
 	 *            object to paint to
 	 */
 	private void paintGrid(Graphics g) {
-		Log.out("paintGrid");
 		g.setColor(Color.WHITE);
 		//g.drawRect(0, 0, getWidth(), getHeight());
 		g.setColor(GRID_COLOR);

@@ -122,9 +122,9 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		});
 		
 		startComp.addFocusListener(startListener);
-		startListener.setDate(model.getStartDate());
+		//startListener.setDate(model.getStartDate());
 		endComp.addFocusListener(endListener);
-		endListener.setDate(model.getEndDate());
+		//endListener.setDate(model.getEndDate());
 		endComp.getDocument().addDocumentListener(new DocumentListener() {
 			public void removeUpdate(DocumentEvent arg0) {}
 			public void changedUpdate(DocumentEvent arg0){}
@@ -208,8 +208,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	    	   descComp.setText(model.getDescription());
 	    	   startComp.setText(TimeLord.formatDate(model.getStartDate()));
 	    	   endComp.setText(TimeLord.formatDate(model.getEndDate()));
-	    	   endListener.setDate(model.getEndDate());
-	    	   startListener.setDate(model.getStartDate());
+	    	   //endListener.setDate(model.getEndDate());
+	    	   //startListener.setDate(model.getStartDate());
 	    	   locComp.setText(
 	    			   (model.getLocation() != null) ? 
 	    			    model.getLocation().getID()+"" :
