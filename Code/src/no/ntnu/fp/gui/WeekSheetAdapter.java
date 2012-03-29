@@ -117,49 +117,27 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 		for (Calendar calendar : calendars) {
 			
 			for(CalendarEntry calendarEntry: calendar){
-				if((calendarEntry.getYear()+1900) == dateModel.getYear() && calendarEntry.getWeek() == dateModel.getWeek()){
+				
+				boolean inYear = (calendarEntry.getYear()+1900) == dateModel.getYear();
+				boolean isSunday = calendarEntry.getDayOfWeek() == 5;
+				boolean inWeek = isSunday ? calendarEntry.getWeek() == dateModel.getWeek()+1 : calendarEntry.getWeek() == dateModel.getWeek();
+				
+				if(inYear && inWeek){
 					if (calendarEntry instanceof Meeting) {
 						Meeting m = (Meeting) calendarEntry;
 						
 						User user = CommunicationController.getInstance().getUser();
 						
-						if (m.getOwner().equals(user) || m.getState(user) == State.Accepted) {
+						//if (m.getOwner().equals(user) || m.getState(user) == State.Accepted) {
 						
 							CalendarEntryView view = new CalendarEntryView(calendarEntry);
 							view.setBackground(Color.BLUE);
-							/*view.addMouseListener(new MouseAdapter() {
-								
-								@Override
-								public void mouseClicked(MouseEvent e) {
-									// TODO Auto-generated method stub
-									super.mouseClicked(e);
-									CalendarEntry ce = ((CalendarEntryView)e.getSource()).getModel();
-									
-									Meeting m = (Meeting) ce;
-									
-									if (m.getOwner().equals(CommunicationController.getInstance().getUser())) {
-										new MeetingFrame(m);
-									} else {
-										new MeetingInviteFrame(m);
-									}
-								}
-							});*/
 							entries.add(view);
-						}
+						//}
 					}
 					if (calendarEntry instanceof Appointment) {
 						CalendarEntryView view = new CalendarEntryView(calendarEntry);
 						view.setBackground(Color.BLUE);
-						/*view.addMouseListener(new MouseAdapter() {
-							
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								// TODO Auto-generated method stub
-								super.mouseClicked(e);
-								CalendarEntry ce = ((CalendarEntryView)e.getSource()).getModel();
-								new AppointmentPanel((Appointment) ce);
-							}
-						});*/
 						entries.add(view);
 					}
 				}

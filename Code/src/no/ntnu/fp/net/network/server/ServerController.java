@@ -322,7 +322,7 @@ public class ServerController {
 	}
 
 	/**
-	 * Helper method for sending meeting reply«s
+	 * Helper method for sending meeting replyï¿½s
 	 * Used in dispatchMeetingReply()
 	 * **/
 
@@ -465,7 +465,7 @@ public class ServerController {
 				response.setMethod(Method.DELETE_MEETING_RESPONSE);
 				send(data.x, response);
 				Set <User> participants = meeting.getParticipants();
-				sendChangesToViewers(username, data, Method.DELETE_MEETING_RESPONSE);
+				sendChangesToViewers(username, id, Method.DELETE_MEETING_RESPONSE);
 				for(User u : participants){
 					if(connectedClients.containsKey(u.getUsername())){
 						send(connectedClients.get(u.getUsername()), response);
@@ -487,7 +487,7 @@ public class ServerController {
 				databaseController.deleteAppointment(id);
 				Request response = new Request(null, id);
 				send(data.x, response);
-				sendChangesToViewers(username, response, Method.DELETE_MEETING_RESPONSE);
+				sendChangesToViewers(username, id, Method.DELETE_MEETING_RESPONSE);
 			} else {
 				// Hmm ?
 			}
