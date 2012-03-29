@@ -56,7 +56,18 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 		List<CalendarEntryView> entries = new ArrayList<CalendarEntryView>();
 		
 		for(CalendarEntry calendarEntry: calendar){
-			if((calendarEntry.getYear()+1900) == dateModel.getYear() && calendarEntry.getWeek() == dateModel.getWeek()){
+			
+			Log.out(dateModel.getWeek());
+			Log.out(calendarEntry.getDayOfWeek());
+			
+			boolean inYear = (calendarEntry.getYear()+1900) == dateModel.getYear();
+			boolean isSunday = calendarEntry.getDayOfWeek() == 5;
+			boolean inWeek = isSunday ? calendarEntry.getWeek() == dateModel.getWeek()+1 : calendarEntry.getWeek() == dateModel.getWeek();
+			Log.out(dateModel.getWeek(), dateModel.getYear());
+			Log.out(calendarEntry.getDescription(),calendarEntry.getWeek(),calendarEntry.getYear(), inYear, inWeek);
+			
+			
+			if(inYear && inWeek){
 				if (calendarEntry instanceof Meeting) {
 					Meeting m = (Meeting) calendarEntry;
 					

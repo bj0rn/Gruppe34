@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -41,10 +42,10 @@ public class CalendarPanel extends JPanel implements PropertyChangeListener {
 		this.user = user;
 		this.dateModel = date;
 
-		weekNavigator = new Navigator("Week",date.getWeek(), 1, 52);
+		weekNavigator = new WeekNavigator(dateModel); // = new Navigator("Week",date.getWeek(), 1, 52);
 		weekNavigator.addPropertyChangeListener(this);
 
-		yearNavigator = new Navigator("Year",date.getYear(), 0, Integer.MAX_VALUE);
+		yearNavigator = new YearNavigator(dateModel); //= new Navigator("Year",date.getYear(), 0, Integer.MAX_VALUE);
 		yearNavigator.addPropertyChangeListener(this);
 
 		JPanel top = new JPanel();
