@@ -53,8 +53,9 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 		listModel = new UserListModel();
 		list = new JList(listModel);
 		list.setCellRenderer(new UserListCellRenderer());
-		selectionModel = new UserListSelectionModel();
-		list.setSelectionModel(selectionModel);
+		selectionModel = list.getSelectionModel();
+		//selectionModel = new UserListSelectionModel();
+		//list.setSelectionModel(selectionModel);
 		selectionModel.addListSelectionListener(this);
 		panel.add(list, BorderLayout.CENTER);
 		initSelection();
@@ -106,7 +107,7 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 		}
 	}
 
-	private class UserListSelectionModel extends DefaultListSelectionModel {
+	/*private class UserListSelectionModel extends DefaultListSelectionModel {
 		
 		@Override
 		public void setSelectionInterval(int index0, int index1) {
@@ -116,7 +117,7 @@ public class UserListPanel extends JFrame implements ListSelectionListener {
 				super.addSelectionInterval(index0, index1);
 			}
 		}
-	}
+	}*/
 	
 	private class OkButtonAction extends AbstractAction {
 
