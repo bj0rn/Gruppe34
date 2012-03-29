@@ -9,9 +9,12 @@ import java.lang.reflect.Type;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.lang.reflect.ParameterizedType;
@@ -311,7 +314,12 @@ public class CommunicationController {
 				Request response = (Request)testQueue.takeFirst();
 				if(response.getMethod() == Method.GET_SUBSCRIBERS_RESPONSE){
 					System.out.println("Yey :) ");
-					shows = Collections.synchronizedList((List<User>)response.getObject());
+					List<User> users = (List<User>)response.getObject();
+					shows = new ArrayList<User>();
+					for(User user : users) {
+						shows.add(getFullUser(user.getUsername()));
+					}
+					
 					return;
 				}else if(response.getMethod() == Method.LOGIN_FAILED){
 					System.out.println("Not logged inn");
@@ -351,9 +359,12 @@ public class CommunicationController {
 		return user;
 	}
 	
-	public User getFullUser(String user){
+	public User getFullUser(String username){
+		
+		getListOfUsers();
+		
 		try {
-			Request request = new Request(auth, user);
+			Request request = new Request(auth, username);
 			request.setMethod(Request.Method.GET_FULL_USER);
 			send(mySocket, request);
 			int i = 0;
@@ -361,7 +372,11 @@ public class CommunicationController {
 				System.out.println("Number of tries: "+i++);
 				Request response = (Request)testQueue.takeFirst();
 				if(response.getMethod() == Request.Method.GET_FULL_USER_RESPONSE){
-					return (User)response.getObject();
+					
+					
+					User user = (User)response.getObject();
+					//cleanRefences(user);
+					return user;
 				}
 				else if(response.getMethod() == Request.Method.LOGIN_FAILED){
 					return null;
@@ -378,6 +393,65 @@ public class CommunicationController {
 		return null;
 	}
 	
+	private Map<String, User> mapOfUsers() {
+		Map<String, User> mapOfUsers = new HashMap<String, User>();
+		
+		for(User user : users) {
+			mapOfUsers.put(user.getUsername(), user);
+		}
+		
+		return mapOfUsers;
+	}
+	
+	/*
+	 * 
+	 */
+	private void cleanRefences(User fullUser) {
+		
+		Map<String, User> mapOfUsers = mapOfUsers();
+		
+		Calendar calendar = fullUser.getCalendar();
+		
+		for (CalendarEntry entry : calendar) {
+			if (entry instanceof Meeting) {
+				Meeting meeting = (Meeting)entry;
+				cleanReferencesOnMeeting(meeting, mapOfUsers);
+			}
+			
+		}
+		
+		
+	}
+	
+	private void cleanReferencesOnMeeting(Meeting meeting, Map<String, User> mapOfUsers) {
+		
+		Set<Map.Entry<User, State>> participants = meeting.getParticipantsMap().entrySet();
+		
+		/*Set<User> keySet = meeting.getParticipantsMap().keySet();
+		
+		for (User user : keySet) {
+			String username = user.getUsername();
+			
+			User fullUser = mapOfUsers.get(username)
+			
+		}*/
+		
+		meeting.removeAllParticipants();
+		
+		for(Entry<User, State> entry : participants) {
+			
+			String username = entry.getKey().getUsername();
+			User user = mapOfUsers.get(username);
+			State state = entry.getValue();
+			
+			meeting.addParticipant(user, state);
+		}
+		
+		
+	}
+
+
+
 	/**
 	 * Returns the current connected {@code User}
 	 * 

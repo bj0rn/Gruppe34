@@ -42,7 +42,6 @@ public class CalendarEntryView extends JTextArea{
 	}
 	
 	public void paint(Graphics g) {
-		Log.out("paint");
 		super.paint(g);
 	}
 	
@@ -56,15 +55,10 @@ public class CalendarEntryView extends JTextArea{
 		int dayOfWeek = model.getDayOfWeek();
 		int duration = model.getDuration();
 			
-		Log.out(TimeLord.formatDate(model.getStartDate()));
-		Log.out(dayOfWeek);
-		
-		int x = hourColWidth + (dayOfWeek * cellWidth);
+		int x = hourColWidth + (dayOfWeek * cellWidth) + cellWidth;
 		int y = (int)((timeOfDay/60.0) * cellHeight);
 		int width = cellWidth;
 		int height  = (int)(cellHeight * ((double)duration /60.0) );
-		
-		Log.out(x, y, width, height);
 		
 		setBounds(x, y, width, height);
 	}

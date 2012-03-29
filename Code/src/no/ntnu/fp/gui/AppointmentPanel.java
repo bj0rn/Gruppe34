@@ -122,9 +122,9 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		});
 		
 		startComp.addFocusListener(startListener);
-		startListener.setDate(model.getStartDate());
+		//startListener.setDate(model.getStartDate());
 		endComp.addFocusListener(endListener);
-		endListener.setDate(model.getEndDate());
+		//endListener.setDate(model.getEndDate());
 		endComp.getDocument().addDocumentListener(new DocumentListener() {
 			public void removeUpdate(DocumentEvent arg0) {}
 			public void changedUpdate(DocumentEvent arg0){}
@@ -171,7 +171,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 //					System.out.println(model.getEndDate());
 					int id = c.saveAppointment(model.shallowCopy());
 					model.setID(id);
-					CommunicationController.getInstance().getUser().getCalendar().addAppointment(model);
+					c.getUser().getCalendar().addAppointment(model);
 				}
 				//close window if successfull.
 			}
@@ -185,6 +185,7 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 				if (model != null) {
 					c.deleteAppointment(model);
 				}
+				c.getUser().getCalendar().removeAppointment(model);
 			}
 		});
 		cancel.addActionListener(new ActionListener() {
@@ -194,11 +195,11 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 		});
 		panel.setPreferredSize(new Dimension(400, 500));
 		this.setPreferredSize(new Dimension(400, 500));
+		this.pack();
 		this.setLocationRelativeTo(null); //center a frame
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setVisible(true); //display the frame
 		
-		this.pack();
 		
 	}
 	
@@ -207,8 +208,8 @@ public class AppointmentPanel extends JFrame implements PropertyChangeListener {
 	    	   descComp.setText(model.getDescription());
 	    	   startComp.setText(TimeLord.formatDate(model.getStartDate()));
 	    	   endComp.setText(TimeLord.formatDate(model.getEndDate()));
-	    	   endListener.setDate(model.getEndDate());
-	    	   startListener.setDate(model.getStartDate());
+	    	   //endListener.setDate(model.getEndDate());
+	    	   //startListener.setDate(model.getStartDate());
 	    	   locComp.setText(
 	    			   (model.getLocation() != null) ? 
 	    			    model.getLocation().getID()+"" :

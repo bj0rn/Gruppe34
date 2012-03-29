@@ -47,6 +47,10 @@ public class Meeting extends CalendarEntry implements Serializable {
 		super(id);
 	}
 	
+	public Map<User, State> getParticipantsMap() {
+		return participants;
+	}
+	
 	public Meeting(String description){
 		super(description);
 	}

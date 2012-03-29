@@ -1,5 +1,6 @@
 package no.ntnu.fp.gui;
 
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -32,6 +33,12 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 		this.dateModel = dateModel;
 		this.calendar = calendar;
 		calendar.addPropertyChangeListener(this);
+		
+		CommunicationController c = CommunicationController.getInstance();
+		for (User user : c.getSelectedUsers()) {
+			addCalendar(user.getCalendar());
+		}
+		
 	}
 
 	public void addCalendar(Calendar calendar) {
@@ -49,7 +56,18 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 		List<CalendarEntryView> entries = new ArrayList<CalendarEntryView>();
 		
 		for(CalendarEntry calendarEntry: calendar){
-			if((calendarEntry.getYear()+1900) == dateModel.getYear() && calendarEntry.getWeek() == dateModel.getWeek()){
+			
+			Log.out(dateModel.getWeek());
+			Log.out(calendarEntry.getDayOfWeek());
+			
+			boolean inYear = (calendarEntry.getYear()+1900) == dateModel.getYear();
+			boolean isSunday = calendarEntry.getDayOfWeek() == 5;
+			boolean inWeek = isSunday ? calendarEntry.getWeek() == dateModel.getWeek()+1 : calendarEntry.getWeek() == dateModel.getWeek();
+			Log.out(dateModel.getWeek(), dateModel.getYear());
+			Log.out(calendarEntry.getDescription(),calendarEntry.getWeek(),calendarEntry.getYear(), inYear, inWeek);
+			
+			
+			if(inYear && inWeek){
 				if (calendarEntry instanceof Meeting) {
 					Meeting m = (Meeting) calendarEntry;
 					
@@ -68,7 +86,7 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 								
 								Meeting m = (Meeting) ce;
 								
-								if (m.getOwner() == CommunicationController.getInstance().getUser()) {
+								if (m.getOwner().equals(CommunicationController.getInstance().getUser())) {
 									new MeetingFrame(m);
 								} else {
 									new MeetingInviteFrame(m);
@@ -95,29 +113,60 @@ public class WeekSheetAdapter implements Iterable<CalendarEntryView>, PropertyCh
 			}
 		}
 		
-		/*for(Calendar calendar: calendars){
+		
+		for (Calendar calendar : calendars) {
+			
 			for(CalendarEntry calendarEntry: calendar){
-					if((calendarEntry.getYear()+1900) == dateModel.getYear() && calendarEntry.getWeek() == dateModel.getWeek()){
+				if((calendarEntry.getYear()+1900) == dateModel.getYear() && calendarEntry.getWeek() == dateModel.getWeek()){
+					if (calendarEntry instanceof Meeting) {
+						Meeting m = (Meeting) calendarEntry;
+						
+						User user = CommunicationController.getInstance().getUser();
+						
+						if (m.getOwner().equals(user) || m.getState(user) == State.Accepted) {
+						
+							CalendarEntryView view = new CalendarEntryView(calendarEntry);
+							view.setBackground(Color.BLUE);
+							/*view.addMouseListener(new MouseAdapter() {
+								
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									// TODO Auto-generated method stub
+									super.mouseClicked(e);
+									CalendarEntry ce = ((CalendarEntryView)e.getSource()).getModel();
+									
+									Meeting m = (Meeting) ce;
+									
+									if (m.getOwner().equals(CommunicationController.getInstance().getUser())) {
+										new MeetingFrame(m);
+									} else {
+										new MeetingInviteFrame(m);
+									}
+								}
+							});*/
+							entries.add(view);
+						}
+					}
+					if (calendarEntry instanceof Appointment) {
 						CalendarEntryView view = new CalendarEntryView(calendarEntry);
-						view.addMouseListener(new MouseAdapter() {
+						view.setBackground(Color.BLUE);
+						/*view.addMouseListener(new MouseAdapter() {
 							
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								// TODO Auto-generated method stub
 								super.mouseClicked(e);
 								CalendarEntry ce = ((CalendarEntryView)e.getSource()).getModel();
-								if (ce instanceof Meeting) {
-									new MeetingFrame((Meeting) ce);
-								}
-								if (ce instanceof Appointment) {
-									new AppointmentPanel((Appointment) ce);
-								}
+								new AppointmentPanel((Appointment) ce);
 							}
-						});
+						});*/
 						entries.add(view);
 					}
 				}
-			}*/
+			}
+		}
+		
+		
 		return entries;
 	}
 
