@@ -87,11 +87,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     
     public MeetingFrame(Meeting model) {
 
-    	 startListener = new TimePickableFieldListener(startField, this);
-         endListener = new TimePickableFieldListener(endField, this);
-    	
-        setModel(model);
-        placePickerPanel.setModel(model);
+        
     	JPanel panel = new JPanel();
     	
     	panel.setLayout(new BorderLayout());
@@ -121,31 +117,14 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         addGridBagComponent(center, description, 0, c);
         
         addGridBagLabel(center, START_LABEL, 1, c);
-        startField.getDocument().addDocumentListener(new DocumentListener() {
-			
-        	public void changedUpdate(DocumentEvent e) {}
-			public void removeUpdate(DocumentEvent e) {}
-			public void insertUpdate(DocumentEvent e) {
-				System.out.println(startField.getText());
-				if (getModel() != null) {
-					getModel().setStartDate(TimeLord.parseDate(startField.getText()));
-				}
-			}
-		});
+       
         addGridBagComponent(center, startField, 1, c);
+        startListener = new TimePickableFieldListener(startField, this);
         
         addGridBagLabel(center, END_LABEL, 2, c);
-        endField.getDocument().addDocumentListener(new DocumentListener() {
-        	
-        	public void changedUpdate(DocumentEvent e) {}
-        	public void removeUpdate(DocumentEvent e) {}
-			public void insertUpdate(DocumentEvent e) {
-				if (getModel() != null) {
-					getModel().setEndDate(TimeLord.parseDate(endField.getText()));
-				}
-			}
-        });
+        
         addGridBagComponent(center, endField, 2, c);
+        endListener = new TimePickableFieldListener(endField, this);
         
         addGridBagComponent(center, new JLabel(PARTICIPANT_LABEL), 3, 0, c, 2);
         JScrollPane scrollPanel = new JScrollPane(participantList);
@@ -163,6 +142,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         
         panel.add(center, BorderLayout.CENTER);
                 
+        setModel(model);
+        placePickerPanel.setModel(model);
+        
         JPanel buttons = new JPanel();
         
         buttons.add(saveButton);
@@ -185,8 +167,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
        
        
         startField.addFocusListener(startListener);
-        startListener.setDate(model.getStartDate());
+        //startListener.setDate(model.getStartDate());
         endField.addFocusListener(endListener);
+        //endListener.setDate(model.getEndDate());   
         endListener.setDate(model.getEndDate());
         
         locationField.addKeyListener(new KeyAdapter() {
@@ -196,7 +179,29 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         	}
 		});
         
+        startField.getDocument().addDocumentListener(new DocumentListener() {
+			
+        	public void changedUpdate(DocumentEvent e) {}
+			public void removeUpdate(DocumentEvent e) {}
+			public void insertUpdate(DocumentEvent e) {
+				if (getModel() != null) {
+					getModel().setStartDate(TimeLord.parseDate(startField.getText()));
+				}
+			}
+		});
         
+		 endField.getDocument().addDocumentListener(new DocumentListener() {
+		 	
+		 	public void changedUpdate(DocumentEvent e) {}
+		 	public void removeUpdate(DocumentEvent e) {}
+				public void insertUpdate(DocumentEvent e) {
+					if (getModel() != null) {
+						getModel().setEndDate(TimeLord.parseDate(endField.getText()));
+					}
+				}
+		 });
+ 
+		 model.setStartDate(new Date());
     }
     
 	
@@ -341,10 +346,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 	public void updatePanel() {
     	description.setText(model.getDescription());
     	startField.setText(TimeLord.formatDate(model.getStartDate()));
-    	startListener.setDate(model.getStartDate());
+    	//startListener.setDate(model.getStartDate());
     	endField.setText(TimeLord.formatDate(model.getEndDate()));
-    	endListener.setDate(model.getEndDate());
-    	//participantList.setListData(model.getParticipants());
+    	//endListener.setDate(model.getEndDate());
     	updateLocation();
     }
     
@@ -366,9 +370,9 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
         if (name == CalendarEntry.DESC_PROPERTY) {
         	description.setText(model.getDescription());
         } else if (name == CalendarEntry.START_PROPERTY) {
-        	startListener.setDate(model.getStartDate());
+        	//startListener.setDate(model.getStartDate());
         } else if (name == CalendarEntry.END_PROPERTY) {
-        	endListener.setDate(model.getEndDate());
+        	//endListener.setDate(model.getEndDate());
         } else if (name == Meeting.PARTICIPANTS_PROPERTY) {
         	
         } else if (name == CalendarEntry.LOC_PROPERTY) {
@@ -390,13 +394,13 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 			panel.add(new JLabel(participant.getName()));
 			
 			String status = "";
-		//	if (model != null) {
+			if (model != null) {
 				switch(model.getState(participant)) {
 					case Accepted: status = MEETING_ACCEPTED; break;
 					case Rejected: status = MEETING_REJECTED; break;
 					case Pending: status = MEETING_PENDING; break;
 				}
-			//}
+			}
 			
 			panel.add(new JLabel(status));
 			JButton button = new JButton("Fjern");
@@ -407,7 +411,7 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
 		}
 	}
     
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
     	
     	User user = new User("havard");
 		user.setName("Håvard Wormdal Høiby");
@@ -440,5 +444,5 @@ public class MeetingFrame extends JFrame implements PropertyChangeListener {
     	
     	
 		new MeetingFrame(model);
-    }
+    }*/
 }
