@@ -113,9 +113,11 @@ public class ConnectionImpl extends AbstractConnection {
     	}
     	
 		if(packetRecv.getFlag() == Flag.SYN_ACK){
-			sendAck(packetRecv, true);
+			sendAck(packetRecv, false);
 			this.state = State.ESTABLISHED;
 		}
+		
+		System.out.println("connected");
     	
     }
 
@@ -128,7 +130,8 @@ public class ConnectionImpl extends AbstractConnection {
     public Connection accept() throws IOException, SocketTimeoutException {
         KtnDatagram packetRecv = null;
         //Need to bind port, but for now; use static
-        while((packetRecv = receivePacket(true)) != null) {
+        while(packetRecv == null) {
+        	packetRecv = receivePacket(true);
         	
         	if (packetRecv != null && isValid(packetRecv)) {
         	
@@ -140,6 +143,7 @@ public class ConnectionImpl extends AbstractConnection {
 	        		state = State.SYN_RCVD;
 	        		sendAck(packetRecv, true);
 	        		
+	        		packetRecv = null;
 	        		while(packetRecv == null) {
 	        			packetRecv = receiveAck();
 	        			
@@ -156,7 +160,7 @@ public class ConnectionImpl extends AbstractConnection {
         	}
     	}
         
-        
+        System.out.println("connected");
         
     	return this;
     }
@@ -204,13 +208,19 @@ public class ConnectionImpl extends AbstractConnection {
     	KtnDatagram packetRecv = null;
     	
     	while(packetRecv == null) {
+    		System.out.println("Receiving");
+    		
     		packetRecv = receivePacket(false);
     	
     		if (packetRecv == null) {
-    		
+    	
+    			
+    			
     			packetRecv = receivePacket(true);
     	
     			if (packetRecv != null && packetRecv.getFlag() == Flag.FIN) {
+    				
+    				System.out.println("### Closing");
     				
     				state = State.CLOSE_WAIT;
     				
@@ -223,6 +233,9 @@ public class ConnectionImpl extends AbstractConnection {
     			}
     			
     		} else {
+    			
+    			System.out.println("### Received external");
+    			
     			// Motta data.
     		}
     		//Again, this implementation sucks
