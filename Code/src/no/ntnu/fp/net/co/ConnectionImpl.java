@@ -238,13 +238,21 @@ public class ConnectionImpl extends AbstractConnection {
         		} catch (ClException e) {
         			e.printStackTrace();
         		}
-        		
+        		try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
         		packetRecv = receiveAck();
         	}
         	
         	state = State.FIN_WAIT_2;
         	
-        	packetRecv = receivePacket(true);
+        	packetRecv = null;
+        	while (packetRecv == null) {
+        		packetRecv = receivePacket(true);
+        	}
+        	
         	sendAck(packetRecv, false);
         	state = State.TIME_WAIT;
         	
