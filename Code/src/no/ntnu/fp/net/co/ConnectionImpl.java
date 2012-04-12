@@ -215,8 +215,8 @@ public class ConnectionImpl extends AbstractConnection {
     	
     	}
     	sendAck(packetRecv, false);
-    	
-    	return null;
+    	state = State.CLOSE_WAIT;
+    	throw new EOFException();
     }
 
     /**
@@ -228,7 +228,7 @@ public class ConnectionImpl extends AbstractConnection {
         
     	KtnDatagram packetSend = constructInternalPacket(Flag.FIN);
     	KtnDatagram packetRecv = null;
-    	
+    	System.out.println("#Syssing state: "+ state.toString());
     	if (state == State.ESTABLISHED) {
     		while (packetRecv == null){  
         		try {
@@ -255,8 +255,9 @@ public class ConnectionImpl extends AbstractConnection {
 			}
         	
     	} else if (state == State.CLOSE_WAIT) {
-    		
-    		while (packetRecv == null){  
+    	System.out.println("FORRRRRR.");	
+    		while (packetRecv == null){
+    			System.out.println("ETTTERRR");
         		try {
         			simplySendPacket(packetSend);
         			state = State.LAST_ACK;
@@ -270,9 +271,6 @@ public class ConnectionImpl extends AbstractConnection {
     	}   		
     	
     	state = State.CLOSED;
-    	
-    	System.out.println("Ignore close for now");
-    	
     }
 
     /**
