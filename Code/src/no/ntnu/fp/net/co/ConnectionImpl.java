@@ -93,19 +93,12 @@ public class ConnectionImpl extends AbstractConnection {
     	KtnDatagram packetSent = constructInternalPacket(Flag.SYN);
     	KtnDatagram packetRecv = null;
     	
-    	
-    	
     	packetSent.setDest_port(this.remotePort);
     	packetSent.setDest_addr(this.remoteAddress);
-    	System.out.println("Debugging information");
-    	System.out.println("Sequence number: " + nextSequenceNo);
-    	System.out.println("Try sending: ");
-    	
     		
     	while(packetRecv == null) {
 			try {
 				simplySendPacket(packetSent);
-				System.out.println("Packet is sent");
 				this.state = State.SYN_SENT;
 			} catch (ClException e) {
 				e.printStackTrace();
@@ -115,19 +108,9 @@ public class ConnectionImpl extends AbstractConnection {
     	}
     	
 		if(packetRecv.getFlag() == Flag.SYN_ACK){
-			//this.state = State.
-			System.out.println("SYS_ACK message is received");
-			packetSent = constructInternalPacket(Flag.ACK);
-			packetSent.setDest_addr(packetRecv.getSrc_addr());
-			packetSent.setDest_port(packetRecv.getSrc_port());
-			sendAck(packetSent, false);
+			sendAck(packetRecv, true);
 			this.state = State.ESTABLISHED;
-			System.out.println("Connection is established");
 		}
-    	
-    	System.out.println("What to do ?");
-    	
-    	
     	
     }
 
@@ -138,42 +121,28 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
-        KtnDatagram packetRecv;
-        KtnDatagram packetSend;
+        KtnDatagram packetRecv = null;
         //Need to bind port, but for now; use static
         if((packetRecv = receivePacket(true)) != null) {
         	
         	remoteAddress = packetRecv.getSrc_addr();
         	remotePort = packetRecv.getSrc_port();
         	
-        	System.out.println(packetRecv.getFlag());
     		if(packetRecv.getFlag() == Flag.SYN){
-        		System.out.println("Got the flag!!!");
-        		//Changing the state to SYN_RECV
+    			
         		state = State.SYN_RCVD;
-        		//Sending syn ack
-        		
         		sendAck(packetRecv, true);
         		
-        		System.out.println("SYS ACK sent");
-        		//Block: Wait for response
-        		System.out.println("Block: Receive Ack");
-        		
-        		//There is a receiveAck function Use that instead
-        		
-        		
-        		packetRecv = receivePacket(true);
+        		while(packetRecv == null) {
+        			packetRecv = receiveAck();
+        		}
+
         		if(packetRecv.getFlag() == Flag.ACK){
-        			System.out.println("Got ACK! Connection is established");
         			this.state = State.ESTABLISHED;
         		}
-        		
     		}
-    		
     	}
     	return this;
-        
-        
     }
 
     /**
