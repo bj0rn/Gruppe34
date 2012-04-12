@@ -217,12 +217,14 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-       
-    	packet.getChecksum();
+    	System.out.println("checking packet for validity...");
+    	long calc = packet.calculateChecksum();
+    	long chk = packet.getChecksum();
+    	System.out.println("packet checksum"+ chk);
+    	System.out.println("calculated checksum" + calc);
+    	boolean res = (calc == chk);
+    	System.out.println("And their equality is..." + res + "!");
     	
-    	packet.calculateChecksum();
-    	
-    	
-        return true;
+        return res;
     }
 }
