@@ -306,10 +306,11 @@ public class ConnectionImpl extends AbstractConnection {
     	System.out.println("checking packet for validity...");
     	long calc = packet.calculateChecksum();
     	long chk = packet.getChecksum();
-    	System.out.println("packet checksum: "+ chk);
-    	System.out.println("calculated checksum: " + calc);
+    	System.out.println("packet checksum"+ chk);
+    	System.out.println("calculated checksum" + calc);
     	boolean res = (calc == chk);
     	System.out.println("And their equality is..." + res + "!");
+    	
         return res;
     }
 }
