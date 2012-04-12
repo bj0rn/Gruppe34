@@ -179,19 +179,13 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void send(String msg) throws ConnectException, IOException {
         KtnDatagram packetSend = constructDataPacket(msg);
-        KtnDatagram packetRecv;
-        //Set some error checking ? 
         
-        
-        //This is very basic: send one packet and wait for ACK
-        //This implementation should be improved
-        
-        
-        //This function will block
-        packetRecv = sendDataPacketWithRetransmit(packetSend);
-        if(packetRecv.getFlag() == Flag.ACK){
-        	System.out.println("Got ACK send");
-        	return;
+        while(true) {
+	        KtnDatagram packetRecv = sendDataPacketWithRetransmit(packetSend);
+	        
+	        if (isValid(packetRecv) && packetRecv.getSeq_nr() == packetSend.getSeq_nr()) {
+	        	break;
+	        }
         }
     }
 
@@ -207,16 +201,32 @@ public class ConnectionImpl extends AbstractConnection {
         
     	KtnDatagram packetRecv = null;
     	
+    	boolean internal = false;
+    	
     	while(packetRecv == null) {
-    		System.out.println("Receiving");
-    		    		
+    		
     		packetRecv = receivePacket(true);
-    	
-    	
+    		
+    		if (packetRecv != null) {
+    			internal = true;
+    		} else {
+    			packetRecv = receivePacket(false);
+    			if (isValid(packetRecv)) {
+        			sendAck(packetRecv, false);
+    			} else {
+    				packetRecv = null;
+    			}
+    		}
+    		
     	}
-    	sendAck(packetRecv, false);
-    	state = State.CLOSE_WAIT;
-    	throw new EOFException();
+    	
+    	if (internal) {
+    		sendAck(packetRecv, false);
+    		state = State.CLOSE_WAIT;
+    		throw new EOFException();
+    	} else {
+   			return packetRecv.getPayload().toString();
+    	}
     }
 
     /**
