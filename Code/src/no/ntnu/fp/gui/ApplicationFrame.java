@@ -46,6 +46,7 @@ public class ApplicationFrame extends JFrame {
 		
 		//testSetUser();
 		setModel(c.getClientFullUser());
+		setTitle(getModel().getName());
 		
 		JPanel panel = new JPanel();
 		

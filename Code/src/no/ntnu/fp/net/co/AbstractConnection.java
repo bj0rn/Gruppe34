@@ -290,7 +290,7 @@ public abstract class AbstractConnection implements Connection {
     
         do {
             try {
-                new ClSocket().send(ackToSend);
+            	new ClSocket().send(ackToSend);
                 sent = true;
             }
             catch (ClException e) {

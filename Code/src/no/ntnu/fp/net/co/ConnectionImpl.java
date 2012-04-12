@@ -3,6 +3,7 @@
  */
 package no.ntnu.fp.net.co;
 
+import java.awt.image.CropImageFilter;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -14,8 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.sound.sampled.ReverbType;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.cl.ClException;
@@ -32,7 +31,7 @@ import no.ntnu.fp.net.cl.KtnDatagram.Flag;
  * of the functionality, leaving message passing and error handling to this
  * implementation.
  * 
- * @author Sebjørn Birkeland and Stein Jakob Nordbø
+ * @author Sebjï¿½rn Birkeland and Stein Jakob Nordbï¿½
  * @see no.ntnu.fp.net.co.Connection
  * @see no.ntnu.fp.net.cl.ClSocket
  */
@@ -88,26 +87,33 @@ public class ConnectionImpl extends AbstractConnection {
     public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
     SocketTimeoutException {
     	
-    	KtnDatagram packetSent = constructInternalPacket(Flag.FIN);
-    	KtnDatagram packetRecv;
+    	this.remoteAddress = remoteAddress.getHostAddress();
+    	this.remotePort = remotePort;
     	
-    	packetSent.
+    	KtnDatagram packetSent = constructInternalPacket(Flag.SYN);
+    	KtnDatagram packetRecv = null;
     	
-    	packetSent.setDest_port(remotePort);
-    	packetSent.setDest_addr(remoteAddress.getHostAddress());
-    	packetSent.setFlag(Flag.FIN);
+    	
+    	
+    	packetSent.setDest_port(this.remotePort);
+    	packetSent.setDest_addr(this.remoteAddress);
     	System.out.println("Debugging information");
     	System.out.println("Sequence number: " + nextSequenceNo);
     	System.out.println("Try sending: ");
     	
     		
-		//Will wait for an response (Ack)
-		System.out.println("Packet is sent");
-		this.state = State.SYN_SENT;
-		
-		//Need to send the packet, but how ? 
-		
-		//packetRecv = sendAck(packetToAck, synAck);
+    	while(packetRecv == null) {
+			try {
+				simplySendPacket(packetSent);
+				System.out.println("Packet is sent");
+				this.state = State.SYN_SENT;
+			} catch (ClException e) {
+				e.printStackTrace();
+			}
+			
+			packetRecv = receiveAck();
+    	}
+    	
 		if(packetRecv.getFlag() == Flag.SYN_ACK){
 			//this.state = State.
 			System.out.println("SYS_ACK message is received");
@@ -135,16 +141,20 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram packetRecv;
         KtnDatagram packetSend;
         //Need to bind port, but for now; use static
-        if((packetRecv = receivePacket(true)) != null){
-    		if(packetRecv.getFlag() == Flag.FIN){
+        if((packetRecv = receivePacket(true)) != null) {
+        	
+        	remoteAddress = packetRecv.getSrc_addr();
+        	remotePort = packetRecv.getSrc_port();
+        	
+        	System.out.println(packetRecv.getFlag());
+    		if(packetRecv.getFlag() == Flag.SYN){
         		System.out.println("Got the flag!!!");
         		//Changing the state to SYN_RECV
         		state = State.SYN_RCVD;
-        		//Sending syn ack 
-        		packetSend = constructInternalPacket(Flag.SYN_ACK);
-        		packetSend.setDest_addr(packetRecv.getSrc_addr());
-        		packetSend.setDest_port(packetRecv.getSrc_port());
-        		sendAck(packetSend, true);
+        		//Sending syn ack
+        		
+        		sendAck(packetRecv, true);
+        		
         		System.out.println("SYS ACK sent");
         		//Block: Wait for response
         		System.out.println("Block: Receive Ack");
@@ -238,7 +248,12 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-        System.out.println("Ignore is valid for now");
+       
+    	packet.getChecksum();
+    	
+    	packet.calculateChecksum();
+    	
+    	
         return true;
     }
 }

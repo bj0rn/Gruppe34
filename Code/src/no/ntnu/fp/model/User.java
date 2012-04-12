@@ -124,22 +124,22 @@ public class User extends Model implements Serializable, Comparable, PropertyCha
 		setPhoneNumber(Integer.parseInt(phoneNumber));
 	}
 	
-	public void setPhoneNumber(int phoneNumber){
+	public void setPhoneNumber(int phoneNumber) {
 		int oldValue = this.phoneNumber;
 		this.phoneNumber = phoneNumber;
 		pcs.firePropertyChange(PNUMBER_PROPERT, oldValue, phoneNumber);
 	}
-	public int getPhoneNumber(){
+	public int getPhoneNumber() {
 		return phoneNumber;
 	}
 	
-	public void setEmail(String email){
+	public void setEmail(String email) {
 		String oldValue = this.email;
 		this.email = email;
 		pcs.firePropertyChange(EMAIL_PROPERT, oldValue, email);
 	}
 	
-	public String getEmail(){
+	public String getEmail() {
 		return email;
 	}
 

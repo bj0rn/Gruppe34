@@ -41,7 +41,6 @@ public class TestCoServer {
     Connection conn;
     try {
       conn = server.accept();
-
       try {
 	while (true) {
 	  String msg = conn.receive();
@@ -51,7 +50,7 @@ public class TestCoServer {
       } catch (EOFException e){
 	Log.writeToLog("Got close request (EOFException), closing.",
 		       "TestServer");
-	conn.close();
+	//conn.close();
       }
 
       System.out.println("SERVER TEST FINISHED");
