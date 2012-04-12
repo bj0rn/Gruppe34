@@ -209,45 +209,13 @@ public class ConnectionImpl extends AbstractConnection {
     	
     	while(packetRecv == null) {
     		System.out.println("Receiving");
-    		
-    		packetRecv = receivePacket(false);
+    		    		
+    		packetRecv = receivePacket(true);
     	
-    		if (packetRecv == null) {
-    	
-    			
-    			
-    			packetRecv = receivePacket(true);
-    	
-    			if (packetRecv != null && packetRecv.getFlag() == Flag.FIN) {
-    				
-    				System.out.println("### Closing");
-    				
-    				state = State.CLOSE_WAIT;
-    				
-    				sendAck(packetRecv, false);
-    				
-    				throw new EOFException();
-    				
-    				//close();
-    				
-    			}
-    			
-    		} else {
-    			
-    			System.out.println("### Received external");
-    			
-    			// Motta data.
-    		}
-    		//Again, this implementation sucks
-    		//Remember to handle retransmissions (This is not handled now)
-    		//Handle checksum as well
-    		/*KtnDatagram packetRecv;
-	        KtnDatagram packetSend;
-	        packetRecv = receivePacket(false);
-	        sendAck(packetRecv, false);
-	        return packetRecv.getPayload().toString();*/
     	
     	}
+    	sendAck(packetRecv, false);
+    	
     	return null;
     }
 
