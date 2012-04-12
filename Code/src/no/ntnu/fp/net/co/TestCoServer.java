@@ -39,25 +39,29 @@ public class TestCoServer {
     Connection server = new ConnectionImpl(5555);
     // each new connection lives in its own instance
     Connection conn;
-    try {
-      conn = server.accept();
-      try {
-	while (true) {
-	  String msg = conn.receive();
-	  Log.writeToLog("Message got through to server: " + msg,
-			 "TestServer");
-	}
-      } catch (EOFException e){
-	Log.writeToLog("Got close request (EOFException), closing.",
-		       "TestServer");
-	//conn.close();
-      }
-
-      System.out.println("SERVER TEST FINISHED");
-      Log.writeToLog("TEST SERVER FINISHED","TestServer");
+    while(true) {
+	    try {
+	      conn = server.accept();
+	      try {
+		while (true) {
+		  String msg = conn.receive();
+		  Log.writeToLog("Message got through to server: " + msg,
+				 "TestServer");
+		}
+	      } catch (EOFException e){
+		Log.writeToLog("Got close request (EOFException), closing.",
+			       "TestServer");
+		conn.close();
+		break;
+	      }
+	
+	      
+	    }
+	    catch (IOException e){
+	      e.printStackTrace();
+	    }
     }
-    catch (IOException e){
-      e.printStackTrace();
-    }
+    System.out.println("SERVER TEST FINISHED");
+    Log.writeToLog("TEST SERVER FINISHED","TestServer");
   }
 }

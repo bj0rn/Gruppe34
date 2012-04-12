@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.spec.OAEPParameterSpec;
 import javax.sound.sampled.ReverbType;
 
 import no.ntnu.fp.net.admin.Log;
@@ -105,6 +106,10 @@ public class ConnectionImpl extends AbstractConnection {
 			}
 			
 			packetRecv = receiveAck();
+			
+			if (packetRecv != null && !isValid(packetRecv)) {
+				packetRecv = null;
+			}
     	}
     	
 		if(packetRecv.getFlag() == Flag.SYN_ACK){
@@ -123,25 +128,36 @@ public class ConnectionImpl extends AbstractConnection {
     public Connection accept() throws IOException, SocketTimeoutException {
         KtnDatagram packetRecv = null;
         //Need to bind port, but for now; use static
-        if((packetRecv = receivePacket(true)) != null) {
+        while((packetRecv = receivePacket(true)) != null) {
         	
-        	remoteAddress = packetRecv.getSrc_addr();
-        	remotePort = packetRecv.getSrc_port();
+        	if (packetRecv != null && isValid(packetRecv)) {
         	
-    		if(packetRecv.getFlag() == Flag.SYN){
-    			
-        		state = State.SYN_RCVD;
-        		sendAck(packetRecv, true);
-        		
-        		while(packetRecv == null) {
-        			packetRecv = receiveAck();
-        		}
-
-        		if(packetRecv.getFlag() == Flag.ACK){
-        			this.state = State.ESTABLISHED;
-        		}
-    		}
+	        	remoteAddress = packetRecv.getSrc_addr();
+	        	remotePort = packetRecv.getSrc_port();
+	        	
+	    		if(packetRecv.getFlag() == Flag.SYN){
+	    			
+	        		state = State.SYN_RCVD;
+	        		sendAck(packetRecv, true);
+	        		
+	        		while(packetRecv == null) {
+	        			packetRecv = receiveAck();
+	        			
+	        			if (packetRecv != null && !isValid(packetRecv)) {
+	        				packetRecv = null;
+	        			}
+	        		}
+	
+	        		if(packetRecv.getFlag() == Flag.ACK){
+	        			this.state = State.ESTABLISHED;
+	        			break;
+	        		}
+	    		}
+        	}
     	}
+        
+        
+        
     	return this;
     }
 
@@ -185,14 +201,41 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public String receive() throws ConnectException, IOException {
         
-    	//Again, this implementation sucks
-    	//Remember to handle retransmissions (This is not handled now)
-    	//Handle checksum as well
-    	KtnDatagram packetRecv;
-        KtnDatagram packetSend;
-        packetRecv = receivePacket(false);
-        sendAck(packetRecv, false);
-        return packetRecv.getPayload().toString();
+    	KtnDatagram packetRecv = null;
+    	
+    	while(packetRecv == null) {
+    		packetRecv = receivePacket(false);
+    	
+    		if (packetRecv == null) {
+    		
+    			packetRecv = receivePacket(true);
+    	
+    			if (packetRecv != null && packetRecv.getFlag() == Flag.FIN) {
+    				
+    				state = State.CLOSE_WAIT;
+    				
+    				sendAck(packetRecv, false);
+    				
+    				throw new EOFException();
+    				
+    				//close();
+    				
+    			}
+    			
+    		} else {
+    			// Motta data.
+    		}
+    		//Again, this implementation sucks
+    		//Remember to handle retransmissions (This is not handled now)
+    		//Handle checksum as well
+    		/*KtnDatagram packetRecv;
+	        KtnDatagram packetSend;
+	        packetRecv = receivePacket(false);
+	        sendAck(packetRecv, false);
+	        return packetRecv.getPayload().toString();*/
+    	
+    	}
+    	return null;
     }
 
     /**
@@ -201,8 +244,51 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#close()
      */
     public void close() throws IOException {
-        //4 way handshake
+        
+    	KtnDatagram packetSend = constructInternalPacket(Flag.FIN);
+    	KtnDatagram packetRecv = null;
     	
+    	if (state == State.ESTABLISHED) {
+    		while (packetRecv == null){  
+        		try {
+        			simplySendPacket(packetSend);
+        			state = State.FIN_WAIT_1;
+    			
+        		} catch (ClException e) {
+        			e.printStackTrace();
+        		}
+        		
+        		packetRecv = receiveAck();
+        	}
+        	
+        	state = State.FIN_WAIT_2;
+        	
+        	packetRecv = receivePacket(true);
+        	sendAck(packetRecv, false);
+        	state = State.TIME_WAIT;
+        	
+        	try {
+				Thread.sleep(30000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        	
+    	} else if (state == State.CLOSE_WAIT) {
+    		
+    		while (packetRecv == null){  
+        		try {
+        			simplySendPacket(packetSend);
+        			state = State.LAST_ACK;
+    			
+        		} catch (ClException e) {
+        			e.printStackTrace();
+        		}
+        		
+        		packetRecv = receiveAck();
+        	}
+    	}   		
+    	
+    	state = State.CLOSED;
     	
     	System.out.println("Ignore close for now");
     	

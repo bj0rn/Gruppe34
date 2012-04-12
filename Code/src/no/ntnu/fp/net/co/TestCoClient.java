@@ -32,6 +32,7 @@ public class TestCoClient {
 
     // Set up log
     Log log = new Log();
+    
     log.setLogName("Client");
 
     // Connection object listening on 4001
@@ -42,12 +43,17 @@ public class TestCoClient {
       addr = InetAddress.getLocalHost();
       conn.connect(addr, 5555);
       // send two messages to server
-      conn.send("Client: Hello Server! Are you there?");
+      //conn.send("Client: Hello Server! Are you there?");
       //conn.send("Client: Hi again!");
       // write a message in the log and close the connection
       Log.writeToLog("Client is now closing the connection!",
 		     "TestApplication");
-      //conn.close();
+      
+      System.out.println("##### close()");
+      
+      conn.close();
+      
+      System.out.println("#### close();");
     }
 
     catch (ConnectException e){
