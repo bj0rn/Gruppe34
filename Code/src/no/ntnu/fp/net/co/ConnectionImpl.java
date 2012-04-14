@@ -135,6 +135,7 @@ public class ConnectionImpl extends AbstractConnection {
         	
 	        	remoteAddress = packetRecv.getSrc_addr();
 	        	remotePort = packetRecv.getSrc_port();
+	        	nextSequenceNo = packetRecv.getSeq_nr() + 1;
 	        	
 	    		if(packetRecv.getFlag() == Flag.SYN){
 	    			
@@ -156,6 +157,7 @@ public class ConnectionImpl extends AbstractConnection {
         	}
     	}
         
+        lastValidPacketReceived = packetRecv;
         System.out.println("connected");
         
     	return this;
@@ -175,7 +177,7 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void send(String msg) throws ConnectException, IOException {
         KtnDatagram packetSend = constructDataPacket(msg);
-	    KtnDatagram packetRecv = sendDataPacketWithRetransmit(packetSend);
+	    sendDataPacketWithRetransmit(packetSend);
     }
 
     /**
@@ -193,13 +195,15 @@ public class ConnectionImpl extends AbstractConnection {
     	while(packetRecv == null) {
     		packetRecv = receivePacket(false);
     		
-    		if (packetRecv != null && !isValid(packetRecv)) {
+    		if (packetRecv != null && !isValid(packetRecv)  
+    		|| lastValidPacketReceived.getSeq_nr()+1 != packetRecv.getSeq_nr()) {
     			packetRecv = null;
     		}
     		
     	}
     	
     	sendAck(packetRecv, false);
+    	lastValidPacketReceived = packetRecv;
     	return packetRecv.getPayload().toString();
     }
 
@@ -222,11 +226,6 @@ public class ConnectionImpl extends AbstractConnection {
         		} catch (ClException e) {
         			e.printStackTrace();
         		}
-        		try {
-					Thread.sleep(4000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
         		packetRecv = receiveAck();
         	}
         	

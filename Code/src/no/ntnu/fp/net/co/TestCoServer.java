@@ -48,7 +48,7 @@ public class TestCoServer {
 	    	}
 	    } catch (EOFException e){
 	    	Log.writeToLog("Got close request (EOFException), closing.", "TestServer");
-			//conn.close();
+			conn.close();
 	    }
 	} catch (IOException e){
 		e.printStackTrace();

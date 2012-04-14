@@ -52,7 +52,7 @@ public class TestCoClient {
       
       System.out.println("##### close()");
       
-      //conn.close();
+      conn.close();
       
       System.out.println("#### close();");
     }
