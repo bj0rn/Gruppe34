@@ -107,15 +107,13 @@ public class ConnectionImpl extends AbstractConnection {
 			
 			packetRecv = receiveAck();
 			
-			if (packetRecv != null && !isValid(packetRecv)) {
+			if (packetRecv != null && !isValid(packetRecv) && packetRecv.getFlag() != Flag.SYN_ACK) {
 				packetRecv = null;
 			}
     	}
     	
-		if(packetRecv.getFlag() == Flag.SYN_ACK){
-			sendAck(packetRecv, false);
-			this.state = State.ESTABLISHED;
-		}
+    	sendAck(packetRecv, false);
+		this.state = State.ESTABLISHED;
 		
 		System.out.println("connected");
     	
@@ -147,15 +145,13 @@ public class ConnectionImpl extends AbstractConnection {
 	        		while(packetRecv == null) {
 	        			packetRecv = receiveAck();
 	        			
-	        			if (packetRecv != null && !isValid(packetRecv)) {
+	        			if ((packetRecv != null && !isValid(packetRecv)) || packetRecv.getFlag() != Flag.ACK) {
 	        				packetRecv = null;
 	        			}
 	        		}
 	
-	        		if(packetRecv.getFlag() == Flag.ACK){
-	        			this.state = State.ESTABLISHED;
-	        			break;
-	        		}
+        			this.state = State.ESTABLISHED;
+        			break;
 	    		}
         	}
     	}
@@ -179,14 +175,7 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void send(String msg) throws ConnectException, IOException {
         KtnDatagram packetSend = constructDataPacket(msg);
-        
-        while(true) {
-	        KtnDatagram packetRecv = sendDataPacketWithRetransmit(packetSend);
-	        
-	        if (isValid(packetRecv) && packetRecv.getSeq_nr() == packetSend.getSeq_nr()) {
-	        	break;
-	        }
-        }
+	    KtnDatagram packetRecv = sendDataPacketWithRetransmit(packetSend);
     }
 
     /**
@@ -201,32 +190,17 @@ public class ConnectionImpl extends AbstractConnection {
         
     	KtnDatagram packetRecv = null;
     	
-    	boolean internal = false;
-    	
     	while(packetRecv == null) {
+    		packetRecv = receivePacket(false);
     		
-    		packetRecv = receivePacket(true);
-    		
-    		if (packetRecv != null) {
-    			internal = true;
-    		} else {
-    			packetRecv = receivePacket(false);
-    			if (isValid(packetRecv)) {
-        			sendAck(packetRecv, false);
-    			} else {
-    				packetRecv = null;
-    			}
+    		if (packetRecv != null && !isValid(packetRecv)) {
+    			packetRecv = null;
     		}
     		
     	}
     	
-    	if (internal) {
-    		sendAck(packetRecv, false);
-    		state = State.CLOSE_WAIT;
-    		throw new EOFException();
-    	} else {
-   			return packetRecv.getPayload().toString();
-    	}
+    	sendAck(packetRecv, false);
+    	return packetRecv.getPayload().toString();
     }
 
     /**
@@ -238,8 +212,8 @@ public class ConnectionImpl extends AbstractConnection {
         
     	KtnDatagram packetSend = constructInternalPacket(Flag.FIN);
     	KtnDatagram packetRecv = null;
-    	System.out.println("#Syssing state: "+ state.toString());
-    	if (state == State.ESTABLISHED) {
+    	
+    	if (disconnectRequest == null) {
     		while (packetRecv == null){  
         		try {
         			simplySendPacket(packetSend);
@@ -249,7 +223,7 @@ public class ConnectionImpl extends AbstractConnection {
         			e.printStackTrace();
         		}
         		try {
-					Thread.sleep(2000);
+					Thread.sleep(4000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -272,10 +246,11 @@ public class ConnectionImpl extends AbstractConnection {
 				e.printStackTrace();
 			}
         	
-    	} else if (state == State.CLOSE_WAIT) {
-    	System.out.println("FORRRRRR.");	
+    	} else  {
+    		
+    		sendAck(disconnectRequest, false);
+    		
     		while (packetRecv == null){
-    			System.out.println("ETTTERRR");
         		try {
         			simplySendPacket(packetSend);
         			state = State.LAST_ACK;

@@ -41,19 +41,18 @@ public class TestCoClient {
     try {
       // get address of local host and connect
       addr = InetAddress.getLocalHost(); // 78.91.16.205
-      
-      conn.connect(InetAddress.getByAddress(new byte[] { (byte) 78,(byte)  91, (byte) 16, (byte) 205 } ), 5555);
+      //addr = InetAddress.getByAddress(new byte[] { (byte) 78,(byte)  91, (byte) 16, (byte) 205 } );
+      conn.connect(addr, 5555);
        
       // send two messages to server
-      //conn.send("Client: Hello Server! Are you there?");
-      //conn.send("Client: Hi again!");
+      conn.send("Client: Hello Server! Are you there?");
+      conn.send("Client: Hi again!");
       // write a message in the log and close the connection
-      Log.writeToLog("Client is now closing the connection!",
-		     "TestApplication");
+      Log.writeToLog("Client is now closing the connection!", "TestApplication");
       
       System.out.println("##### close()");
       
-      conn.close();
+      //conn.close();
       
       System.out.println("#### close();");
     }
