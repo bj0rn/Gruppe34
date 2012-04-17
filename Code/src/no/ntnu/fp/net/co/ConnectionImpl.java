@@ -98,10 +98,10 @@ public class ConnectionImpl extends AbstractConnection {
     	packetSent.setDest_addr(this.remoteAddress);
     	
     	// Reserve space for syn_ack
-    	KtnDatagram packetRecv = null;
+    	KtnDatagram syn_ack = null;
     	
     	// Send until syn_ack is received 	
-    	while(packetRecv == null) {
+    	while(syn_ack == null) {
 			try {
 				simplySendPacket(packetSent);
 				this.state = State.SYN_SENT;
@@ -109,16 +109,16 @@ public class ConnectionImpl extends AbstractConnection {
 				e.printStackTrace();
 			}
 			
-			packetRecv = receiveAck();
+			syn_ack = receiveAck();
 			
 			// drop if packet is invalid or not a syn_ack
-			if (packetRecv != null && !isValid(packetRecv) && packetRecv.getFlag() != Flag.SYN_ACK) {
-				packetRecv = null;
+			if (syn_ack != null && !isValid(syn_ack) && syn_ack.getFlag() != Flag.SYN_ACK) {
+				syn_ack = null;
 			}
     	}
     	
     	// send ack on syn_ack
-    	sendAck(packetRecv, false);
+    	sendAck(syn_ack, false);
 		this.state = State.ESTABLISHED;
     	
     }
@@ -197,7 +197,18 @@ public class ConnectionImpl extends AbstractConnection {
         while(packetRecv == null) {
         	packetRecv = sendDataPacketWithRetransmit(packetSend);
         	
+        	
+        	
         	if (packetRecv != null && (!(packetRecv.getAck() == packetSend.getSeq_nr()) || !isValid(packetRecv))) {
+        		
+        		if (isValid(packetRecv) ) {
+        			
+        			if (packetRecv.getFlag() == Flag.SYN_ACK) {
+        				sendAck(packetRecv, false);
+        			}
+        			
+        		}
+        		
         		packetRecv = null;
         	}
         }
