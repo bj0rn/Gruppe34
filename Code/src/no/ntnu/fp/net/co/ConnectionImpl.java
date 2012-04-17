@@ -132,48 +132,48 @@ public class ConnectionImpl extends AbstractConnection {
     public Connection accept() throws IOException, SocketTimeoutException {
         
     	// Reserve space for syn packet
-    	KtnDatagram packetRecv = null;
+    	KtnDatagram synack = null;
+    	KtnDatagram ack = null;
 
     	// wait until syn is received
-        while(packetRecv == null) {
+        while(synack == null) {
         	
         	// try to receive syn
-        	packetRecv = receivePacket(true);
+        	synack = receivePacket(true);
         	
         	// only accept valid syn packets
-        	if (packetRecv != null && isValid(packetRecv) && packetRecv.getFlag() == Flag.SYN) {
+        	if (synack != null && isValid(synack)) {
         	
         		// save address and port for response packets
-	        	remoteAddress = packetRecv.getSrc_addr();
-	        	remotePort = packetRecv.getSrc_port();
+	        	remoteAddress = synack.getSrc_addr();
+	        	remotePort = synack.getSrc_port();
 	        	
 	        	// Bullshit 
-	        	nextSequenceNo = packetRecv.getSeq_nr() + 1;
+	        	nextSequenceNo = synack.getSeq_nr() + 1;
 	        	
 	        	// 
-	    		if(packetRecv.getFlag() == Flag.SYN){
-	    			
-	        		state = State.SYN_RCVD;
-	        		sendAck(packetRecv, true);
-	        		
-	        		packetRecv = null;
-	        		while(packetRecv == null) {
-	        			packetRecv = receiveAck();
-	        			
-	        			if ((packetRecv != null && !isValid(packetRecv)) || packetRecv.getFlag() != Flag.ACK) {
-	        				packetRecv = null;
-	        			}
-	        		}
-	
-        			this.state = State.ESTABLISHED;
-        			break;
+	    		if (synack.getFlag() == Flag.SYN) {
+		    		state = State.SYN_RCVD;
+		    		
+		    		while(ack == null) {
+		    			sendAck(synack, true);
+		        		
+		        		ack = receiveAck();
+		        			
+		        		if ((ack != null && !isValid(ack)) || ack.getFlag() != Flag.ACK) {
+		        			ack = null;
+		        		}
+		        	}
+		
+	        		this.state = State.ESTABLISHED;
+	        		break;
 	    		}
         	} else { // drop invalid or not syn packet
-        			packetRecv = null;
+        			synack = null;
         	}
     	}
         
-        lastValidPacketReceived = packetRecv;
+        lastValidPacketReceived = ack;
         
     	return this;
     }

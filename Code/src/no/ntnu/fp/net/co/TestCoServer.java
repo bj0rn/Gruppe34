@@ -8,6 +8,8 @@ package no.ntnu.fp.net.co;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.co.Connection;
@@ -34,7 +36,13 @@ public class TestCoServer {
     // Create log
     Log log = new Log();
     log.setLogName("Server");
-    
+
+    try {
+		System.out.println(InetAddress.getLocalHost());
+	} catch (UnknownHostException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
 
     // server connection instance, listen on port 5555
     Connection server = new ConnectionImpl(5555);
