@@ -253,12 +253,13 @@ public class ConnectionImpl extends AbstractConnection {
         		try {
         			simplySendPacket(packetSend);
         			state = State.LAST_ACK;
-    			
+        			packetRecv = receiveAck();
         		} catch (ClException e) {
+        			e.printStackTrace();
+        		} catch (ConnectException e) {
         			e.printStackTrace();
         		}
         		
-        		packetRecv = receiveAck();
         	}
     	}   		
     	
