@@ -88,15 +88,19 @@ public class ConnectionImpl extends AbstractConnection {
     public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
     SocketTimeoutException {
     	
+    	// Save remote addresses on client side
     	this.remoteAddress = remoteAddress.getHostAddress();
     	this.remotePort = remotePort;
     	
+    	// Create syn packet
     	KtnDatagram packetSent = constructInternalPacket(Flag.SYN);
-    	KtnDatagram packetRecv = null;
-    	
     	packetSent.setDest_port(this.remotePort);
     	packetSent.setDest_addr(this.remoteAddress);
-    		
+    	
+    	// Reserve space for syn_ack
+    	KtnDatagram packetRecv = null;
+    	
+    	// Send until syn_ack is received 	
     	while(packetRecv == null) {
 			try {
 				simplySendPacket(packetSent);
@@ -107,15 +111,15 @@ public class ConnectionImpl extends AbstractConnection {
 			
 			packetRecv = receiveAck();
 			
+			// drop if packet is invalid or not a syn_ack
 			if (packetRecv != null && !isValid(packetRecv) && packetRecv.getFlag() != Flag.SYN_ACK) {
 				packetRecv = null;
 			}
     	}
     	
+    	// send ack on syn_ack
     	sendAck(packetRecv, false);
 		this.state = State.ESTABLISHED;
-		
-		System.out.println("connected");
     	
     }
 
@@ -126,17 +130,27 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
-        KtnDatagram packetRecv = null;
-        //Need to bind port, but for now; use static
+        
+    	// Reserve space for syn packet
+    	KtnDatagram packetRecv = null;
+
+    	// wait until syn is received
         while(packetRecv == null) {
+        	
+        	// try to receive syn
         	packetRecv = receivePacket(true);
         	
-        	if (packetRecv != null && isValid(packetRecv)) {
+        	// only accept valid syn packets
+        	if (packetRecv != null && isValid(packetRecv) && packetRecv.getFlag() == Flag.SYN) {
         	
+        		// save address and port for response packets
 	        	remoteAddress = packetRecv.getSrc_addr();
 	        	remotePort = packetRecv.getSrc_port();
+	        	
+	        	// Bullshit 
 	        	nextSequenceNo = packetRecv.getSeq_nr() + 1;
 	        	
+	        	// 
 	    		if(packetRecv.getFlag() == Flag.SYN){
 	    			
 	        		state = State.SYN_RCVD;
@@ -154,11 +168,12 @@ public class ConnectionImpl extends AbstractConnection {
         			this.state = State.ESTABLISHED;
         			break;
 	    		}
+        	} else { // drop invalid or not syn packet
+        			packetRecv = null;
         	}
     	}
         
         lastValidPacketReceived = packetRecv;
-        System.out.println("connected");
         
     	return this;
     }
@@ -177,7 +192,15 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void send(String msg) throws ConnectException, IOException {
         KtnDatagram packetSend = constructDataPacket(msg);
-	    sendDataPacketWithRetransmit(packetSend);
+        KtnDatagram packetRecv = null;
+	   
+        while(packetRecv == null) {
+        	packetRecv = sendDataPacketWithRetransmit(packetSend);
+        	
+        	if (packetRecv != null && (!(packetRecv.getAck() == packetSend.getSeq_nr()) || !isValid(packetRecv))) {
+        		packetRecv = null;
+        	}
+        }
     }
 
     /**
@@ -196,7 +219,8 @@ public class ConnectionImpl extends AbstractConnection {
     		packetRecv = receivePacket(false);
     		
     		if (packetRecv != null && !isValid(packetRecv)  
-    		|| lastValidPacketReceived.getSeq_nr()+1 != packetRecv.getSeq_nr()) {
+    		|| lastValidPacketReceived.getSeq_nr()+1 != packetRecv.getSeq_nr()
+    		|| packetRecv.getFlag() != Flag.NONE) {
     			packetRecv = null;
     		}
     		
@@ -257,7 +281,7 @@ public class ConnectionImpl extends AbstractConnection {
         		} catch (ClException e) {
         			e.printStackTrace();
         		} catch (ConnectException e) {
-        			e.printStackTrace();
+        			//e.printStackTrace();
         		}
         		
         	}
