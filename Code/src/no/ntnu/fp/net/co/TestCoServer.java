@@ -10,6 +10,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.co.Connection;
@@ -36,7 +37,12 @@ public class TestCoServer {
     // Create log
     Log log = new Log();
     log.setLogName("Server");
-
+    
+    
+    //just testing stuff
+    ArrayList<String> rez = new ArrayList<String>();
+    
+    
     try {
 		System.out.println(InetAddress.getLocalHost());
 	} catch (UnknownHostException e1) {
@@ -55,6 +61,7 @@ public class TestCoServer {
 	    		String msg = conn.receive();
 	    		
 	    		System.err.println(" ### Recieved ### " + msg);
+	    		rez.add(msg);
 	    		
 	    		Log.writeToLog("Message got through to server: " + msg, "TestServer");
 	    	}
@@ -67,6 +74,11 @@ public class TestCoServer {
 	}
 	
     System.out.println("SERVER TEST FINISHED");
+    System.out.println("PACKETS RECEIVED: ");
+    for (String s : rez) {
+    	System.out.print(s.substring(1)+">");
+    }
+    
     Log.writeToLog("TEST SERVER FINISHED","TestServer");
   }
 }

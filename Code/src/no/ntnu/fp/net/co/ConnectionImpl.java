@@ -217,9 +217,8 @@ public class ConnectionImpl extends AbstractConnection {
     	
     	while(packetRecv == null) {
     		packetRecv = receivePacket(false);
-    		
     		if (packetRecv != null && !isValid(packetRecv)  
-    		|| lastValidPacketReceived.getSeq_nr()+1 != packetRecv.getSeq_nr()
+    	    || (lastValidPacketReceived.getSeq_nr() >= packetRecv.getSeq_nr()) //&& lastValidPacketReceived.getSeq_nr() != packetRecv.getSeq_nr()
     		|| packetRecv.getFlag() != Flag.NONE) {
     			packetRecv = null;
     		}
@@ -302,10 +301,10 @@ public class ConnectionImpl extends AbstractConnection {
     	System.out.println("checking packet for validity...");
     	long calc = packet.calculateChecksum();
     	long chk = packet.getChecksum();
-    	System.out.println("packet checksum"+ chk);
-    	System.out.println("calculated checksum" + calc);
+    	System.out.println("packet checksum:"+ chk);
+    	System.out.println("calc'd checksum:" + calc);
     	boolean res = (calc == chk);
-    	System.out.println("And their equality is..." + res + "!");
+    	System.out.println("Equals: " + res + "!");
     	
         return res;
     }
