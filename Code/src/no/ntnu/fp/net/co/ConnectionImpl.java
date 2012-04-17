@@ -42,8 +42,8 @@ public class ConnectionImpl extends AbstractConnection {
     private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
     
     private KtnDatagram lastAckedPacket;
+    private int synackseq;
     
-
     /**
      * Initialise initial sequence number and setup state machine.
      * 
@@ -123,8 +123,16 @@ public class ConnectionImpl extends AbstractConnection {
     	}
     	
     	// send ack on syn_ack
+    	synackseq = nextSequenceNo;
     	sendAck(syn_ack, false);
 		this.state = State.ESTABLISHED;
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    	sendAck(syn_ack, false);
     	
     }
 
@@ -153,8 +161,7 @@ public class ConnectionImpl extends AbstractConnection {
 	        	remoteAddress = synack.getSrc_addr();
 	        	remotePort = synack.getSrc_port();
 	        	
-	        	// Bullshit 
-	        	nextSequenceNo = synack.getSeq_nr() + 1;
+	        	//nextSequenceNo = synack.getSeq_nr() + 1;
 	        	
 	        	// 
 	    		if (synack.getFlag() == Flag.SYN) {
@@ -179,6 +186,7 @@ public class ConnectionImpl extends AbstractConnection {
         	}
     	}
         
+        lastAckedPacket = ack;
         lastValidPacketReceived = ack;
         
     	return this;
@@ -203,18 +211,16 @@ public class ConnectionImpl extends AbstractConnection {
         while(packetRecv == null) {
         	packetRecv = sendDataPacketWithRetransmit(packetSend);
         	
-        	
+        	//System.err.println(packetSend.getPayload() + ": " + packetSend.getSeq_nr() + " " + packetRecv.getAck());
         	
         	if (packetRecv != null && (!(packetRecv.getAck() == packetSend.getSeq_nr()) || !isValid(packetRecv))) {
         		
         		if (isValid(packetRecv) ) {
-        			
         			if (packetRecv.getFlag() == Flag.SYN_ACK) {
+        				nextSequenceNo = synackseq;
         				sendAck(packetRecv, false);
         			}
-        			
         		}
-        		
         		packetRecv = null;
         	}
         }
@@ -304,7 +310,6 @@ public class ConnectionImpl extends AbstractConnection {
         		} catch (ConnectException e) {
         			//e.printStackTrace();
         		}
-        		
         	}
     	}   		
     	

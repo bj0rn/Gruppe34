@@ -40,13 +40,13 @@ public class TestCoClient {
     InetAddress addr;  // will hold address of host to connect to
     try {
       // get address of local host and connect
-      addr = InetAddress.getLocalHost(); // 78.91.16.205
-     // addr = InetAddress.getByAddress(new byte[] { (byte) 78,(byte)  91, (byte) 18, (byte) 149 } );
+      //addr = InetAddress.getLocalHost(); // 78.91.16.205
+     addr = InetAddress.getByAddress(new byte[] { (byte) 192,(byte)  168, (byte) 0, (byte) 189 } );
       conn.connect(addr, 5555);
        
       // send two messages to server
       
-      String [] msgs = new String[100];
+      String [] msgs = new String[20];
       
       for (int i=0; i<msgs.length; i++) {
     	  msgs[i] = "m" + i;
@@ -71,11 +71,11 @@ public class TestCoClient {
     }
 
     catch (ConnectException e){
-      Log.writeToLog(e.getMessage(),"TestApplication");
+      //Log.writeToLog(e.getMessage(),"TestApplication");
       e.printStackTrace();
     }
     catch (UnknownHostException e){
-      Log.writeToLog(e.getMessage(),"TestApplication");
+      //Log.writeToLog(e.getMessage(),"TestApplication");
       e.printStackTrace();
     }
     catch (IOException e){
