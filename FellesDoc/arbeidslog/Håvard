@@ -336,7 +336,7 @@ Gjenstående:
 
 Navn: 		Håvard
 Dato: 		26.03.2012
-Aktivitet: 	
+Aktivitet: 	Implementasjon
 Starttid: 	08:00
 Plan: 		
 
@@ -349,7 +349,7 @@ Gjenstående:
 Navn: 		Håvard
 Dato: 		27.03.2012
 Aktivitet: 	08:00
-Starttid: 	
+Starttid: 	Implementasjon
 Plan: 		
 
 Slutttid: 	20:00
@@ -360,22 +360,34 @@ Gjenstående:
 
 Navn: 		Håvard
 Dato: 		28.03.2012
-Aktivitet: 	08
-Starttid: 	
+Aktivitet: 	Implementasjon
+Starttid: 	08:00
 Plan: 		
 
-Slutttid: 	20:00
+Slutttid: 	23:00
 Fremdrift: 	
 Gjenstående: 	
 
 ######################
 
 Navn: 		Håvard
-Dato: 		.03.2012
-Aktivitet: 	
-Starttid: 	
+Dato: 		29.03.2012
+Aktivitet: 	Implementasjon/Godkjenning
+Starttid: 	08:30
 Plan: 		
 
-Slutttid: 	
+Slutttid: 	11:00
+Fremdrift: 	
+Gjenstående: 	
+
+######################
+
+Navn: 		Håvard
+Dato: 		29.03.2012
+Aktivitet: 	Sluttrapport
+Starttid: 	11:00
+Plan: 		
+
+Slutttid: 	?
 Fremdrift: 	
 Gjenstående: 	
