@@ -74,7 +74,7 @@ public class TestCoServer {
 	}
 	
     System.out.println("SERVER TEST FINISHED");
-    System.out.println("PACKETS RECEIVED: ");
+    System.out.println("PACKETS RECEIVED: " + rez.size());
     for (String s : rez) {
     	System.out.print(s.substring(1)+">");
     }
