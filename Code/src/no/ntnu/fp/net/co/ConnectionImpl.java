@@ -159,9 +159,10 @@ public class ConnectionImpl extends AbstractConnection {
 		    			sendAck(synack, true);
 		        		
 		        		ack = receiveAck();
-		        			
-		        		if ((ack != null && !isValid(ack)) || ack.getFlag() != Flag.ACK) {
-		        			ack = null;
+		        		if (ack != null) {
+			        		if (!isValid(ack) || ack.getFlag() != Flag.ACK) {
+			        			ack = null;
+			        		}
 		        		}
 		        	}
 		
