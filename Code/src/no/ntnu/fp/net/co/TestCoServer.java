@@ -45,10 +45,8 @@ public class TestCoServer {
 	    	while (true) {
 	    		String msg = conn.receive();
 	    		Log.writeToLog("Message got through to server: " + msg, "TestServer");
-	    	System.out.println("SYSSING#1");
 	    	}
 	    } catch (EOFException e){
-	    	System.out.println("SYSSING#2");
 	    	Log.writeToLog("Got close request (EOFException), closing.", "TestServer");
 			conn.close();
 	    }
