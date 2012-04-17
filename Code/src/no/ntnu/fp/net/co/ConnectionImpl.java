@@ -40,6 +40,9 @@ public class ConnectionImpl extends AbstractConnection {
 	
     /** Keeps track of the used ports for each server port. */
     private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
+    
+    private KtnDatagram lastAckedPacket;
+    
 
     /**
      * Initialise initial sequence number and setup state machine.
@@ -61,6 +64,8 @@ public class ConnectionImpl extends AbstractConnection {
     	super();
         this.myPort = myPort;
         this.myAddress = getIPv4Address();
+        
+        this.lastAckedPacket = null;
     }
 
     private String getIPv4Address() {
@@ -230,21 +235,20 @@ public class ConnectionImpl extends AbstractConnection {
     	while(packetRecv == null) {
     		packetRecv = receivePacket(false);
     		if (packetRecv != null && !isValid(packetRecv)  
-    		|| lastValidPacketReceived.getSeq_nr()+1 != packetRecv.getSeq_nr()
+    		|| (lastAckedPacket!= null && lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr())
     		|| packetRecv.getFlag() != Flag.NONE) {
     			System.err.println("## packet " + packetRecv.getPayload() + " found to be invalid");
-    			if (lastValidPacketReceived.getSeq_nr()+1 != packetRecv.getSeq_nr()) //Replace >= with > and it'll accept packets twice. This fixes the disappearing ACK problem.
+    			if (lastAckedPacket != null && lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr()) //Replace >= with > and it'll accept packets twice. This fixes the disappearing ACK problem.
     			{
-    				sendAck(lastValidPacketReceived, false);
-    				
+    				sendAck(lastAckedPacket, false);
     			}
     			packetRecv = null;
     			
     		}
     	}
     	
-    	//sendAck(packetRecv, false);
-    	//lastValidPacketReceived = packetRecv;
+    	sendAck(packetRecv, false);
+    	lastAckedPacket = packetRecv;
     	return packetRecv.getPayload().toString();
     }
 

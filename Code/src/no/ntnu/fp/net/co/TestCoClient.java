@@ -41,7 +41,7 @@ public class TestCoClient {
     try {
       // get address of local host and connect
       addr = InetAddress.getLocalHost(); // 78.91.16.205
-      addr = InetAddress.getByAddress(new byte[] { (byte) 78,(byte)  91, (byte) 18, (byte) 149 } );
+     // addr = InetAddress.getByAddress(new byte[] { (byte) 78,(byte)  91, (byte) 18, (byte) 149 } );
       conn.connect(addr, 5555);
        
       // send two messages to server
