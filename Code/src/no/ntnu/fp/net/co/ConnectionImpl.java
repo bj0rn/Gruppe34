@@ -232,8 +232,8 @@ public class ConnectionImpl extends AbstractConnection {
     		}
     	}
     	
-    	sendAck(packetRecv, false);
-    	lastValidPacketReceived = packetRecv;
+    	//sendAck(packetRecv, false);
+    	//lastValidPacketReceived = packetRecv;
     	return packetRecv.getPayload().toString();
     }
 
