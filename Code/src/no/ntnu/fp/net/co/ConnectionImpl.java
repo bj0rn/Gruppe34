@@ -204,16 +204,20 @@ public class ConnectionImpl extends AbstractConnection {
     	boolean internal = false;
     	
     	while(packetRecv == null) {
-    		
+    		System.out.println("##within the while loop");
     		packetRecv = receivePacket(true);
     		
     		if (packetRecv != null) {
+    			System.out.println("##first if");
     			internal = true;
     		} else {
+    			System.out.println("##first else");
     			packetRecv = receivePacket(false);
-    			if (isValid(packetRecv)) {
+    			if (packetRecv != null && isValid(packetRecv)) {
+    				System.out.println("###if");
         			sendAck(packetRecv, false);
     			} else {
+    				System.out.println("###else");
     				packetRecv = null;
     			}
     		}
@@ -221,15 +225,17 @@ public class ConnectionImpl extends AbstractConnection {
     	}
     	
     	if (internal) {
+    		System.out.println("#ifInt");
     		sendAck(packetRecv, false);
     		state = State.CLOSE_WAIT;
     		throw new EOFException();
     	} else {
+    		System.out.println("##elInt");
    			return packetRecv.getPayload().toString();
     	}
     }
 
-    /**
+    /** 
      * Close the connection.
      * 
      * @see Connection#close()
