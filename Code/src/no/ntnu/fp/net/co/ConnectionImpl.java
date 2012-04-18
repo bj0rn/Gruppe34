@@ -257,30 +257,14 @@ public class ConnectionImpl extends AbstractConnection {
     				
     			} else if (lastAckedPacket != null) {
     				
-    				if (lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr()) {
+    				if (lastAckedPacket.getSeq_nr() >= packetRecv.getSeq_nr()) {
     					packetRecv = null;
-    				}
-    				
-    				if (packetRecv.getFlag() != Flag.NONE) {
+    				} else if (packetRecv.getFlag() != Flag.NONE) {
     					packetRecv = null;
     				}
     			}
     		}
     		
-    		
-    		
-    		/*if (packetRecv != null && !isValid(packetRecv)  
-    		|| (lastAckedPacket != null && lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr())
-    		|| packetRecv.getFlag() != Flag.NONE) {
-    			//System.err.println("## packet " + packetRecv.getPayload() + " found to be invalid");
-    			if (lastAckedPacket != null && lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr()) //Replace >= with > and it'll accept packets twice. This fixes the disappearing ACK problem.
-    			{
-    				sendAck(lastAckedPacket, false);
-    				lastAckedPacket = packetRecv;
-    			}
-    			packetRecv = null;
-    			
-    		}*/
     	}
     	
     	sendAck(packetRecv, false);
