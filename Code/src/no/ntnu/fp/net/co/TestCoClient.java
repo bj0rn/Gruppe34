@@ -40,8 +40,8 @@ public class TestCoClient {
     InetAddress addr;  // will hold address of host to connect to
     try {
       // get address of local host and connect
-      //addr = InetAddress.getLocalHost(); // 78.91.16.205
-     addr = InetAddress.getByAddress(new byte[] { (byte) 192,(byte)  168, (byte) 0, (byte) 189 } );
+      addr = InetAddress.getLocalHost(); // 78.91.16.205
+    	//addr = InetAddress.getByAddress(new byte[] { (byte) 78,(byte)  91, (byte) 23, (byte) 32 } );
       conn.connect(addr, 5555);
        
       // send two messages to server
