@@ -124,6 +124,9 @@ public class ConnectionImpl extends AbstractConnection {
     	
     	// send ack on syn_ack
     	synackseq = nextSequenceNo;
+    	
+    	System.err.println("synackseq: " + synackseq);
+    	
     	sendAck(syn_ack, false);
 		this.state = State.ESTABLISHED;
 		
@@ -161,9 +164,6 @@ public class ConnectionImpl extends AbstractConnection {
 	        	remoteAddress = synack.getSrc_addr();
 	        	remotePort = synack.getSrc_port();
 	        	
-	        	//nextSequenceNo = synack.getSeq_nr() + 1;
-	        	
-	        	// 
 	    		if (synack.getFlag() == Flag.SYN) {
 		    		state = State.SYN_RCVD;
 		    		
@@ -213,15 +213,20 @@ public class ConnectionImpl extends AbstractConnection {
         	
         	//System.err.println(packetSend.getPayload() + ": " + packetSend.getSeq_nr() + " " + packetRecv.getAck());
         	
-        	if (packetRecv != null && (!(packetRecv.getAck() == packetSend.getSeq_nr()) || !isValid(packetRecv))) {
-        		
-        		if (isValid(packetRecv) ) {
-        			if (packetRecv.getFlag() == Flag.SYN_ACK) {
-        				nextSequenceNo = synackseq;
-        				sendAck(packetRecv, false);
-        			}
+        	if (packetRecv != null) {
+ 
+        		if (!isValid(packetRecv)) {
+        			packetRecv = null;
+        		} else if (packetRecv.getAck() != packetSend.getSeq_nr()) {
+        			if (isValid(packetRecv) ) {
+                		if (packetRecv.getFlag() == Flag.SYN_ACK) {
+                			nextSequenceNo = synackseq-1;
+                			System.err.println("Reset seq: " + nextSequenceNo);
+                			sendAck(packetRecv, false);
+                		}
+                	}
+                	packetRecv = null;
         		}
-        		packetRecv = null;
         	}
         }
     }
@@ -240,17 +245,42 @@ public class ConnectionImpl extends AbstractConnection {
     	
     	while(packetRecv == null) {
     		packetRecv = receivePacket(false);
-    		if (packetRecv != null && !isValid(packetRecv)  
-    		|| (lastAckedPacket!= null && lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr())
+    		
+    		if (packetRecv != null) System.err.println("Recv: " + packetRecv.getSeq_nr());
+    		if (lastAckedPacket!= null) System.err.println("Last: " + lastAckedPacket.getSeq_nr());
+    		
+    		if (packetRecv != null) {
+    			
+    			if (!isValid(packetRecv)) {
+    				
+    				packetRecv = null;
+    				
+    			} else if (lastAckedPacket != null) {
+    				
+    				if (lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr()) {
+    					packetRecv = null;
+    				}
+    				
+    				if (packetRecv.getFlag() != Flag.NONE) {
+    					packetRecv = null;
+    				}
+    			}
+    		}
+    		
+    		
+    		
+    		/*if (packetRecv != null && !isValid(packetRecv)  
+    		|| (lastAckedPacket != null && lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr())
     		|| packetRecv.getFlag() != Flag.NONE) {
-    			System.err.println("## packet " + packetRecv.getPayload() + " found to be invalid");
+    			//System.err.println("## packet " + packetRecv.getPayload() + " found to be invalid");
     			if (lastAckedPacket != null && lastAckedPacket.getSeq_nr()+1 != packetRecv.getSeq_nr()) //Replace >= with > and it'll accept packets twice. This fixes the disappearing ACK problem.
     			{
     				sendAck(lastAckedPacket, false);
+    				lastAckedPacket = packetRecv;
     			}
     			packetRecv = null;
     			
-    		}
+    		}*/
     	}
     	
     	sendAck(packetRecv, false);
@@ -325,10 +355,14 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-    	long calc = packet.calculateChecksum();
-    	long chk = packet.getChecksum();
-    	boolean res = (calc == chk);
-    	
-        return res;
+    	if (packet != null) {
+	    	long calc = packet.calculateChecksum();
+	    	long chk = packet.getChecksum();
+	    	boolean res = (calc == chk);
+	    	
+	        return res;
+    	} else {
+    		return false;
+    	}
     }
 }
